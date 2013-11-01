@@ -27,10 +27,8 @@ pip-log.txt
 .tox
 nosetests.xml
 
-# Translations
-*.mo
+# PyCHarm
+.idea
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
+# OSX
+.DS_Store
