@@ -175,11 +175,48 @@ def find_near_matches_with_ngrams(subsequence, sequence, max_l_dist):
             if dist_right is None:
                 continue
             assert dist_left + dist_right <= max_l_dist
-            #matches.append(_get_best_match(subsequence, sequence[index - ngram.start - max_l_dist:index - ngram.start + len(subsequence) + max_l_dist], max_l_dist))
+
             matches.append(Match(
                 start=index - left_expand_size,
                 end=index + ngram_len + right_expand_size,
                 dist=dist_left + dist_right,
             ))
 
-    return sorted(set(matches))
+    # don't return overlapping matches; instead, group overlapping matches
+    # together and return the best match from each group
+    match_groups = group_matches(matches)
+    best_matches = [get_best_match_in_group(group) for group in match_groups]
+    return sorted(best_matches)
+
+
+class Group(object):
+    def __init__(self, match):
+        self.start = match.start
+        self.end = match.end
+        self.matches = set([match])
+
+    def is_match_in_group(self, match):
+        return match in self.matches or \
+            not (match.end <= self.start or match.start >= self.end)
+
+    def add_match(self, match):
+        self.matches.add(match)
+        self.start = min(self.start, match.start)
+        self.end = max(self.end, match.end)
+
+
+def group_matches(matches):
+    groups = []
+    for match in matches:
+        for group in groups:
+            if group.is_match_in_group(match):
+                group.add_match(match)
+                break
+        else:
+            groups.append(Group(match))
+    return [group.matches for group in groups]
+
+
+def get_best_match_in_group(group):
+    # return longest match amongst those with the shortest distance
+    return min(group, key=lambda match: (match.dist, -(match.end - match.start)))
