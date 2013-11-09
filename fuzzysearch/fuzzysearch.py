@@ -136,12 +136,6 @@ def _expand(subsequence, sequence, max_l_dist):
 
     return (min_score, min_score_idx + 1) if min_score is not None and min_score <= max_l_dist else (None, None)
 
-#def _get_best_match(subsequence, sequence_part, max_l_dist):
-#    idx = sequence_part.find(subsequence)
-#    if idx >= 0:
-#        return Match(start=idx, end=idx + len(subsequence), dist=0)
-#
-#    return None
 
 Ngram = namedtuple('Ngram', ['start', 'end'])
 
