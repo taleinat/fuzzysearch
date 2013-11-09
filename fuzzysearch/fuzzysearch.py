@@ -87,6 +87,11 @@ def find_near_matches(subsequence, sequence, max_l_dist=0):
 
         candidates = new_candidates
 
+    for cand in candidates:
+        dist = cand.dist + len(subsequence) - cand.subseq_index
+        if dist <= max_l_dist:
+            yield Match(cand.start, len(sequence), dist)
+
 
 def _find_all(subsequence, sequence, start_index=0, end_index=None):
     if isinstance(sequence, basestring):

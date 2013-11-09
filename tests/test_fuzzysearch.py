@@ -236,6 +236,12 @@ class TestFuzzySearchBase(object):
             self.search(substring, text, max_l_dist=2)
         )
 
+    def test_one_missing_at_end_of_sequence(self):
+        self.assertEquals(
+            [Match(3, 6, 1)],
+            self.search('defg', 'abcdef', max_l_dist=1)
+        )
+
     def test_dna_search(self):
         # see: http://stackoverflow.com/questions/19725127/
         text = ''.join('''\
