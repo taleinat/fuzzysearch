@@ -5,7 +5,8 @@ install:
 env:
   - TOX_ENV=py26
   - TOX_ENV=py27
-  - TOX_ENV=py31
+  # Travis no longer supports Python 3.1
+  #  - TOX_ENV=py31
   - TOX_ENV=py32
   - TOX_ENV=py33
 script:
