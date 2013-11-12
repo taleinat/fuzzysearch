@@ -54,14 +54,22 @@ def find_near_matches(subsequence, sequence, max_l_dist=0):
 
             # if this sequence char is *not* the candidate's next expected char
             else:
-                # we can try skipping a sequence or sub-sequence char, unless
-                # this candidate has already skipped the maximum allowed number
-                # of characters
+                # we can try skipping a sequence or sub-sequence char (or both),
+                # unless this candidate has already skipped the maximum allowed
+                # number of characters
                 if cand.dist == max_l_dist:
                     continue
 
                 # add a candidate skipping a sequence char
                 new_candidates.append(cand._replace(dist=cand.dist + 1))
+
+                if index + 1 < len(sequence) and cand.subseq_index + 1 < _subseq_len:
+                    # add a candidate skipping both a sequence char and a
+                    # subsequence char
+                    new_candidates.append(cand._replace(
+                        dist=cand.dist + 1,
+                        subseq_index=cand.subseq_index+1,
+                    ))
 
                 # try skipping subsequence chars
                 for n_skipped in xrange(1, max_l_dist - cand.dist + 1):
@@ -78,7 +86,7 @@ def find_near_matches(subsequence, sequence, max_l_dist=0):
                         # add a candidate skipping n_skipped subsequence chars
                         new_candidates.append(cand._replace(
                             dist=cand.dist + n_skipped,
-                            subseq_index=cand.subseq_index + n_skipped,
+                            subseq_index=cand.subseq_index + n_skipped + 1,
                         ))
                         break
                 # note: if the above loop ends without a break, that means that

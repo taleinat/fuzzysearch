@@ -130,8 +130,8 @@ class TestFuzzySearchBase(object):
 
     def test_double_last_items(self):
         self.assertEquals(
-            [Match(start=3, end=8, dist=0)],
-            self.search('defgh', 'abcdefghghi', max_l_dist=3),
+            [Match(start=2, end=8, dist=0)],
+            self.search('cdefgh', 'abcdefghghi', max_l_dist=3),
         )
 
     def test_missing_second_item(self):
