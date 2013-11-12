@@ -198,6 +198,9 @@ class Group(object):
         return match in self.matches or \
             not (match.end <= self.start or match.start >= self.end)
 
+    def does_overlap_group(self, other):
+        return not (other.end <= self.start or other.start >= self.end)
+
     def add_match(self, match):
         self.matches.add(match)
         self.start = min(self.start, match.start)
@@ -207,12 +210,19 @@ class Group(object):
 def group_matches(matches):
     groups = []
     for match in matches:
-        for group in groups:
-            if group.is_match_in_group(match):
-                group.add_match(match)
-                break
-        else:
+        overlapping_groups = [g for g in groups if g.is_match_in_group(match)]
+        if not overlapping_groups:
             groups.append(Group(match))
+        elif len(overlapping_groups) == 1:
+            groups[0].add_match(match)
+        else:
+            new_group = Group(match)
+            for group in overlapping_groups:
+                for match in group.matches:
+                    new_group.add_match(match)
+            groups = [g for g in groups if g not in overlapping_groups]
+            groups.append(new_group)
+
     return [group.matches for group in groups]
 
 
