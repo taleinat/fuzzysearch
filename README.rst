@@ -20,4 +20,20 @@ fuzzysearch is useful for finding approximate subsequence matches
 Features
 --------
 
-* TODO
+* Fuzzy sub-sequence search: Find parts of a sequence which match a given sub-sequence up to a given maximum Levenshtein distance.
+
+Example
+-------
+.. code:: python
+
+    >>> sequence = '''\
+    GACTAGCACTGTAGGGATAACAATTTCACACAGGTGGACAATTACATTGAAAATCACAGATTGGTCACACACACA
+    TTGGACATACATAGAAACACACACACATACATTAGATACGAACATAGAAACACACATTAGACGCGTACATAGACA
+    CAAACACATTGACAGGCAGTTCAGATGATGACGCCCGACTGATACTCGCGTAGTCGTGGGAGGCAAGGCACACAG
+    GGGATAGG'''
+    >>> subsequence = 'TGCACTGTAGGGATAACAAT' #distance 1
+    >>> max_distance = 2
+
+    >>> from fuzzysearch import find_near_matches_with_ngrams
+    >>> find_near_matches_with_ngrams(subsequence, sequence, max_distance)
+    [Match(start=3, end=24, dist=1)]
