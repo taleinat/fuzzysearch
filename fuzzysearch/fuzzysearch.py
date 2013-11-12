@@ -135,7 +135,7 @@ def _expand(subsequence, sequence, max_l_dist):
             scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
             new_scores[subseq_index] + 1,
         )
-        if subseq_index == len(subsequence) - 1 and (last_score <= min_score or min_score is None):
+        if subseq_index == len(subsequence) - 1 and (min_score is None or last_score <= min_score):
             min_score = last_score
             min_score_idx = seq_index
 
