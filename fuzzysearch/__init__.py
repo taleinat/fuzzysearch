@@ -31,8 +31,8 @@ from fuzzysearch.custom_search import find_near_matches_customized_levenshtein
 def find_near_matches(subsequence, sequence, max_l_dist):
     """Find near-matches of the subsequence in the sequence.
 
-    This chooses an appropriate fuzzy search implementation according to the
-    given maximum Levenshtein distance.
+    This chooses a suitable fuzzy search implementation according to the given
+    parameters.
 
     Returns a list of fuzzysearch.Match objects describing the matching parts
     of the sequence.

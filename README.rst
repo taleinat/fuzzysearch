@@ -4,7 +4,7 @@ fuzzysearch
 
 .. image:: https://badge.fury.io/py/fuzzysearch.png
     :target: http://badge.fury.io/py/fuzzysearch
-    
+
 .. image:: https://travis-ci.org/taleinat/fuzzysearch.png?branch=master
         :target: https://travis-ci.org/taleinat/fuzzysearch
 
@@ -24,6 +24,10 @@ Features
 
 Simple Example
 --------------
+You can usually just use the `find_near_matches()` utility function, which
+chooses a suitable fuzzy search implementation according to the given
+parameters:
+
 .. code:: python
 
     >>> from fuzzysearch import find_near_matches
@@ -32,6 +36,9 @@ Simple Example
 
 Advanced Example
 ----------------
+If needed you can choose a specific search implementation, such as
+`find_near_matches_with_ngrams()`:
+
 .. code:: python
 
     >>> sequence = '''\
