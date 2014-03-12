@@ -22,8 +22,16 @@ Features
 
 * Fuzzy sub-sequence search: Find parts of a sequence which match a given sub-sequence up to a given maximum Levenshtein distance.
 
-Example
--------
+Simple Example
+--------------
+.. code:: python
+
+    >>> from fuzzysearch import find_near_matches
+    >>> find_near_matches('PATTERN', 'aaaPATERNaaa', max_l_dist=1)
+    [Match(start=3, end=9, dist=1)]
+
+Advanced Example
+----------------
 .. code:: python
 
     >>> sequence = '''\

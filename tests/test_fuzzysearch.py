@@ -1,4 +1,5 @@
-from tests.compat import unittest
+from tests.compat import unittest, mock
+from fuzzysearch import find_near_matches
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from fuzzysearch.custom_search import \
     find_near_matches_customized_levenshtein as fnm_customized_levenshtein
@@ -279,3 +280,15 @@ class TestFindNearMatchesCustomizedLevenshtein(TestFuzzySearchBase,
                 fnm_customized_levenshtein(subsequence, sequence, max_l_dist)
             )
         ]
+
+
+class TestFindNearMatches(TestFuzzySearchBase, unittest.TestCase):
+    def search(self, subsequence, sequence, max_l_dist):
+        return find_near_matches(subsequence, sequence, max_l_dist)
+
+    def test_fallback_to_find(self):
+        with mock.patch('fuzzysearch._find_all') as mock_findall:
+            mock_findall.return_value = [7]
+            matches = find_near_matches('a', 'b'*10, 0)
+            self.assertGreater(mock_findall.call_count, 0)
+            self.assertEqual(matches, [Match(7, 8, 0)])
