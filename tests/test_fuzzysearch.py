@@ -1,31 +1,38 @@
 from tests.compat import unittest
-from fuzzysearch.fuzzysearch import find_near_matches, Match, _expand,\
-    find_near_matches_with_ngrams, get_best_match_in_group, group_matches
+from fuzzysearch.common import Match, get_best_match_in_group, group_matches
+from fuzzysearch.custom_search import \
+    find_near_matches_customized_levenshtein as fnm_customized_levenshtein
+from fuzzysearch.ngrams_search import _expand, \
+    find_near_matches_with_ngrams as fnm_with_ngrams
 
 
 class TestFuzzySearch(unittest.TestCase):
     def test_empty_sequence(self):
-        self.assertEquals([], list(find_near_matches('PATTERN', '')))
+        self.assertEquals([],
+            list(fnm_customized_levenshtein('PATTERN', '', max_l_dist=0)))
 
     def test_empty_subsequence_exeption(self):
         with self.assertRaises(ValueError):
-            list(find_near_matches('', 'TEXT'))
+            list(fnm_customized_levenshtein('', 'TEXT', max_l_dist=0))
 
     def test_match_identical_sequence(self):
-        matches = list(find_near_matches('PATTERN', 'PATTERN', max_l_dist=0))
+        matches = \
+            list(fnm_customized_levenshtein('PATTERN', 'PATTERN', max_l_dist=0))
         self.assertEquals([Match(start=0, end=len('PATTERN'), dist=0)], matches)
 
     def test_double_first_item(self):
         sequence = 'abcddefg'
         pattern = 'def'
-        matches = list(find_near_matches(pattern, sequence, max_l_dist=1))
+        matches = \
+            list(fnm_customized_levenshtein(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=4, end=7, dist=0), matches)
         #self.assertEquals([Match(start=4, end=7, dist=0)], matches)
 
     def test_missing_second_item(self):
         sequence = 'abcdefg'
         pattern = 'bde'
-        matches = list(find_near_matches(pattern, sequence, max_l_dist=1))
+        matches = \
+            list(fnm_customized_levenshtein(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=1, end=5, dist=1), matches)
         #self.assertEquals([Match(start=1, end=5, dist=1)], matches)
 
@@ -39,7 +46,7 @@ class TestFuzzySearch(unittest.TestCase):
             '''.split())
         pattern = 'TGCACTGTAGGGATAACAAT'
 
-        matches = list(find_near_matches(pattern, text, max_l_dist=2))
+        matches = list(fnm_customized_levenshtein(pattern, text, max_l_dist=2))
 
         self.assertTrue(len(matches) > 0)
         self.assertIn(Match(start=3, end=24, dist=1), matches)
@@ -260,14 +267,15 @@ class TestFuzzySearchBase(object):
 
 class TestFindNearMatchesWithNgrams(TestFuzzySearchBase, unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
-        return find_near_matches_with_ngrams(subsequence, sequence, max_l_dist)
+        return fnm_with_ngrams(subsequence, sequence, max_l_dist)
 
 
-class TestFindNearMatches(TestFuzzySearchBase, unittest.TestCase):
+class TestFindNearMatchesCustomizedLevenshtein(TestFuzzySearchBase,
+                                               unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
         return [
             get_best_match_in_group(group)
             for group in group_matches(
-                find_near_matches(subsequence, sequence, max_l_dist)
+                fnm_customized_levenshtein(subsequence, sequence, max_l_dist)
             )
         ]
