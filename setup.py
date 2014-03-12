@@ -19,7 +19,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='fuzzysearch',
-    version='0.1.0',
+    version='0.2.0',
     description='fuzzysearch is useful for finding approximate subsequence matches',
     long_description=readme + '\n\n' + history,
     author='Tal Einat',
