@@ -3,6 +3,17 @@
 History
 -------
 
+0.2.1 (2014-03-14)
+++++++++++++++++++
+
+* Fixed major match grouping bug
+
+0.2.0 (2013-03-13)
+++++++++++++++++++
+
+* New utility function `find_near_matches()` for easier use
+* Additional documentation
+
 0.1.0 (2013-11-12)
 ++++++++++++++++++
 

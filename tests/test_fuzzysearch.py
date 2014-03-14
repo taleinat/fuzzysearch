@@ -102,7 +102,6 @@ class TestFuzzySearchBase(object):
     def test_substring(self):
         substring = 'PATTERN'
         text = 'aaaaaaaaaaPATTERNaaaaaaaaa'
-        idx = text.find(substring)
         expected_match = Match(start=10, end=17, dist=0)
 
         self.assertEquals(
@@ -262,6 +261,36 @@ class TestFuzzySearchBase(object):
 
         self.assertEquals(
             [Match(start=3, end=24, dist=1)],
+            self.search(pattern, text, max_l_dist=2),
+        )
+
+    def test_protein_search1(self):
+        # see: BioPython archives from March 14th, 2014
+        text = ''.join('''\
+            XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTLTTSSAAAAAAAAAAAA
+            AAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
+        '''.split())
+        pattern = "GGGTTLTTSS"
+
+        self.assertItemsEqual(
+            [Match(start=19, end=29, dist=1),
+             Match(start=42, end=52, dist=0),
+             Match(start=99, end=109, dist=0)],
+            self.search(pattern, text, max_l_dist=2),
+        )
+
+    def test_protein_search2(self):
+        # see: BioPython archives from March 14th, 2014
+        text = ''.join('''\
+            XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTVTTSSAAAAAAAAAAA
+            AAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
+        '''.split())
+        pattern = "GGGTTLTTSS"
+
+        self.assertItemsEqual(
+            [Match(start=19, end=29, dist=1),
+             Match(start=42, end=52, dist=1),
+             Match(start=99, end=109, dist=0)],
             self.search(pattern, text, max_l_dist=2),
         )
 
