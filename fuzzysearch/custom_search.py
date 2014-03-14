@@ -22,28 +22,19 @@ def find_near_matches_customized_levenshtein(subsequence, sequence, max_l_dist):
     _subseq_len = len(subsequence)
 
     candidates = []
-    last_candidate_init_index = -1
     for index, char in enumerate(sequence):
         new_candidates = []
 
         idx_in_subseq = _init_candidates_dict.get(char, None)
         if idx_in_subseq is not None:
-        #if idx_in_subseq is not None and (
-        #        idx_in_subseq == 0 or (
-        #            idx_in_subseq < index - last_candidate_init_index
-        #            #and
-        #            #not any(c.subseq_index < idx_in_subseq for c in candidates)
-        #        )
-        #):
-            new_candidates.append(Candidate(index, idx_in_subseq + 1, idx_in_subseq))
-            #last_candidate_init_index = index
+            if idx_in_subseq + 1 == _subseq_len:
+                yield Match(index, index + 1, idx_in_subseq)
+            else:
+                new_candidates.append(Candidate(index, idx_in_subseq + 1, idx_in_subseq))
 
         for cand in candidates:
-            next_subseq_chars = subsequence[cand.subseq_index:cand.subseq_index + max_l_dist - cand.dist + 1]
-            idx = next_subseq_chars.find(char)
-
             # if this sequence char is the candidate's next expected char
-            if idx == 0:
+            if subsequence[cand.subseq_index] == char:
                 # if reached the end of the subsequence, return a match
                 if cand.subseq_index + 1 == _subseq_len:
                     yield Match(cand.start, index + 1, cand.dist)
@@ -84,11 +75,18 @@ def find_near_matches_customized_levenshtein(subsequence, sequence, max_l_dist):
                     # char, add a candidate skipping n_skipped sub-sequence
                     # chars
                     elif subsequence[cand.subseq_index + n_skipped] == char:
-                        # add a candidate skipping n_skipped subsequence chars
-                        new_candidates.append(cand._replace(
-                            dist=cand.dist + n_skipped,
-                            subseq_index=cand.subseq_index + 1 + n_skipped,
-                        ))
+                        # if this is the last char of the sub-sequence, yield
+                        # a match
+                        if cand.subseq_index + n_skipped + 1 == _subseq_len:
+                            yield Match(cand.start, index + 1,
+                                        cand.dist + n_skipped)
+                        # otherwise add a candidate skipping n_skipped
+                        # subsequence chars
+                        else:
+                            new_candidates.append(cand._replace(
+                                dist=cand.dist + n_skipped,
+                                subseq_index=cand.subseq_index + 1 + n_skipped,
+                            ))
                         break
                 # note: if the above loop ends without a break, that means that
                 # no candidate could be added / yielded by skipping sub-sequence

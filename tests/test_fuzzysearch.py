@@ -153,6 +153,11 @@ class TestFuzzySearchBase(object):
             self.search('bce', 'abcdefg', max_l_dist=1),
         )
 
+        self.assertEquals(
+            [Match(start=1, end=5, dist=1)],
+            self.search('bce', 'abcdefg', max_l_dist=2),
+        )
+
     def test_one_missing_in_middle(self):
         substring = 'PATTERN'
         text = 'aaaaaaaaaaPATERNaaaaaaaaa'
@@ -309,7 +314,6 @@ class TestFindNearMatchesCustomizedLevenshtein(TestFuzzySearchBase,
                 fnm_customized_levenshtein(subsequence, sequence, max_l_dist)
             )
         ]
-
 
 class TestFindNearMatches(TestFuzzySearchBase, unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
