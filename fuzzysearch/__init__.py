@@ -49,12 +49,9 @@ def find_near_matches(subsequence, sequence, max_l_dist):
         ]
 
     elif len(subsequence) // (max_l_dist + 1) >= 3:
-        matches = find_near_matches_with_ngrams(subsequence,
-                                                sequence,
-                                                max_l_dist)
-        match_groups = group_matches(matches)
-        best_matches = [get_best_match_in_group(group) for group in match_groups]
-        return sorted(best_matches)
+        return find_near_matches_with_ngrams(subsequence,
+                                             sequence,
+                                             max_l_dist)
 
     else:
         matches = find_near_matches_customized_levenshtein(subsequence,
