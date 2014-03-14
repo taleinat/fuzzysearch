@@ -47,7 +47,7 @@ def find_near_matches_customized_levenshtein(subsequence, sequence, max_l_dist):
                 # if reached the end of the subsequence, return a match
                 if cand.subseq_index + 1 == _subseq_len:
                     yield Match(cand.start, index + 1, cand.dist)
-                # otherwise, update the candidate and keep it
+                # otherwise, update the candidate's subseq_index and keep it
                 else:
                     new_candidates.append(cand._replace(
                         subseq_index=cand.subseq_index + 1,
@@ -69,7 +69,7 @@ def find_near_matches_customized_levenshtein(subsequence, sequence, max_l_dist):
                     # subsequence char
                     new_candidates.append(cand._replace(
                         dist=cand.dist + 1,
-                        subseq_index=cand.subseq_index+1,
+                        subseq_index=cand.subseq_index + 1,
                     ))
 
                 # try skipping subsequence chars
@@ -87,7 +87,7 @@ def find_near_matches_customized_levenshtein(subsequence, sequence, max_l_dist):
                         # add a candidate skipping n_skipped subsequence chars
                         new_candidates.append(cand._replace(
                             dist=cand.dist + n_skipped,
-                            subseq_index=cand.subseq_index + n_skipped + 1,
+                            subseq_index=cand.subseq_index + 1 + n_skipped,
                         ))
                         break
                 # note: if the above loop ends without a break, that means that
@@ -97,6 +97,6 @@ def find_near_matches_customized_levenshtein(subsequence, sequence, max_l_dist):
         candidates = new_candidates
 
     for cand in candidates:
-        dist = cand.dist + len(subsequence) - cand.subseq_index
+        dist = cand.dist + _subseq_len - cand.subseq_index
         if dist <= max_l_dist:
             yield Match(cand.start, len(sequence), dist)
