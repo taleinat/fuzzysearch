@@ -6,13 +6,13 @@ Match = namedtuple('Match', ['start', 'end', 'dist'])
 
 class GroupOfMatches(object):
     def __init__(self, match):
+        assert match.start < match.end
         self.start = match.start
         self.end = match.end
         self.matches = set([match])
 
     def is_match_in_group(self, match):
-        return match in self.matches or \
-            not (match.end <= self.start or match.start >= self.end)
+        return not (match.end <= self.start or match.start >= self.end)
 
     def does_overlap_group(self, other):
         return not (other.end <= self.start or other.start >= self.end)
