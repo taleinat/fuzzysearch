@@ -30,7 +30,7 @@ def group_matches(matches):
         if not overlapping_groups:
             groups.append(GroupOfMatches(match))
         elif len(overlapping_groups) == 1:
-            groups[0].add_match(match)
+            overlapping_groups[0].add_match(match)
         else:
             new_group = GroupOfMatches(match)
             for group in overlapping_groups:
