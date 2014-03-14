@@ -272,7 +272,7 @@ class TestFuzzySearchBase(object):
         '''.split())
         pattern = "GGGTTLTTSS"
 
-        self.assertItemsEqual(
+        self.assertListEqual(
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=0),
              Match(start=99, end=109, dist=0)],
@@ -287,7 +287,7 @@ class TestFuzzySearchBase(object):
         '''.split())
         pattern = "GGGTTLTTSS"
 
-        self.assertItemsEqual(
+        self.assertListEqual(
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=1),
              Match(start=99, end=109, dist=0)],
