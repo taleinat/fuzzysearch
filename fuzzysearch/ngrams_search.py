@@ -27,7 +27,6 @@ def _expand(subsequence, sequence, max_l_dist):
     min_score = None
     min_score_idx = None
 
-    #print scores
     for seq_index, char in enumerate(sequence):
         new_scores[0] = scores[0] + 1
         for subseq_index in range(0, min(seq_index + max_l_dist, len(subsequence)-1)):
@@ -46,7 +45,6 @@ def _expand(subsequence, sequence, max_l_dist):
             min_score_idx = seq_index
 
         scores, new_scores = new_scores, scores
-        #print scores
 
     return (min_score, min_score_idx + 1) if min_score is not None and min_score <= max_l_dist else (None, None)
 
