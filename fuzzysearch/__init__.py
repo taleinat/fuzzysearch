@@ -16,47 +16,78 @@ __email__ = 'taleinat@gmail.com'
 __version__ = '0.2.1'
 
 __all__ = [
-    'find_near_matches_with_ngrams',
-    'find_near_matches_customized_levenshtein',
     'find_near_matches',
     'Match',
 ]
 
 
-from fuzzysearch.common import Match, get_best_match_in_group, group_matches
-from fuzzysearch.ngrams_search import find_near_matches_with_ngrams, _find_all
-from fuzzysearch.custom_search import find_near_matches_customized_levenshtein
+from fuzzysearch.common import Match, get_best_match_in_group, group_matches, \
+    search_exact
+from fuzzysearch.levenshtein import find_near_matches_levenshtein
+from fuzzysearch.susbstitutions_only import find_near_matches_substitutions
+from fuzzysearch.generic_search import \
+    find_near_matches_generic_linear_programming
 
 
-def find_near_matches(subsequence, sequence, max_l_dist):
-    """Find near-matches of the subsequence in the sequence.
+def find_near_matches(subsequence, sequence,
+                      max_substitutions=None,
+                      max_insertions=None,
+                      max_deletions=None,
+                      max_l_dist=None):
+    """search for near-matches of subsequence in sequence
 
-    This chooses a suitable fuzzy search implementation according to the given
-    parameters.
+    This searches for near-matches, where the nearly-matching parts of the
+    sequence must meet the following limitations (relative to the subsequence):
 
-    Returns a list of fuzzysearch.Match objects describing the matching parts
-    of the sequence.
+    * the maximum allowed number of character substitutions
+    * the maximum allowed number of new characters inserted
+    * and the maximum allowed number of character deletions
+    * the total number of substitutions, insertions and deletions
+      (a.k.a. the Levenshtein distance)
     """
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
-    if max_l_dist < 0:
-        raise ValueError('Maximum Levenshtein distance must be >= 0!')
+    if (
+            max_substitutions is None and
+            max_insertions is None and
+            max_deletions is None and
+            max_l_dist is None
+    ):
+        raise ValueError('No limitations given!')
 
-    if max_l_dist == 0:
+    # if the limitations are so strict that only exact matches are allowed,
+    # use search_exact()
+    elif (
+            max_l_dist == 0 or
+            (
+                max_substitutions == 0 and
+                max_insertions == 0 and
+                max_deletions == 0
+            )
+    ):
         return [
             Match(start_index, start_index + len(subsequence), 0)
-            for start_index in _find_all(subsequence, sequence)
+            for start_index in search_exact(subsequence, sequence)
         ]
 
-    elif len(subsequence) // (max_l_dist + 1) >= 3:
-        return find_near_matches_with_ngrams(subsequence,
-                                             sequence,
-                                             max_l_dist)
+    # if only substitutions are allowed, use find_near_matches_substitutions()
+    elif max_insertions == 0 and max_deletions == 0:
+        max_subs = \
+            min([x for x in [max_l_dist, max_substitutions] if x is not None])
+        return find_near_matches_substitutions(subsequence, sequence, max_subs)
 
+    # if it is enough to just take into account the maximum Levenshtein
+    # distance, use find_near_matches_levenshtein()
+    elif max_l_dist is not None and max_l_dist <= min([max_l_dist] + [
+            param for param in [
+                max_substitutions, max_insertions, max_deletions
+            ]
+            if param is not None
+    ]):
+        return find_near_matches_levenshtein(subsequence, sequence, max_l_dist)
+
+    # if none of the special cases above are met, use the most generic version:
+    # find_near_matches_generic_linear_programming()
     else:
-        matches = find_near_matches_customized_levenshtein(subsequence,
-                                                           sequence,
-                                                           max_l_dist)
-        match_groups = group_matches(matches)
-        best_matches = [get_best_match_in_group(group) for group in match_groups]
-        return sorted(best_matches)
+        return find_near_matches_generic_linear_programming(
+            subsequence, sequence,
+            max_substitutions, max_insertions, max_deletions, max_l_dist,
+        )

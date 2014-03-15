@@ -1,31 +1,33 @@
 from tests.compat import unittest, mock
-from fuzzysearch import find_near_matches
+
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
-from fuzzysearch.custom_search import \
-    find_near_matches_customized_levenshtein as fnm_customized_levenshtein
-from fuzzysearch.ngrams_search import _expand, \
-    find_near_matches_with_ngrams as fnm_with_ngrams
+from fuzzysearch.levenshtein import find_near_matches_levenshtein, \
+    find_near_matches_levenshtein_linear_programming as fnm_levenshtein_lp
+from fuzzysearch.levenshtein_ngram import _expand, \
+    find_near_matches_levenshtein_ngrams as fnm_levenshtein_ngrams
 
 
 class TestFuzzySearch(unittest.TestCase):
     def test_empty_sequence(self):
-        self.assertEquals([],
-            list(fnm_customized_levenshtein('PATTERN', '', max_l_dist=0)))
+        self.assertEquals(
+            [],
+            list(fnm_levenshtein_lp('PATTERN', '', max_l_dist=0)),
+        )
 
     def test_empty_subsequence_exeption(self):
         with self.assertRaises(ValueError):
-            list(fnm_customized_levenshtein('', 'TEXT', max_l_dist=0))
+            list(fnm_levenshtein_lp('', 'TEXT', max_l_dist=0))
 
     def test_match_identical_sequence(self):
         matches = \
-            list(fnm_customized_levenshtein('PATTERN', 'PATTERN', max_l_dist=0))
+            list(fnm_levenshtein_lp('PATTERN', 'PATTERN', max_l_dist=0))
         self.assertEquals([Match(start=0, end=len('PATTERN'), dist=0)], matches)
 
     def test_double_first_item(self):
         sequence = 'abcddefg'
         pattern = 'def'
         matches = \
-            list(fnm_customized_levenshtein(pattern, sequence, max_l_dist=1))
+            list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=4, end=7, dist=0), matches)
         #self.assertEquals([Match(start=4, end=7, dist=0)], matches)
 
@@ -33,7 +35,7 @@ class TestFuzzySearch(unittest.TestCase):
         sequence = 'abcdefg'
         pattern = 'bde'
         matches = \
-            list(fnm_customized_levenshtein(pattern, sequence, max_l_dist=1))
+            list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=1, end=5, dist=1), matches)
         #self.assertEquals([Match(start=1, end=5, dist=1)], matches)
 
@@ -47,7 +49,7 @@ class TestFuzzySearch(unittest.TestCase):
             '''.split())
         pattern = 'TGCACTGTAGGGATAACAAT'
 
-        matches = list(fnm_customized_levenshtein(pattern, text, max_l_dist=2))
+        matches = list(fnm_levenshtein_lp(pattern, text, max_l_dist=2))
 
         self.assertTrue(len(matches) > 0)
         self.assertIn(Match(start=3, end=24, dist=1), matches)
@@ -82,7 +84,7 @@ class TestExpand(unittest.TestCase):
         self.assertEquals((1, 3), _expand('abcd', 'abd', 2))
 
 
-class TestFuzzySearchBase(object):
+class TestFindNearMatchesLevenshteinBase(object):
     def search(self, subsequence, sequence, max_l_dist):
         raise NotImplementedError
 
@@ -270,7 +272,10 @@ class TestFuzzySearchBase(object):
         )
 
     def test_protein_search1(self):
-        # see: BioPython archives from March 14th, 2014
+        # see:
+        # * BioPython archives from March 14th, 2014
+        #   http://lists.open-bio.org/pipermail/biopython/2014-March/009030.html
+        # * https://github.com/taleinat/fuzzysearch/issues/3
         text = ''.join('''\
             XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTLTTSSAAAAAAAAAAAA
             AAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
@@ -285,7 +290,10 @@ class TestFuzzySearchBase(object):
         )
 
     def test_protein_search2(self):
-        # see: BioPython archives from March 14th, 2014
+        # see:
+        # * BioPython archives from March 14th, 2014
+        #   http://lists.open-bio.org/pipermail/biopython/2014-March/009030.html
+        # * https://github.com/taleinat/fuzzysearch/issues/3
         text = ''.join('''\
             XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTVTTSSAAAAAAAAAAA
             AAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
@@ -300,28 +308,32 @@ class TestFuzzySearchBase(object):
         )
 
 
-class TestFindNearMatchesWithNgrams(TestFuzzySearchBase, unittest.TestCase):
+class TestFindNearMatchesLevenshteinNgrams(TestFindNearMatchesLevenshteinBase,
+                                           unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
-        return fnm_with_ngrams(subsequence, sequence, max_l_dist)
+        return fnm_levenshtein_ngrams(subsequence, sequence, max_l_dist)
 
 
-class TestFindNearMatchesCustomizedLevenshtein(TestFuzzySearchBase,
-                                               unittest.TestCase):
+class TestFindNearMatchesLevenshteinLP(TestFindNearMatchesLevenshteinBase,
+                                       unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
         return [
             get_best_match_in_group(group)
             for group in group_matches(
-                fnm_customized_levenshtein(subsequence, sequence, max_l_dist)
+                fnm_levenshtein_lp(subsequence, sequence, max_l_dist)
             )
         ]
 
-class TestFindNearMatches(TestFuzzySearchBase, unittest.TestCase):
-    def search(self, subsequence, sequence, max_l_dist):
-        return find_near_matches(subsequence, sequence, max_l_dist)
 
-    def test_fallback_to_find(self):
-        with mock.patch('fuzzysearch._find_all') as mock_findall:
-            mock_findall.return_value = [7]
-            matches = find_near_matches('a', 'b'*10, 0)
-            self.assertGreater(mock_findall.call_count, 0)
+class TestFindNearMatchesLevenshtein(TestFindNearMatchesLevenshteinBase,
+                                     unittest.TestCase):
+    def search(self, subsequence, sequence, max_l_dist):
+        return find_near_matches_levenshtein(subsequence, sequence, max_l_dist)
+
+    def test_fallback_to_search_exact(self):
+        with mock.patch('fuzzysearch.levenshtein.search_exact') \
+                as mock_search_exact:
+            mock_search_exact.return_value = [7]
+            matches = find_near_matches_levenshtein('a', 'b' * 10, 0)
+            self.assertGreater(mock_search_exact.call_count, 0)
             self.assertEqual(matches, [Match(7, 8, 0)])

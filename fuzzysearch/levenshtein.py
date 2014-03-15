@@ -1,31 +1,70 @@
 from collections import namedtuple
 
-from fuzzysearch.common import Match
+from fuzzysearch.common import Match, group_matches, get_best_match_in_group, \
+    search_exact
+from fuzzysearch.levenshtein_ngram import find_near_matches_levenshtein_ngrams
+
+
+def find_near_matches_levenshtein(subsequence, sequence, max_l_dist):
+    """Find near-matches of the subsequence in the sequence.
+
+    This chooses a suitable fuzzy search implementation according to the given
+    parameters.
+
+    Returns a list of fuzzysearch.Match objects describing the matching parts
+    of the sequence.
+    """
+    if not subsequence:
+        raise ValueError('Given subsequence is empty!')
+    if max_l_dist < 0:
+        raise ValueError('Maximum Levenshtein distance must be >= 0!')
+
+    if max_l_dist == 0:
+        return [
+            Match(start_index, start_index + len(subsequence), 0)
+            for start_index in search_exact(subsequence, sequence)
+        ]
+
+    elif len(subsequence) // (max_l_dist + 1) >= 3:
+        return find_near_matches_levenshtein_ngrams(subsequence,
+                                                    sequence,
+                                                    max_l_dist)
+
+    else:
+        matches = find_near_matches_levenshtein_linear_programming(subsequence,
+                                                                   sequence,
+                                                                   max_l_dist)
+        match_groups = group_matches(matches)
+        best_matches = [get_best_match_in_group(group) for group in match_groups]
+        return sorted(best_matches)
 
 
 Candidate = namedtuple('Candidate', ['start', 'subseq_index', 'dist'])
 
 
-def _prepare_init_candidates_dict(subsequence, max_l_dist):
-    return dict((
+def make_char2first_subseq_index(subsequence, max_l_dist):
+    return dict(
         (char, index)
-        for (index, char) in enumerate(subsequence[:max_l_dist + 1])
-        if char not in subsequence[:index]
-    ))
+        for (index, char) in
+        reversed(list(enumerate(subsequence[:max_l_dist + 1])))
+    )
 
-def find_near_matches_customized_levenshtein(subsequence, sequence, max_l_dist):
+
+def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
+                                                     max_l_dist):
     if not subsequence:
         raise ValueError('Given subsequence is empty!')
 
     # optimization: prepare some often used things in advance
-    _init_candidates_dict = _prepare_init_candidates_dict(subsequence, max_l_dist)
+    char2first_subseq_index = make_char2first_subseq_index(subsequence,
+                                                           max_l_dist)
     _subseq_len = len(subsequence)
 
     candidates = []
     for index, char in enumerate(sequence):
         new_candidates = []
 
-        idx_in_subseq = _init_candidates_dict.get(char, None)
+        idx_in_subseq = char2first_subseq_index.get(char, None)
         if idx_in_subseq is not None:
             if idx_in_subseq + 1 == _subseq_len:
                 yield Match(index, index + 1, idx_in_subseq)

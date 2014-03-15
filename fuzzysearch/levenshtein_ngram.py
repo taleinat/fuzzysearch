@@ -1,21 +1,8 @@
-from collections import namedtuple
-
-from fuzzysearch.common import Match, group_matches, get_best_match_in_group
-
-
-__all__ = ['find_near_matches_with_ngrams']
+from fuzzysearch.common import Match, Ngram, \
+    group_matches, get_best_match_in_group, search_exact
 
 
-def _find_all(subsequence, sequence, start_index=0, end_index=None):
-    if isinstance(sequence, basestring):
-        find = sequence.find
-    else:
-        raise TypeError('unsupported sequence type: %s' % type(sequence))
-
-    index = find(subsequence, start_index, end_index)
-    while index >= 0:
-        yield index
-        index = find(subsequence, index + 1, end_index)
+__all__ = ['find_near_matches_levenshtein_ngrams']
 
 
 def _expand(subsequence, sequence, max_l_dist):
@@ -55,10 +42,7 @@ def _choose_search_range(subseq_len, seq_len, ngram, max_l_dist):
     return start_index, end_index
 
 
-Ngram = namedtuple('Ngram', ['start', 'end'])
-
-
-def find_near_matches_with_ngrams(subsequence, sequence, max_l_dist):
+def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
     ngram_len = len(subsequence) // (max_l_dist + 1)
     if ngram_len == 0:
         raise ValueError('the subsequence length must be greater than max_l_dist')
@@ -71,7 +55,7 @@ def find_near_matches_with_ngrams(subsequence, sequence, max_l_dist):
     matches = []
     for ngram in ngrams:
         start_index, end_index = _choose_search_range(len(subsequence), len(sequence), ngram, max_l_dist)
-        for index in _find_all(subsequence[ngram.start:ngram.end], sequence, start_index, end_index):
+        for index in search_exact(subsequence[ngram.start:ngram.end], sequence, start_index, end_index):
             # try to expand left and/or right according to n_ngram
             dist_left, left_expand_size = _expand(
                 subsequence[:ngram.start][::-1],
@@ -100,5 +84,3 @@ def find_near_matches_with_ngrams(subsequence, sequence, max_l_dist):
     match_groups = group_matches(matches)
     best_matches = [get_best_match_in_group(group) for group in match_groups]
     return sorted(best_matches)
-
-

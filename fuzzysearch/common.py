@@ -2,6 +2,19 @@ from collections import namedtuple
 
 
 Match = namedtuple('Match', ['start', 'end', 'dist'])
+Ngram = namedtuple('Ngram', ['start', 'end'])
+
+
+def search_exact(subsequence, sequence, start_index=0, end_index=None):
+    if isinstance(sequence, basestring):
+        find = sequence.find
+    else:
+        raise TypeError('unsupported sequence type: %s' % type(sequence))
+
+    index = find(subsequence, start_index, end_index)
+    while index >= 0:
+        yield index
+        index = find(subsequence, index + 1, end_index)
 
 
 class GroupOfMatches(object):
