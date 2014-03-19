@@ -87,7 +87,7 @@ def find_near_matches(subsequence, sequence,
     # if none of the special cases above are met, use the most generic version:
     # find_near_matches_generic_linear_programming()
     else:
-        return find_near_matches_generic_linear_programming(
+        return list(find_near_matches_generic_linear_programming(
             subsequence, sequence,
             max_substitutions, max_insertions, max_deletions, max_l_dist,
-        )
+        ))
