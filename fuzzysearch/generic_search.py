@@ -83,6 +83,16 @@ def find_near_matches_generic_linear_programming(subsequence, sequence,
                             subseq_index=cand.subseq_index + 1,
                             l_dist=cand.l_dist + 1,
                         ))
+                else:
+                    # cand.subseq_index == _subseq_len - 1
+                    if (
+                            cand.n_subs < max_substitutions or
+                            (
+                                cand.n_dels < max_deletions and
+                                cand.n_ins < max_insertions
+                            )
+                    ):
+                        yield Match(cand.start, index + 1, cand.l_dist + 1)
 
                 # try skipping subsequence chars
                 for n_skipped in xrange(1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + 1):

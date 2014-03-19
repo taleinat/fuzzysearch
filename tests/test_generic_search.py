@@ -3,6 +3,7 @@ from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from fuzzysearch.generic_search import \
     find_near_matches_generic_linear_programming as fnm_generic_lp
+from tests.test_substitutions_only import TestSubstitionsOnlyBase
 
 
 class TestGenericSearchAsLevenshtein(TestFindNearMatchesLevenshteinBase,
@@ -15,6 +16,14 @@ class TestGenericSearchAsLevenshtein(TestFindNearMatchesLevenshteinBase,
                                max_l_dist, max_l_dist, max_l_dist)
             )
         ]
+
+
+class TestGenericSearchAsSubstitutionsOnly(TestSubstitionsOnlyBase,
+                                           unittest.TestCase):
+    def search(self, subsequence, sequence, max_subs):
+        return list(
+            fnm_generic_lp(subsequence, sequence, max_subs, 0, 0, max_subs)
+        )
 
 
 class TestGenericSearch(unittest.TestCase):
