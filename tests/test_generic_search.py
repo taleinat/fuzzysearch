@@ -125,3 +125,25 @@ class TestGenericSearch(unittest.TestCase):
                 self.search('bde', 'abcdefg', 1, 1, 1, 3),
             ))
         )
+
+    def test_argument_handling(self):
+        # check that no exception is raised when some values are None
+        self.assertEqual(
+            self.search('a', 'b', 0, None, None, None),
+            [],
+        )
+
+        self.assertEqual(
+            self.search('a', 'b', None, 0, None, None),
+            [],
+        )
+
+        self.assertEqual(
+            self.search('a', 'b', None, None, 0, None),
+            [],
+        )
+
+        self.assertEqual(
+            self.search('a', 'b', None, None, None, 0),
+            [],
+        )

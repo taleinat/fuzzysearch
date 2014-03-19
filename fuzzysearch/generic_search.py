@@ -3,7 +3,7 @@ from fuzzysearch.common import Match
 
 
 GenericSearchCandidate = namedtuple(
-    'SuperKevinSearchCandidate',
+    'GenericSearchCandidate',
     ['start', 'subseq_index', 'l_dist', 'n_subs', 'n_ins', 'n_dels'],
 )
 
@@ -29,9 +29,12 @@ def find_near_matches_generic_linear_programming(subsequence, sequence,
     # optimization: prepare some often used things in advance
     _subseq_len = len(subsequence)
 
-    if max_l_dist is None or \
-       max_l_dist >= max_substitutions + max_insertions + max_deletions:
-        max_l_dist = max_substitutions + max_insertions + max_deletions
+    maxes_sum = sum(
+        (x if x is not None else 0)
+        for x in [max_substitutions, max_insertions, max_deletions]
+    )
+    if max_l_dist is None or max_l_dist >= maxes_sum:
+        max_l_dist = maxes_sum
 
     candidates = []
     for index, char in enumerate(sequence):
