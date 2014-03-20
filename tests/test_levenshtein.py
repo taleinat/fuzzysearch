@@ -9,9 +9,9 @@ from fuzzysearch.levenshtein_ngram import _expand, \
 
 class TestFuzzySearch(unittest.TestCase):
     def test_empty_sequence(self):
-        self.assertEquals(
-            [],
+        self.assertEqual(
             list(fnm_levenshtein_lp('PATTERN', '', max_l_dist=0)),
+            [],
         )
 
     def test_empty_subsequence_exeption(self):
@@ -21,7 +21,7 @@ class TestFuzzySearch(unittest.TestCase):
     def test_match_identical_sequence(self):
         matches = \
             list(fnm_levenshtein_lp('PATTERN', 'PATTERN', max_l_dist=0))
-        self.assertEquals([Match(start=0, end=len('PATTERN'), dist=0)], matches)
+        self.assertEqual(matches, [Match(start=0, end=len('PATTERN'), dist=0)])
 
     def test_double_first_item(self):
         sequence = 'abcddefg'
@@ -29,7 +29,7 @@ class TestFuzzySearch(unittest.TestCase):
         matches = \
             list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=4, end=7, dist=0), matches)
-        #self.assertEquals([Match(start=4, end=7, dist=0)], matches)
+        #self.assertEqual([Match(start=4, end=7, dist=0)], matches)
 
     def test_missing_second_item(self):
         sequence = 'abcdefg'
@@ -37,7 +37,7 @@ class TestFuzzySearch(unittest.TestCase):
         matches = \
             list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=1, end=5, dist=1), matches)
-        #self.assertEquals([Match(start=1, end=5, dist=1)], matches)
+        #self.assertEqual([Match(start=1, end=5, dist=1)], matches)
 
     def test_dna_search(self):
         # see: http://stackoverflow.com/questions/19725127/
@@ -54,34 +54,48 @@ class TestFuzzySearch(unittest.TestCase):
         self.assertTrue(len(matches) > 0)
         self.assertIn(Match(start=3, end=24, dist=1), matches)
 
-        #self.assertEquals(1, len(matches))
-
 
 class TestExpand(unittest.TestCase):
+    def test_both_empty(self):
+        self.assertEqual(_expand('', '', 0), (0, 0))
+
+    def test_empty_subsequence(self):
+        self.assertEqual(_expand('', 'TEXT', 0), (0, 0))
+
+    def test_empty_sequence(self):
+        self.assertEqual(_expand('PATTERN', '', 0), (None, None))
+
     def test_identical(self):
-        self.assertEquals((0, 3), _expand('abc', 'abc', 0))
-        self.assertEquals((0, 3), _expand('abc', 'abc', 1))
-        self.assertEquals((0, 3), _expand('abc', 'abc', 2))
+        self.assertEqual(_expand('abc', 'abc', 0), (0, 3))
+        self.assertEqual(_expand('abc', 'abc', 1), (0, 3))
+        self.assertEqual(_expand('abc', 'abc', 2), (0, 3))
 
-    def test_one_missing(self):
-        # first item missing
-        self.assertEquals((1, 3), _expand('abcd', 'bcd', 1))
-        self.assertEquals((1, 3), _expand('abcd', 'bcd', 2))
+    def test_first_item_missing(self):
+        self.assertEqual(_expand('abcd', 'bcd', 0), (None, None))
+        self.assertEqual(_expand('abcd', 'bcd', 1), (1, 3))
+        self.assertEqual(_expand('abcd', 'bcd', 2), (1, 3))
 
-        # second item missing
-        self.assertEquals((1, 3), _expand('abcd', 'acd', 1))
-        self.assertEquals((1, 3), _expand('abcd', 'acd', 2))
+    def test_second_item_missing(self):
+        self.assertEqual(_expand('abcd', 'acd', 0), (None, None))
+        self.assertEqual(_expand('abcd', 'acd', 1), (1, 3))
+        self.assertEqual(_expand('abcd', 'acd', 2), (1, 3))
 
-        # last item missing
-        self.assertEquals((1, 3), _expand('abcd', 'abc', 1))
-        self.assertEquals((1, 3), _expand('abcd', 'abc', 2))
+    def test_second_before_last_item_missing(self):
+        self.assertEqual(_expand('abcd', 'abd', 0), (None, None))
+        self.assertEqual(_expand('abcd', 'abd', 1), (1, 3))
+        self.assertEqual(_expand('abcd', 'abd', 2), (1, 3))
 
-    def test_no_result(self):
-        self.assertEquals((None, None), _expand('abc', 'def', 0))
+    def test_last_item_missing(self):
+        self.assertEqual(_expand('abcd', 'abc', 0), (None, None))
+        self.assertEqual(_expand('abcd', 'abc', 1), (1, 3))
+        self.assertEqual(_expand('abcd', 'abc', 2), (1, 3))
+
+    def test_completely_different(self):
+        self.assertEqual(_expand('abc', 'def', 0), (None, None))
 
     def test_one_extra(self):
-        self.assertEquals((1, 3), _expand('abcd', 'abd', 1))
-        self.assertEquals((1, 3), _expand('abcd', 'abd', 2))
+        self.assertEqual(_expand('abcd', 'abd', 1), (1, 3))
+        self.assertEqual(_expand('abcd', 'abd', 2), (1, 3))
 
 
 class TestFindNearMatchesLevenshteinBase(object):
@@ -89,16 +103,16 @@ class TestFindNearMatchesLevenshteinBase(object):
         raise NotImplementedError
 
     def test_empty_sequence(self):
-        self.assertEquals([], self.search('PATTERN', '', max_l_dist=0))
+        self.assertEqual(self.search('PATTERN', '', max_l_dist=0), [])
 
     def test_empty_subsequence_exeption(self):
         with self.assertRaises(ValueError):
             self.search('', 'TEXT', max_l_dist=0)
 
     def test_match_identical_sequence(self):
-        self.assertEquals(
-            [Match(start=0, end=len('PATTERN'), dist=0)],
+        self.assertEqual(
             self.search('PATTERN', 'PATTERN', max_l_dist=0),
+            [Match(start=0, end=len('PATTERN'), dist=0)],
         )
 
     def test_substring(self):
@@ -106,58 +120,58 @@ class TestFindNearMatchesLevenshteinBase(object):
         text = 'aaaaaaaaaaPATTERNaaaaaaaaa'
         expected_match = Match(start=10, end=17, dist=0)
 
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=1),
             [expected_match],
-            self.search(substring, text, max_l_dist=0)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=0),
             [expected_match],
-            self.search(substring, text, max_l_dist=1)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=2),
             [expected_match],
-            self.search(substring, text, max_l_dist=2)
         )
 
     def test_double_first_item(self):
-        self.assertEquals(
-            [Match(start=4, end=7, dist=0)],
+        self.assertEqual(
             self.search('def', 'abcddefg', max_l_dist=1),
+            [Match(start=4, end=7, dist=0)],
         )
 
     def test_double_last_item(self):
-        self.assertEquals(
-            [Match(start=3, end=6, dist=0)],
+        self.assertEqual(
             self.search('def', 'abcdeffg', max_l_dist=1),
+            [Match(start=3, end=6, dist=0)],
         )
 
     def test_double_first_items(self):
-        self.assertEquals(
-            [Match(start=5, end=10, dist=0)],
+        self.assertEqual(
             self.search('defgh', 'abcdedefghi', max_l_dist=3),
+            [Match(start=5, end=10, dist=0)],
         )
 
     def test_double_last_items(self):
-        self.assertEquals(
-            [Match(start=2, end=8, dist=0)],
+        self.assertEqual(
             self.search('cdefgh', 'abcdefghghi', max_l_dist=3),
+            [Match(start=2, end=8, dist=0)],
         )
 
     def test_missing_second_item(self):
-        self.assertEquals(
-            [Match(start=1, end=5, dist=1)],
+        self.assertEqual(
             self.search('bde', 'abcdefg', max_l_dist=1),
+            [Match(start=1, end=5, dist=1)],
         )
 
     def test_missing_second_to_last_item(self):
-        self.assertEquals(
-            [Match(start=1, end=5, dist=1)],
+        self.assertEqual(
             self.search('bce', 'abcdefg', max_l_dist=1),
+            [Match(start=1, end=5, dist=1)],
         )
 
-        self.assertEquals(
-            [Match(start=1, end=5, dist=1)],
+        self.assertEqual(
             self.search('bce', 'abcdefg', max_l_dist=2),
+            [Match(start=1, end=5, dist=1)],
         )
 
     def test_one_missing_in_middle(self):
@@ -165,17 +179,17 @@ class TestFindNearMatchesLevenshteinBase(object):
         text = 'aaaaaaaaaaPATERNaaaaaaaaa'
         expected_match = Match(start=10, end=16, dist=1)
 
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=0),
             [],
-            self.search(substring, text, max_l_dist=0)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=1),
             [expected_match],
-            self.search(substring, text, max_l_dist=1)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=2),
             [expected_match],
-            self.search(substring, text, max_l_dist=2)
         )
 
     def test_one_changed_in_middle(self):
@@ -183,17 +197,17 @@ class TestFindNearMatchesLevenshteinBase(object):
         text = 'aaaaaaaaaaPATtERNaaaaaaaaa'
         expected_match = Match(start=10, end=17, dist=1)
 
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=0),
             [],
-            self.search(substring, text, max_l_dist=0)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=1),
             [expected_match],
-            self.search(substring, text, max_l_dist=1)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=2),
             [expected_match],
-            self.search(substring, text, max_l_dist=2)
         )
 
     def test_one_extra_in_middle(self):
@@ -201,17 +215,17 @@ class TestFindNearMatchesLevenshteinBase(object):
         text = 'aaaaaaaaaaPATTXERNaaaaaaaaa'
         expected_match = Match(start=10, end=18, dist=1)
 
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=0),
             [],
-            self.search(substring, text, max_l_dist=0)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=1),
             [expected_match],
-            self.search(substring, text, max_l_dist=1)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=2),
             [expected_match],
-            self.search(substring, text, max_l_dist=2)
         )
 
     def test_one_extra_repeating_in_middle(self):
@@ -219,17 +233,17 @@ class TestFindNearMatchesLevenshteinBase(object):
         text = 'aaaaaaaaaaPATTTERNaaaaaaaaa'
         expected_match = Match(start=10, end=18, dist=1)
 
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=0),
             [],
-            self.search(substring, text, max_l_dist=0)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=1),
             [expected_match],
-            self.search(substring, text, max_l_dist=1)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=2),
             [expected_match],
-            self.search(substring, text, max_l_dist=2)
         )
 
     def test_one_extra_repeating_at_end(self):
@@ -237,23 +251,23 @@ class TestFindNearMatchesLevenshteinBase(object):
         text = 'aaaaaaaaaaPATTERNNaaaaaaaaa'
         expected_match = Match(start=10, end=17, dist=0)
 
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=0),
             [expected_match],
-            self.search(substring, text, max_l_dist=0)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=1),
             [expected_match],
-            self.search(substring, text, max_l_dist=1)
         )
-        self.assertEquals(
+        self.assertEqual(
+            self.search(substring, text, max_l_dist=2),
             [expected_match],
-            self.search(substring, text, max_l_dist=2)
         )
 
     def test_one_missing_at_end_of_sequence(self):
-        self.assertEquals(
+        self.assertEqual(
+            self.search('defg', 'abcdef', max_l_dist=1),
             [Match(3, 6, 1)],
-            self.search('defg', 'abcdef', max_l_dist=1)
         )
 
     def test_dna_search(self):
@@ -266,9 +280,9 @@ class TestFindNearMatchesLevenshteinBase(object):
             '''.split())
         pattern = 'TGCACTGTAGGGATAACAAT'
 
-        self.assertEquals(
-            [Match(start=3, end=24, dist=1)],
+        self.assertEqual(
             self.search(pattern, text, max_l_dist=2),
+            [Match(start=3, end=24, dist=1)],
         )
 
     def test_protein_search1(self):
@@ -283,10 +297,10 @@ class TestFindNearMatchesLevenshteinBase(object):
         pattern = "GGGTTLTTSS"
 
         self.assertListEqual(
+            self.search(pattern, text, max_l_dist=2),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=0),
              Match(start=99, end=109, dist=0)],
-            self.search(pattern, text, max_l_dist=2),
         )
 
     def test_protein_search2(self):
@@ -301,10 +315,10 @@ class TestFindNearMatchesLevenshteinBase(object):
         pattern = "GGGTTLTTSS"
 
         self.assertListEqual(
+            self.search(pattern, text, max_l_dist=2),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=1),
              Match(start=99, end=109, dist=0)],
-            self.search(pattern, text, max_l_dist=2),
         )
 
 
