@@ -45,17 +45,24 @@ def find_near_matches(subsequence, sequence,
     * the total number of substitutions, insertions and deletions
       (a.k.a. the Levenshtein distance)
     """
-    if (
-            max_substitutions is None and
-            max_insertions is None and
-            max_deletions is None and
-            max_l_dist is None
-    ):
-        raise ValueError('No limitations given!')
+    if max_l_dist is None:
+        if (
+                max_substitutions is None and
+                max_insertions is None and
+                max_deletions is None
+        ):
+            raise ValueError('No limitations given!')
+
+        if max_substitutions is None:
+            raise ValueError('# substitutions must be limited!')
+        if max_insertions is None:
+            raise ValueError('# insertions must be limited!')
+        if max_deletions is None:
+            raise ValueError('# deletions must be limited!')
 
     # if the limitations are so strict that only exact matches are allowed,
     # use search_exact()
-    elif (
+    if (
             max_l_dist == 0 or
             (
                 max_substitutions == 0 and
