@@ -1,4 +1,5 @@
-from fuzzysearch.common import Match, group_matches, GroupOfMatches
+from fuzzysearch.common import Match, group_matches, GroupOfMatches, \
+    search_exact
 from tests.compat import unittest
 
 
@@ -32,3 +33,56 @@ class TestGroupMatches(unittest.TestCase):
             group_matches(matches + [matches[1]]),
             [set([m]) for m in matches],
         )
+
+
+import six
+
+class TestSearchExact(unittest.TestCase):
+    def search(self, sequence, subsequence):
+        return list(search_exact(sequence, subsequence))
+
+    def test_bytes(self):
+        text = six.b('abc')
+        self.assertEqual(self.search(text, text), [0])
+
+    def test_unicode(self):
+        text = six.u('abc')
+        self.assertEqual(self.search(text, text), [0])
+
+    def test_biopython_Seq(self):
+        try:
+            from Bio.Seq import Seq
+        except ImportError:
+            raise unittest.SkipTest('Test requires BioPython')
+        else:
+            self.assertEqual(self.search(Seq('abc'), Seq('abc')), [0])
+
+    def test_empty_sequence(self):
+        self.assertEqual(self.search('PATTERN', ''), [])
+
+    def test_empty_subsequence(self):
+        with self.assertRaises(ValueError):
+            self.search('', 'TEXT')
+
+    def test_match_identical_sequence(self):
+        self.assertEqual(self.search('PATTERN', 'PATTERN'), [0])
+
+    def test_substring(self):
+        substring = 'PATTERN'
+        text = 'aaaaaaaaaaPATTERNaaaaaaaaa'
+        self.assertEqual(self.search(substring, text), [10])
+
+    def test_double_first_item(self):
+        self.assertEqual(self.search('def', 'abcddefg'), [4])
+
+    def test_missing_second_item(self):
+        self.assertEqual(self.search('bde', 'abcdefg'), [])
+
+    def test_completely_different(self):
+        self.assertEqual(self.search('abc', 'def'), [])
+
+    def test_startswith(self):
+        self.assertEqual(self.search('abc', 'abcd'), [0])
+
+    def test_endswith(self):
+        self.assertEqual(self.search('bcd', 'abcd'), [1])

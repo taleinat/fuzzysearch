@@ -1,4 +1,25 @@
+import sys
 from collections import namedtuple
+
+
+__all__ = [
+    'Match', 'Ngram',
+    'search_exact',
+    'group_matches', 'get_best_match_in_group',
+]
+
+
+if sys.version_info >= (3,):
+    CLASSES_WITH_FIND = (bytes, str)
+else:
+    CLASSES_WITH_FIND = (str, unicode)
+
+try:
+    from Bio.Seq import Seq
+except ImportError:
+    pass
+else:
+    CLASSES_WITH_FIND += (Seq,)
 
 
 Match = namedtuple('Match', ['start', 'end', 'dist'])
@@ -6,10 +27,13 @@ Ngram = namedtuple('Ngram', ['start', 'end'])
 
 
 def search_exact(subsequence, sequence, start_index=0, end_index=None):
-    if isinstance(sequence, basestring):
+    if isinstance(sequence, CLASSES_WITH_FIND):
         find = sequence.find
     else:
         raise TypeError('unsupported sequence type: %s' % type(sequence))
+
+    if not subsequence:
+        raise ValueError('subsequence must not be empty')
 
     index = find(subsequence, start_index, end_index)
     while index >= 0:
@@ -26,9 +50,6 @@ class GroupOfMatches(object):
 
     def is_match_in_group(self, match):
         return not (match.end <= self.start or match.start >= self.end)
-
-    def does_overlap_group(self, other):
-        return not (other.end <= self.start or other.start >= self.end)
 
     def add_match(self, match):
         self.matches.add(match)
