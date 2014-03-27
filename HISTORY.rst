@@ -3,6 +3,13 @@
 History
 -------
 
+0.2.2 (2014-03-27)
+++++++++++++++++++
+
+* Added support for searching through BioPython Seq objects
+* Added specialized search function allowing only subsitutions and insertions
+* Fixed several bugs
+
 0.2.1 (2014-03-14)
 ++++++++++++++++++
 
