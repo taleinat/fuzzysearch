@@ -93,7 +93,7 @@ class TestFindNearMatches(unittest.TestCase):
                 [Match(42, 43, 0)],
             )
             call_count += 1
-            msg = 'failed with max_subs={}, max_ins={}, max_dels={}'.format(
+            msg = 'failed with max_subs={0}, max_ins={1}, max_dels={2}'.format(
                 max_subs, max_ins, max_dels,
             )
             self.assertEqual(self.mock_search_exact.call_count, call_count, msg)
