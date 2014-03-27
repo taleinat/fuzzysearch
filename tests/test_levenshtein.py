@@ -93,9 +93,10 @@ class TestExpand(unittest.TestCase):
     def test_completely_different(self):
         self.assertEqual(_expand('abc', 'def', 0), (None, None))
 
-    def test_one_extra(self):
-        self.assertEqual(_expand('abcd', 'abd', 1), (1, 3))
-        self.assertEqual(_expand('abcd', 'abd', 2), (1, 3))
+    def test_startswith(self):
+        self.assertEqual(_expand('abc', 'abcd', 0), (0, 3))
+        self.assertEqual(_expand('abc', 'abcd', 1), (0, 3))
+        self.assertEqual(_expand('abc', 'abcd', 2), (0, 3))
 
 
 class TestFindNearMatchesLevenshteinBase(object):
