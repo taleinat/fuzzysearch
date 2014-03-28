@@ -4,7 +4,6 @@ import argparse
 from benchmarks import benchmarks, search_functions
 
 
-
 def print_results(timings, number, repeat, precision=3):
     best = min(timings)
 

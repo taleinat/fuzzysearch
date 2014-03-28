@@ -1,3 +1,5 @@
+import random
+
 from fuzzysearch.levenshtein import \
     find_near_matches_levenshtein_linear_programming
 from fuzzysearch.levenshtein_ngram import \
@@ -6,13 +8,11 @@ from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_ngrams as fnm_substitutions_ngrams, \
     find_near_matches_substitutions_linear_programming
 from fuzzysearch.generic_search import \
-    find_near_matches_generic_linear_programming
-import pyximport
-pyximport.install()
+    find_near_matches_generic_linear_programming, \
+    find_near_matches_generic_ngrams, has_near_match_generic_ngrams
 from fuzzysearch._generic_search import \
     find_near_matches_generic_linear_programming as \
     find_near_matches_generic_linear_programming_cython
-import random
 
 
 def fnm_levenshtein_lp(subsequence, sequence, max_l_dist):
@@ -31,6 +31,14 @@ def fnm_generic_lp_cython(subsequence, sequence, max_l_dist):
     return list(find_near_matches_generic_linear_programming_cython(
         subsequence, sequence, max_l_dist, max_l_dist, max_l_dist, max_l_dist))
 
+def fnm_generic_ngrams(subsequence, sequence, max_l_dist):
+    return list(find_near_matches_generic_ngrams(
+        subsequence, sequence, max_l_dist, max_l_dist, max_l_dist, max_l_dist))
+
+def hnm_generic_ngrams(subsequence, sequence, max_l_dist):
+    return has_near_match_generic_ngrams(
+        subsequence, sequence, max_l_dist, max_l_dist, max_l_dist, max_l_dist)
+
 
 search_functions = {
     'levenshtein_lp': fnm_levenshtein_lp,
@@ -39,6 +47,8 @@ search_functions = {
     'substitutions_ngrams': fnm_substitutions_ngrams,
     'generic_lp': fnm_generic_lp,
     'generic_lp_cython': fnm_generic_lp_cython,
+    'generic_ngrams': fnm_generic_ngrams,
+    'has_match_generic_ngrams': hnm_generic_ngrams,
 }
 
 benchmarks = {
@@ -69,7 +79,7 @@ def get_benchmark(search_func_name, benchmark_name):
     search_func = search_functions[search_func_name]
     search_args = dict(benchmarks[benchmark_name])
 
-    if search_func in (fnm_levenshtein_ngrams, fnm_levenshtein_lp, fnm_generic_lp, fnm_generic_lp_cython):
+    if search_func in (fnm_levenshtein_ngrams, fnm_levenshtein_lp, fnm_generic_lp, fnm_generic_lp_cython, fnm_generic_ngrams, hnm_generic_ngrams):
         search_args['max_l_dist'] = search_args.pop('max_dist')
     elif search_func in (fnm_substitutions_ngrams, fnm_substitutions_lp):
         search_args['max_substitutions'] = search_args.pop('max_dist')
