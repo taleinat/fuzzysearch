@@ -1,7 +1,7 @@
 from collections import deque, defaultdict
 from itertools import islice, chain
 
-from fuzzysearch.common import Match, Ngram, search_exact
+from fuzzysearch.common import Match, search_exact
 
 
 def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
@@ -111,9 +111,14 @@ def find_near_matches_substitutions_ngrams(subsequence, sequence,
     * the number of character substitutions must be less than max_substitutions
     * no deletions or insertions are allowed
     """
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
+    matches = list(_find_near_matches_substitutions_ngrams(subsequence,
+                                                           sequence,
+                                                           max_substitutions))
+    return sorted(matches, key=lambda match: match.start)
 
+
+def _find_near_matches_substitutions_ngrams(subsequence, sequence,
+                                            max_substitutions):
     _SUBSEQ_LEN = len(subsequence)
     _SEQ_LEN = len(sequence)
 
@@ -123,33 +128,43 @@ def find_near_matches_substitutions_ngrams(subsequence, sequence,
             "The subsequence's length must be greater than max_substitutions!"
         )
 
-    ngrams = [
-        Ngram(start, start + ngram_len)
-        for start in range(0, len(subsequence) - ngram_len + 1, ngram_len)
-    ]
-
-    matches = []
     match_starts = set()
-    for ngram in ngrams:
-        _subseq_before = subsequence[:ngram.start]
-        _subseq_after = subsequence[ngram.end:]
-        start_index = ngram.start
-        end_index = _SEQ_LEN - (_SUBSEQ_LEN - ngram.end)
-        for index in search_exact(subsequence[ngram.start:ngram.end], sequence, start_index, end_index):
-            if (index - ngram.start) in match_starts:
+    for ngram_start in range(0, len(subsequence) - ngram_len + 1, ngram_len):
+        ngram_end = ngram_start + ngram_len
+        _subseq_before = subsequence[:ngram_start]
+        _subseq_after = subsequence[ngram_end:]
+        start_index = ngram_start
+        end_index = _SEQ_LEN - (_SUBSEQ_LEN - ngram_end)
+        for index in search_exact(subsequence[ngram_start:ngram_end], sequence, start_index, end_index):
+            if (index - ngram_start) in match_starts:
                 continue
 
             n_substitutions = sum((a != b) for (a, b) in chain(
-                zip(sequence[index - ngram.start:index], _subseq_before),
-                zip(sequence[index + ngram_len:index - ngram.start + _SUBSEQ_LEN], _subseq_after),
+                zip(sequence[index - ngram_start:index], _subseq_before),
+                zip(sequence[index + ngram_len:index - ngram_start + _SUBSEQ_LEN], _subseq_after),
             ))
 
             if n_substitutions <= max_substitutions:
-                matches.append(Match(
-                    start=index - ngram.start,
-                    end=index - ngram.start + _SUBSEQ_LEN,
+                yield Match(
+                    start=index - ngram_start,
+                    end=index - ngram_start + _SUBSEQ_LEN,
                     dist=n_substitutions,
-                ))
-                match_starts.add(index - ngram.start)
+                )
+                match_starts.add(index - ngram_start)
 
-    return sorted(matches, key=lambda match: match.start)
+
+def has_near_match_substitutions_ngrams(subsequence, sequence,
+                                        max_substitutions):
+    """search for near-matches of subsequence in sequence
+
+    This searches for near-matches, where the nearly-matching parts of the
+    sequence must meet the following limitations (relative to the subsequence):
+
+    * the number of character substitutions must be less than max_substitutions
+    * no deletions or insertions are allowed
+    * the total number of substitutions, insertions and deletions
+    """
+    for match in _find_near_matches_substitutions_ngrams(subsequence, sequence,
+                                                         max_substitutions):
+        return True
+    return False

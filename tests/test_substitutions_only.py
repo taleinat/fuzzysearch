@@ -200,9 +200,10 @@ class TestSubstitionsOnlyBase(object):
 
     def test_missing_at_beginning(self):
         self.assertEqual(
-            self.search("ATTEST","TESTOSTERONE", max_subs=2),
+            self.search("ATTEST", "TESTOSTERONE", max_subs=2),
             [],
         )
+
 
 class TestFindNearMatchesSubstitionsLinearProgramming(TestSubstitionsOnlyBase, unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
