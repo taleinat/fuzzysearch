@@ -35,18 +35,16 @@ class TestGroupMatches(unittest.TestCase):
         )
 
 
-import six
-
 class TestSearchExact(unittest.TestCase):
     def search(self, sequence, subsequence):
         return list(search_exact(sequence, subsequence))
 
     def test_bytes(self):
-        text = six.b('abc')
+        text = 'abc'
         self.assertEqual(self.search(text, text), [0])
 
     def test_unicode(self):
-        text = six.u('abc')
+        text = u'abc'
         self.assertEqual(self.search(text, text), [0])
 
     def test_biopython_Seq(self):
