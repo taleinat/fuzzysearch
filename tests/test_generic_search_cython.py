@@ -2,8 +2,12 @@ from tests.compat import unittest
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from tests.test_substitutions_only import TestSubstitionsOnlyBase
-from fuzzysearch.generic_search import \
+
+import pyximport
+pyimporter, pyximporter = pyximport.install()
+from fuzzysearch._generic_search import \
     find_near_matches_generic_linear_programming as fnm_generic_lp
+pyximport.uninstall(pyimporter, pyximporter)
 
 
 class TestGenericSearchAsLevenshtein(TestFindNearMatchesLevenshteinBase,

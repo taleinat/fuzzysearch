@@ -3,7 +3,7 @@
 
 import os
 import sys
-
+from Cython.Build import cythonize
 
 try:
     from setuptools import setup
@@ -29,9 +29,9 @@ setup(
         'fuzzysearch',
     ],
     package_dir={'fuzzysearch': 'fuzzysearch'},
+    ext_modules=cythonize("fuzzysearch/_generic_search.pyx"),
     include_package_data=True,
-    install_requires=[
-    ],
+    install_requires=[],
     use_2to3=True,
     license="MIT",
     zip_safe=False,
