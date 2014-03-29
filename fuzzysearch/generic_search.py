@@ -201,7 +201,7 @@ def _find_near_matches_generic_ngrams(subsequence, sequence,
         for index in search_exact(subsequence[ngram_start:ngram_end], sequence, start_index, end_index):
             # try to expand left and/or right according to n_ngram
             for match in find_near_matches_generic_linear_programming(
-                subsequence, sequence[index - ngram_start - max_l_dist:index - ngram_start + _subseq_len + max_l_dist],
+                subsequence, sequence[max(0, index - ngram_start - max_l_dist):index - ngram_start + _subseq_len + max_l_dist],
                 max_substitutions, max_insertions, max_deletions, max_l_dist,
             ):
                 yield match._replace(
