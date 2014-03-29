@@ -111,46 +111,59 @@ def find_near_matches_substitutions_ngrams(subsequence, sequence,
     * the number of character substitutions must be less than max_substitutions
     * no deletions or insertions are allowed
     """
-    matches = list(_find_near_matches_substitutions_ngrams(subsequence,
-                                                           sequence,
-                                                           max_substitutions))
+    match_starts = set()
+    matches = []
+    for match in _find_near_matches_substitutions_ngrams(subsequence, sequence,
+                                                         max_substitutions):
+        if match.start not in match_starts:
+            match_starts.add(match.start)
+            matches.append(match)
     return sorted(matches, key=lambda match: match.start)
 
 
 def _find_near_matches_substitutions_ngrams(subsequence, sequence,
                                             max_substitutions):
-    _SUBSEQ_LEN = len(subsequence)
-    _SEQ_LEN = len(sequence)
+    subseq_len = len(subsequence)
+    seq_len = len(sequence)
 
-    ngram_len = _SUBSEQ_LEN // (max_substitutions + 1)
+    ngram_len = subseq_len // (max_substitutions + 1)
     if ngram_len == 0:
         raise ValueError(
             "The subsequence's length must be greater than max_substitutions!"
         )
 
-    match_starts = set()
     for ngram_start in range(0, len(subsequence) - ngram_len + 1, ngram_len):
         ngram_end = ngram_start + ngram_len
         _subseq_before = subsequence[:ngram_start]
         _subseq_after = subsequence[ngram_end:]
-        start_index = ngram_start
-        end_index = _SEQ_LEN - (_SUBSEQ_LEN - ngram_end)
-        for index in search_exact(subsequence[ngram_start:ngram_end], sequence, start_index, end_index):
-            if (index - ngram_start) in match_starts:
-                continue
-
-            n_substitutions = sum((a != b) for (a, b) in chain(
-                zip(sequence[index - ngram_start:index], _subseq_before),
-                zip(sequence[index + ngram_len:index - ngram_start + _SUBSEQ_LEN], _subseq_after),
-            ))
-
-            if n_substitutions <= max_substitutions:
-                yield Match(
-                    start=index - ngram_start,
-                    end=index - ngram_start + _SUBSEQ_LEN,
-                    dist=n_substitutions,
+        for index in search_exact(
+                subsequence[ngram_start:ngram_end], sequence,
+                ngram_start, seq_len - (subseq_len - ngram_end),
+        ):
+            n_substitutions = 0
+            _seq_before = sequence[index - ngram_start:index]
+            if _subseq_before != _seq_before:
+                n_substitutions += sum(
+                    (a != b) for (a, b) in zip(_seq_before, _subseq_before)
                 )
-                match_starts.add(index - ngram_start)
+                if n_substitutions > max_substitutions:
+                    continue
+
+            _seq_after = sequence[index + ngram_len:index - ngram_start + subseq_len]
+            if _subseq_after != _seq_after:
+                if n_substitutions == max_substitutions:
+                    continue
+                n_substitutions += sum(
+                    (a != b) for (a, b) in zip(_seq_after, _subseq_after)
+                )
+                if n_substitutions > max_substitutions:
+                    continue
+
+            yield Match(
+                start=index - ngram_start,
+                end=index - ngram_start + subseq_len,
+                dist=n_substitutions,
+            )
 
 
 def has_near_match_substitutions_ngrams(subsequence, sequence,
