@@ -36,40 +36,36 @@ def _expand(subsequence, sequence, max_l_dist):
     return (min_score, min_score_idx + 1) if min_score is not None and min_score <= max_l_dist else (None, None)
 
 
-def _choose_search_range(subseq_len, seq_len, ngram, max_l_dist):
-    start_index = max(0, ngram.start - max_l_dist)
-    end_index = min(seq_len, seq_len - subseq_len + ngram.end + max_l_dist)
-    return start_index, end_index
-
-
 def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
-    ngram_len = len(subsequence) // (max_l_dist + 1)
+    subseq_len = len(subsequence)
+    seq_len = len(sequence)
+
+    ngram_len = subseq_len // (max_l_dist + 1)
     if ngram_len == 0:
         raise ValueError('the subsequence length must be greater than max_l_dist')
 
-    ngrams = [
-        Ngram(start, start + ngram_len)
-        for start in range(0, len(subsequence) - ngram_len + 1, ngram_len)
-    ]
-
     matches = []
-    for ngram in ngrams:
-        start_index, end_index = _choose_search_range(len(subsequence), len(sequence), ngram, max_l_dist)
-        for index in search_exact(subsequence[ngram.start:ngram.end], sequence, start_index, end_index):
+    for ngram_start in xrange(0, subseq_len - ngram_len + 1, ngram_len):
+        ngram_end = ngram_start + ngram_len
+        subseq_before_reversed = subsequence[:ngram_start][::-1]
+        subseq_after = subsequence[ngram_end:]
+        start_index = max(0, ngram_start - max_l_dist)
+        end_index = min(seq_len, seq_len - subseq_len + ngram_end + max_l_dist)
+        for index in search_exact(subsequence[ngram_start:ngram_end], sequence, start_index, end_index):
             # try to expand left and/or right according to n_ngram
-            dist_left, left_expand_size = _expand(
-                subsequence[:ngram.start][::-1],
-                sequence[index - ngram.start - max_l_dist:index][::-1],
+            dist_right, right_expand_size = _expand(
+                subseq_after,
+                sequence[index + ngram_len:index - ngram_start + subseq_len + max_l_dist],
                 max_l_dist,
             )
-            if dist_left is None:
-                continue
-            dist_right, right_expand_size = _expand(
-                subsequence[ngram.end:],
-                sequence[index + ngram_len:index - ngram.start + len(subsequence) + max_l_dist],
-                max_l_dist - dist_left,
-            )
             if dist_right is None:
+                continue
+            dist_left, left_expand_size = _expand(
+                subseq_before_reversed,
+                sequence[max(0, index - ngram_start - (max_l_dist - dist_right)):index][::-1],
+                max_l_dist - dist_right,
+            )
+            if dist_left is None:
                 continue
             assert dist_left + dist_right <= max_l_dist
 
