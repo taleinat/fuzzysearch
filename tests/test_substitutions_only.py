@@ -1,11 +1,13 @@
 from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_linear_programming as fnm_subs_lp, \
-    find_near_matches_substitutions_ngrams as fnm_subs_ngrams
+    find_near_matches_substitutions_ngrams as fnm_subs_ngrams, \
+    has_near_match_substitutions_ngrams
 from fuzzysearch._substitutions_only import \
     substitutions_only_has_near_matches_byteslike as hnm_subs_byteslike
 
 from tests.compat import unittest
 
+import textwrap
 from fuzzysearch.common import Match
 
 
@@ -276,12 +278,12 @@ class TestHasNearMatchSubstitionsOnlyBase(object):
 
     def test_dna_search(self):
         # see: http://stackoverflow.com/questions/19725127/
-        text = ''.join('''\
-GACTAGCACTGTAGGGATAACAATTTCACACAGGTGGACAATTACATTGAAAATCACAGATTGGT
-CACACACACATTGGACATACATAGAAACACACACACATACATTAGATACGAACATAGAAACACAC
-ATTAGACGCGTACATAGACACAAACACATTGACAGGCAGTTCAGATGATGACGCCCGACTGATAC
-TCGCGTAGTCGTGGGAGGCAAGGCACACAGGGGATAGG
-'''.split())
+        text = ''.join(textwrap.dedent('''\
+            GACTAGCACTGTAGGGATAACAATTTCACACAGGTGGACAATTACATTGAAAATCACAGATTGGT
+            CACACACACATTGGACATACATAGAAACACACACACATACATTAGATACGAACATAGAAACACAC
+            ATTAGACGCGTACATAGACACAAACACATTGACAGGCAGTTCAGATGATGACGCCCGACTGATAC
+            TCGCGTAGTCGTGGGAGGCAAGGCACACAGGGGATAGG
+            ''').split())
         pattern = 'TGCACTGTAGGGATAACAAT'
 
         self.assertTrue(self.search(pattern, text, max_subs=2))
@@ -290,7 +292,16 @@ TCGCGTAGTCGTGGGAGGCAAGGCACACAGGGGATAGG
         self.assertFalse(self.search("ATTEST", "TESTOSTERONE", max_subs=2))
 
 
-class TestFindNearMatchesSubstitionsByteslike(TestHasNearMatchSubstitionsOnlyBase, unittest.TestCase):
+class TestHasNearMatchSubstitionsOnly(TestHasNearMatchSubstitionsOnlyBase,
+                                      unittest.TestCase):
+    def search(self, subsequence, sequence, max_subs):
+        return has_near_match_substitutions_ngrams(subsequence, sequence, max_subs)
+
+
+class TestFindNearMatchesSubstitionsByteslike(
+        TestHasNearMatchSubstitionsOnlyBase,
+        unittest.TestCase
+):
     def search(self, subsequence, sequence, max_subs):
         return hnm_subs_byteslike(subsequence, sequence, max_subs)
 
