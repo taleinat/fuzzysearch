@@ -40,7 +40,7 @@ class TestSearchExact(unittest.TestCase):
         return list(search_exact(sequence, subsequence))
 
     def test_bytes(self):
-        text = 'abc'
+        text = b'abc'
         self.assertEqual(self.search(text, text), [0])
 
     def test_unicode(self):
