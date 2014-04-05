@@ -27,14 +27,10 @@ Ngram = namedtuple('Ngram', ['start', 'end'])
 
 
 def search_exact(subsequence, sequence, start_index=0, end_index=None):
-    if isinstance(sequence, CLASSES_WITH_FIND):
-        find = sequence.find
-    else:
-        raise TypeError('unsupported sequence type: %s' % type(sequence))
-
+    assert isinstance(sequence, CLASSES_WITH_FIND)
     if not subsequence:
         raise ValueError('subsequence must not be empty')
-
+    find = sequence.find
     index = find(subsequence, start_index, end_index)
     while index >= 0:
         yield index
