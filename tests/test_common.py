@@ -1,5 +1,5 @@
 from fuzzysearch.common import Match, group_matches, GroupOfMatches, \
-    search_exact
+    search_exact, count_different_items_with_max
 from tests.compat import unittest
 
 
@@ -84,3 +84,50 @@ class TestSearchExact(unittest.TestCase):
 
     def test_endswith(self):
         self.assertEqual(self.search('bcd', 'abcd'), [1])
+
+
+class TestCountDifferentItemsWithMax(unittest.TestCase):
+    def test_empty(self):
+        result = count_different_items_with_max('', '', 1)
+        self.assertEqual(result, 0)
+
+    def test_identical_one_character(self):
+        result = count_different_items_with_max('a', 'a', 1)
+        self.assertEqual(result, 0)
+
+    def test_identical_word(self):
+        result = count_different_items_with_max('word', 'word', 1)
+        self.assertEqual(result, 0)
+
+    def test_identical_long(self):
+        result = count_different_items_with_max('long'*10, 'long'*10, 1)
+        self.assertEqual(result, 0)
+
+    def test_different_less_than_max(self):
+        result = count_different_items_with_max('abc', 'def', 4)
+        self.assertEqual(result, 3)
+
+    def test_different_more_than_max(self):
+        result = count_different_items_with_max('abc', 'def', 2)
+        self.assertEqual(result, 2)
+
+    def test_partially_different_in_middle(self):
+        result = count_different_items_with_max('abcdef', 'a--d-f', 4)
+        self.assertEqual(result, 3)
+
+        result = count_different_items_with_max('abcdef', 'a--d-f', 2)
+        self.assertEqual(result, 2)
+
+    def test_partially_different_at_start(self):
+        result = count_different_items_with_max('abcdef', '--c-ef', 4)
+        self.assertEqual(result, 3)
+
+        result = count_different_items_with_max('abcdef', '--c-ef', 2)
+        self.assertEqual(result, 2)
+
+    def test_partially_different_at_end(self):
+        result = count_different_items_with_max('abcdef', 'ab-d--', 4)
+        self.assertEqual(result, 3)
+
+        result = count_different_items_with_max('abcdef', 'ab-d--', 2)
+        self.assertEqual(result, 2)
