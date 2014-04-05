@@ -1,10 +1,10 @@
 import sys
 from collections import namedtuple
-
+from itertools import izip
 
 __all__ = [
     'Match', 'Ngram',
-    'search_exact',
+    'search_exact', 'count_different_items_with_max',
     'group_matches', 'get_best_match_in_group',
 ]
 
@@ -39,6 +39,16 @@ def search_exact(subsequence, sequence, start_index=0, end_index=None):
     while index >= 0:
         yield index
         index = find(subsequence, index + 1, end_index)
+
+
+def count_different_items_with_max(sequence1, sequence2, max_different):
+    n_different = 0
+    for item1, item2 in izip(sequence1, sequence2):
+        if item1 != item2:
+            n_different += 1
+            if n_different == max_different:
+                return n_different
+    return n_different
 
 
 class GroupOfMatches(object):
