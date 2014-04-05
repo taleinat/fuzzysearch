@@ -1,7 +1,8 @@
 from collections import deque, defaultdict
-from itertools import islice, chain
+from itertools import islice
 
-from fuzzysearch.common import Match, search_exact
+from fuzzysearch.common import Match, search_exact, \
+    count_different_items_with_max
 
 
 def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
@@ -132,7 +133,39 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
             "The subsequence's length must be greater than max_substitutions!"
         )
 
-    for ngram_start in range(0, len(subsequence) - ngram_len + 1, ngram_len):
+    _subseq_after = subsequence[ngram_len:]
+    for index in search_exact(
+            subsequence[:ngram_len], sequence,
+            0, seq_len - (subseq_len - ngram_len),
+    ):
+        _seq_after = sequence[index + ngram_len:index + subseq_len]
+        n_substitutions = 0 if _subseq_after == _seq_after else \
+            count_different_items_with_max(_subseq_after, _seq_after,
+                                           max_different=max_substitutions + 1)
+        if n_substitutions <= max_substitutions:
+            yield Match(
+                start=index,
+                end=index + subseq_len,
+                dist=n_substitutions,
+            )
+
+    _subseq_before = subsequence[:-ngram_len]
+    for index in search_exact(
+            subsequence[-ngram_len:], sequence,
+            subseq_len - ngram_len, seq_len,
+    ):
+        _seq_before = sequence[index + ngram_len - subseq_len:index]
+        n_substitutions = 0 if _seq_before == _subseq_before else \
+            count_different_items_with_max(_subseq_before, _seq_before,
+                                           max_different=max_substitutions + 1)
+        if n_substitutions <= max_substitutions:
+            yield Match(
+                start=index + ngram_len - subseq_len,
+                end=index + ngram_len,
+                dist=n_substitutions,
+            )
+
+    for ngram_start in xrange(ngram_len, len(subsequence) - ngram_len + 1 - ngram_len, ngram_len):
         ngram_end = ngram_start + ngram_len
         _subseq_before = subsequence[:ngram_start]
         _subseq_after = subsequence[ngram_end:]
@@ -143,9 +176,9 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
             n_substitutions = 0
             _seq_before = sequence[index - ngram_start:index]
             if _subseq_before != _seq_before:
-                n_substitutions += sum(
-                    (a != b) for (a, b) in zip(_seq_before, _subseq_before)
-                )
+                n_substitutions += count_different_items_with_max(
+                    _subseq_before, _seq_before,
+                    max_different=max_substitutions + 1)
                 if n_substitutions > max_substitutions:
                     continue
 
@@ -153,9 +186,9 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
             if _subseq_after != _seq_after:
                 if n_substitutions == max_substitutions:
                     continue
-                n_substitutions += sum(
-                    (a != b) for (a, b) in zip(_seq_after, _subseq_after)
-                )
+                n_substitutions += count_different_items_with_max(
+                    _subseq_after, _seq_after,
+                    max_different=max_substitutions-n_substitutions + 1)
                 if n_substitutions > max_substitutions:
                     continue
 
