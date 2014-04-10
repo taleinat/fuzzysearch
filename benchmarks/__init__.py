@@ -60,6 +60,11 @@ benchmarks = {
         sequence = ''.join(random.choice('ATCG' * 5 + 'N') for _i in xrange(90)),
         max_dist = 3,
     ),
+    'random_kevin_partial_match': dict(
+        subsequence = 'AAGTCTAGT' + ''.join(random.choice('ATCG') for _i in xrange(36-9)),
+        sequence = 'AAGTCTAGT' + ''.join(random.choice('ATCG' * 5 + 'N') for _i in xrange(90-9)),
+        max_dist = 3,
+    ),
 }
 
 
