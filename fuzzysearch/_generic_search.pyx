@@ -9,7 +9,7 @@ cdef struct GenericSearchCandidate:
     int start, subseq_index, l_dist, n_subs, n_ins, n_dels
 
 
-ALLOWED_TYPES = (str,)
+ALLOWED_TYPES = (bytes, str,)
 try:
     from Bio.Seq import Seq
 except ImportError:
