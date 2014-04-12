@@ -92,7 +92,7 @@ class TestSubstitionsOnlyBase(object):
         text = 'aaaaaaaaaaPATERNaaaaaaaaa'
 
         for max_subs in [0, 1, 2]:
-            self.assertEquals(
+            self.assertEqual(
                 self.search(substring, text, max_subs=max_subs),
                 [],
             )
@@ -120,7 +120,7 @@ class TestSubstitionsOnlyBase(object):
         text = 'aaaaaaaaaaPATTXERNaaaaaaaaa'
 
         for max_subs in [0, 1, 2]:
-            self.assertEquals(
+            self.assertEqual(
                 self.search(substring, text, max_subs=max_subs),
                 [],
             )
