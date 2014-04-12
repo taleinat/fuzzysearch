@@ -2,7 +2,7 @@ from fuzzysearch.levenshtein import \
     find_near_matches_levenshtein_linear_programming
 from fuzzysearch.levenshtein_ngram import \
     find_near_matches_levenshtein_ngrams as fnm_levenshtein_ngrams
-from fuzzysearch.susbstitutions_only import \
+from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_ngrams as fnm_substitutions_ngrams, \
     find_near_matches_substitutions_linear_programming
 from fuzzysearch.generic_search import \

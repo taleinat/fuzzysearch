@@ -1,4 +1,4 @@
-from fuzzysearch.susbstitutions_only import \
+from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_linear_programming as fnm_subs_lp, \
     find_near_matches_substitutions_ngrams as fnm_subs_ngrams
 from fuzzysearch._substitutions_only import \
