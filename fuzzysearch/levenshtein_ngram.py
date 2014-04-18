@@ -1,4 +1,4 @@
-from fuzzysearch.common import Match, Ngram, \
+from fuzzysearch.common import Match, \
     group_matches, get_best_match_in_group, search_exact
 
 from six.moves import xrange
