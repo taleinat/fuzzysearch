@@ -8,9 +8,11 @@ fuzzysearch
 .. image:: https://travis-ci.org/taleinat/fuzzysearch.png?branch=master
         :target: https://travis-ci.org/taleinat/fuzzysearch
 
+.. image:: https://coveralls.io/repos/taleinat/fuzzysearch/badge.png
+        :target: https://coveralls.io/r/taleinat/fuzzysearch
+
 .. image:: https://pypip.in/d/fuzzysearch/badge.png
         :target: https://crate.io/packages/fuzzysearch?version=latest
-
 
 fuzzysearch is useful for finding approximate subsequence matches
 

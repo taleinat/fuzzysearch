@@ -10,6 +10,6 @@ env:
   - TOX_ENV=py33
   - TOX_ENV=coverage
 script:
-  - tox
+  - tox -e $TOX_ENV
 after_success:
   - coveralls
