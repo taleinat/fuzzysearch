@@ -1,0 +1,4 @@
+[run]
+branch = True
+source = fuzzysearch
+include = fuzzysearch/*.py
