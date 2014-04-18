@@ -19,6 +19,10 @@ _substitutions_only_module = Extension(
     'fuzzysearch._substitutions_only',
     sources=['fuzzysearch/_substitutions_only.c'],
 )
+_common_module = Extension(
+    'fuzzysearch._common',
+    sources=['fuzzysearch/_common.c'],
+)
 _generic_search_module = Extension(
     'fuzzysearch._generic_search',
     sources=['fuzzysearch/_generic_search.c'],
@@ -36,7 +40,7 @@ setup(
         'fuzzysearch',
     ],
     package_dir={'fuzzysearch': 'fuzzysearch'},
-    ext_modules=[_substitutions_only_module, _generic_search_module],
+    ext_modules=[_substitutions_only_module, _common_module, _generic_search_module],
     include_package_data=True,
     install_requires=[],
     use_2to3=True,

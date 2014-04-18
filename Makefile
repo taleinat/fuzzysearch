@@ -1,4 +1,4 @@
-.PHONY: clean clean-pyc clean-build clean-cython lint test test-all coverage docs cython release sdist
+.PHONY: clean clean-pyc clean-build clean-cython clean-build-ext-inplace lint test test-all coverage docs cython release sdist
 
 help:
 	@echo "clean-build - remove build artifacts"
@@ -31,6 +31,9 @@ clean-pyc:
 clean-cython:
 	find fuzzysearch -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so | grep -v '^\./build/' | xargs rm -vf
 
+clean-build-ext-inplace:
+	rm -f fuzzysearch/_generic_search.so fuzzysearch/_common.so fuzzysearch/_substitutions_only.so
+
 lint:
 	flake8 fuzzysearch tests
 
@@ -58,6 +61,9 @@ fuzzysearch/_generic_search.c: fuzzysearch/_generic_search.pyx
 	cython fuzzysearch/_generic_search.pyx
 
 cython: fuzzysearch/_generic_search.c
+
+build-ext-inplace: fuzzysearch/_generic_search.c fuzzysearch/_common.c fuzzysearch/_substitutions_only.c
+	python setup.py --quiet build_ext --inplace
 
 release: clean
 	python setup.py sdist upload

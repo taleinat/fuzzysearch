@@ -1,6 +1,8 @@
 from fuzzysearch.common import Match, Ngram, \
     group_matches, get_best_match_in_group, search_exact
 
+from six.moves import xrange
+
 
 __all__ = ['find_near_matches_levenshtein_ngrams']
 
@@ -9,7 +11,7 @@ def _expand(subsequence, sequence, max_l_dist):
     if not subsequence:
         return (0, 0)
 
-    scores = range(max_l_dist + 1) + [None] * (len(subsequence) + 1 - (max_l_dist + 1))
+    scores = list(range(max_l_dist + 1)) + [None] * (len(subsequence) + 1 - (max_l_dist + 1))
     new_scores = [None] * (len(subsequence) + 1)
     min_score = None
     min_score_idx = None

@@ -1,1 +1,3 @@
-six
+# workaround for problematic nose2 requirements
+six>=1.1,<1.4
+nose2

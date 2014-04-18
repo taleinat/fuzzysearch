@@ -2,8 +2,6 @@ from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_linear_programming as fnm_subs_lp, \
     find_near_matches_substitutions_ngrams as fnm_subs_ngrams, \
     has_near_match_substitutions_ngrams
-from fuzzysearch._substitutions_only import \
-    substitutions_only_has_near_matches_byteslike as hnm_subs_byteslike
 
 from tests.compat import unittest
 
@@ -298,12 +296,18 @@ class TestHasNearMatchSubstitionsOnly(TestHasNearMatchSubstitionsOnlyBase,
         return has_near_match_substitutions_ngrams(subsequence, sequence, max_subs)
 
 
-class TestFindNearMatchesSubstitionsByteslike(
-        TestHasNearMatchSubstitionsOnlyBase,
-        unittest.TestCase
-):
-    def search(self, subsequence, sequence, max_subs):
-        return hnm_subs_byteslike(subsequence, sequence, max_subs)
+try:
+    from fuzzysearch._substitutions_only import \
+        substitutions_only_has_near_matches_byteslike as hnm_subs_byteslike
+except ImportError:
+    pass
+else:
+    class TestFindNearMatchesSubstitionsByteslike(
+            TestHasNearMatchSubstitionsOnlyBase,
+            unittest.TestCase
+    ):
+        def search(self, subsequence, sequence, max_subs):
+            return hnm_subs_byteslike(subsequence, sequence, max_subs)
 
-    def test_empty_subsequence_exeption(self):
-        pass
+        def test_empty_subsequence_exeption(self):
+            pass

@@ -2,6 +2,8 @@ from collections import namedtuple
 from fuzzysearch.common import Match, search_exact, \
     group_matches, get_best_match_in_group
 
+from six.moves import xrange
+
 
 __all__ = [
     'find_near_matches_generic_linear_programming',
