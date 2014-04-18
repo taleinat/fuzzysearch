@@ -1,5 +1,15 @@
 from collections import namedtuple
-from fuzzysearch.common import Match
+from fuzzysearch.common import Match, search_exact, \
+    group_matches, get_best_match_in_group
+
+from six.moves import xrange
+
+
+__all__ = [
+    'find_near_matches_generic_linear_programming',
+    'find_near_matches_generic_ngrams',
+    'has_near_match_generic_ngrams',
+]
 
 
 GenericSearchCandidate = namedtuple(
@@ -135,3 +145,100 @@ def find_near_matches_generic_linear_programming(subsequence, sequence,
         if cand.n_dels + n_skipped <= max_deletions and \
            cand.l_dist + n_skipped <= max_l_dist:
             yield Match(cand.start, index + 1, cand.l_dist + n_skipped)
+
+
+def find_near_matches_generic_ngrams(subsequence, sequence,
+                                     max_substitutions,
+                                     max_insertions,
+                                     max_deletions,
+                                     max_l_dist=None):
+    """search for near-matches of subsequence in sequence
+
+    This searches for near-matches, where the nearly-matching parts of the
+    sequence must meet the following limitations (relative to the subsequence):
+
+    * the maximum allowed number of character substitutions
+    * the maximum allowed number of new characters inserted
+    * and the maximum allowed number of character deletions
+    * the total number of substitutions, insertions and deletions
+    """
+    maxes_sum = (
+        (max_substitutions if max_substitutions is not None else 0) +
+        (max_insertions if max_insertions is not None else 0) +
+        (max_deletions if max_deletions is not None else 0)
+    )
+    if max_l_dist is None or max_l_dist >= maxes_sum:
+        max_l_dist = maxes_sum
+
+    matches = list(_find_near_matches_generic_ngrams(subsequence, sequence,
+                                                     max_substitutions,
+                                                     max_insertions,
+                                                     max_deletions,
+                                                     max_l_dist))
+
+    # don't return overlapping matches; instead, group overlapping matches
+    # together and return the best match from each group
+    match_groups = group_matches(matches)
+    best_matches = [get_best_match_in_group(group) for group in match_groups]
+    return sorted(best_matches)
+
+
+def _find_near_matches_generic_ngrams(subsequence, sequence,
+                                      max_substitutions,
+                                      max_insertions,
+                                      max_deletions,
+                                      max_l_dist):
+    # optimization: prepare some often used things in advance
+    _subseq_len = len(subsequence)
+    _seq_len = len(sequence)
+
+    ngram_len = _subseq_len // (max_l_dist + 1)
+    if ngram_len == 0:
+        raise ValueError('the subsequence length must be greater than max_l_dist')
+
+    for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
+        ngram_end = ngram_start + ngram_len
+        start_index = max(0, ngram_start - max_l_dist)
+        end_index = min(_seq_len, _seq_len - _subseq_len + ngram_end + max_l_dist)
+        for index in search_exact(subsequence[ngram_start:ngram_end], sequence, start_index, end_index):
+            # try to expand left and/or right according to n_ngram
+            for match in find_near_matches_generic_linear_programming(
+                subsequence, sequence[max(0, index - ngram_start - max_l_dist):index - ngram_start + _subseq_len + max_l_dist],
+                max_substitutions, max_insertions, max_deletions, max_l_dist,
+            ):
+                yield match._replace(
+                    start=match.start + max(0, index - ngram_start - max_l_dist),
+                    end=match.end + max(0, index - ngram_start - max_l_dist),
+                )
+
+
+def has_near_match_generic_ngrams(subsequence, sequence,
+                                  max_substitutions,
+                                  max_insertions,
+                                  max_deletions,
+                                  max_l_dist=None):
+    """search for near-matches of subsequence in sequence
+
+    This searches for near-matches, where the nearly-matching parts of the
+    sequence must meet the following limitations (relative to the subsequence):
+
+    * the maximum allowed number of character substitutions
+    * the maximum allowed number of new characters inserted
+    * and the maximum allowed number of character deletions
+    * the total number of substitutions, insertions and deletions
+    """
+    maxes_sum = (
+        (max_substitutions if max_substitutions is not None else 0) +
+        (max_insertions if max_insertions is not None else 0) +
+        (max_deletions if max_deletions is not None else 0)
+    )
+    if max_l_dist is None or max_l_dist >= maxes_sum:
+        max_l_dist = maxes_sum
+
+    for match in _find_near_matches_generic_ngrams(subsequence, sequence,
+                                                   max_substitutions,
+                                                   max_insertions,
+                                                   max_deletions,
+                                                   max_l_dist):
+        return True
+    return False

@@ -1,9 +1,11 @@
 from tests.compat import unittest
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
+from tests.test_substitutions_only import TestSubstitionsOnlyBase, \
+    TestHasNearMatchSubstitionsOnly
 from fuzzysearch.generic_search import \
-    find_near_matches_generic_linear_programming as fnm_generic_lp
-from tests.test_substitutions_only import TestSubstitionsOnlyBase
+    find_near_matches_generic_linear_programming as fnm_generic_lp, \
+    has_near_match_generic_ngrams
 
 
 class TestGenericSearchAsLevenshtein(TestFindNearMatchesLevenshteinBase,
@@ -147,3 +149,11 @@ class TestGenericSearch(unittest.TestCase):
             self.search('a', 'b', None, None, None, 0),
             [],
         )
+
+
+class TestHasNearMatchGenericNgramsAsSubstitutionsOnly(
+    TestHasNearMatchSubstitionsOnly,
+):
+    def search(self, subsequence, sequence, max_subs):
+        return has_near_match_generic_ngrams(subsequence, sequence,
+                                             max_subs, 0, 0, max_subs)

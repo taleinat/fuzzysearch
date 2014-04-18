@@ -1,10 +1,10 @@
 import sys
 from collections import namedtuple
-
+from six.moves import zip
 
 __all__ = [
     'Match', 'Ngram',
-    'search_exact',
+    'search_exact', 'count_differences_with_maximum',
     'group_matches', 'get_best_match_in_group',
 ]
 
@@ -39,6 +39,31 @@ def search_exact(subsequence, sequence, start_index=0, end_index=None):
     while index >= 0:
         yield index
         index = find(subsequence, index + 1, end_index)
+
+
+def _count_differences_with_maximum(sequence1, sequence2, max_differences):
+    n_different = 0
+    for item1, item2 in zip(sequence1, sequence2):
+        if item1 != item2:
+            n_different += 1
+            if n_different == max_differences:
+                return n_different
+    return n_different
+
+try:
+    from fuzzysearch._common import count_differences_with_maximum_byteslike
+except ImportError:
+    count_differences_with_maximum = _count_differences_with_maximum
+    count_differences_with_maximum_byteslike = _count_differences_with_maximum
+else:
+    def count_differences_with_maximum(sequence1, sequence2, max_differences):
+        try:
+            return count_differences_with_maximum_byteslike(sequence1,
+                                                            sequence2,
+                                                            max_differences)
+        except TypeError:
+            return _count_differences_with_maximum(sequence1, sequence2,
+                                                   max_differences)
 
 
 class GroupOfMatches(object):

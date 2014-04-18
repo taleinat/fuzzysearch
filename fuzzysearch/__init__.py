@@ -24,7 +24,7 @@ __all__ = [
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches, \
     search_exact
 from fuzzysearch.levenshtein import find_near_matches_levenshtein
-from fuzzysearch.susbstitutions_only import find_near_matches_substitutions
+from fuzzysearch.substitutions_only import find_near_matches_substitutions
 from fuzzysearch.generic_search import \
     find_near_matches_generic_linear_programming
 

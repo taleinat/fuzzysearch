@@ -4,6 +4,8 @@ from fuzzysearch.common import Match, group_matches, get_best_match_in_group, \
     search_exact
 from fuzzysearch.levenshtein_ngram import find_near_matches_levenshtein_ngrams
 
+from six.moves import xrange
+
 
 def find_near_matches_levenshtein(subsequence, sequence, max_l_dist):
     """Find near-matches of the subsequence in the sequence.
