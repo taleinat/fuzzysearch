@@ -41,11 +41,7 @@ setup(
     ],
     package_dir={'fuzzysearch': 'fuzzysearch'},
     ext_modules=[_substitutions_only_module, _common_module, _generic_search_module],
-    include_package_data=True,
-    install_requires=[],
-    use_2to3=True,
     license="MIT",
-    zip_safe=False,
     keywords='fuzzysearch',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -56,9 +52,7 @@ setup(
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.1',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
     ],
-    test_suite='tests',
 )
