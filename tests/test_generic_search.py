@@ -42,6 +42,11 @@ class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
         return fnm_generic_ngrams(subsequence, sequence,
                                   max_subs, 0, 0, max_subs)
 
+    @unittest.skip("Ngrams search doesn't return overlapping matches")
+    def test_double_first_item(self):
+        return super(TestGenericSearchNgramsAsSubstitutionsOnly,
+                     self).test_double_first_item()
+
 
 class TestGenericSearchBase(object):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
@@ -182,6 +187,14 @@ class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
     def test_missing_second_item_complex(self):
         pass
 
+    @unittest.skip("Ngrams search doesn't return overlapping matches")
+    def test_double_first_item(self):
+        return super(TestGenericSearchNgrams, self).test_double_first_item()
+
+    @unittest.skip("Ngrams search doesn't return overlapping matches")
+    def test_missing_second_item(self):
+        return super(TestGenericSearchNgrams, self).test_double_first_item()
+
 
 class TestHasNearMatchGenericNgramsAsSubstitutionsOnly(
     TestHasNearMatchSubstitionsOnly,
@@ -209,4 +222,7 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
         return super(TestHasNearMatchGenericNgrams, self).assertTrue(container)
 
     def test_missing_second_item_complex(self):
-        self.assertTrue(self.search('bde', 'abcdefg', 1, 1, 1, 3))
+        # skip this because ngrams search requires that the subsequence's
+        # length is greater than the maximum Levenshtein distance
+        # self.assertTrue(self.search('bde', 'abcdefg', 1, 1, 1, 3))
+        pass
