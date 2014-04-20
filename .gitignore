@@ -27,8 +27,11 @@ pip-log.txt
 .tox
 nosetests.xml
 
-# PyCHarm
+# PyCharm
 .idea
 
 # OSX
 .DS_Store
+
+# Generated files
+MANIFEST
