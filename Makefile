@@ -32,7 +32,7 @@ clean-cython:
 	find fuzzysearch -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so | grep -v '^\./build/' | xargs rm -vf
 
 clean-build-ext-inplace:
-	rm -f fuzzysearch/_generic_search.so fuzzysearch/_common.so fuzzysearch/_substitutions_only.so
+	find fuzzysearch -name '*.so' -exec rm {} +
 
 lint:
 	flake8 fuzzysearch tests
