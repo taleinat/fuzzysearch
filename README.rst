@@ -22,7 +22,12 @@ fuzzysearch is useful for finding approximate subsequence matches
 Features
 --------
 
-* Fuzzy sub-sequence search: Find parts of a sequence which match a given sub-sequence up to a given maximum Levenshtein distance.
+* Fuzzy sub-sequence search: Find parts of a sequence which match a given
+  sub-sequence up to a given maximum Levenshtein distance.
+* Set individual limits for the number of substitutions, insertions and/or
+  deletions allowed for a near-match.
+* Includes optimized implementations for specific use-cases, e.g. only allowing
+  substitutions in near-matches.
 
 Simple Example
 --------------
