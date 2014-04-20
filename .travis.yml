@@ -8,7 +8,8 @@ env:
   - TOX_ENV=py27
   - TOX_ENV=py32
   - TOX_ENV=py33
-  - TOX_ENV=coverage
+  - TOX_ENV=coverage27
+  - TOX_ENV=coverage33
 script:
   - tox -e $TOX_ENV
 after_success:
