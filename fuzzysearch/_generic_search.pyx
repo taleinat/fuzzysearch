@@ -1,15 +1,17 @@
+import sys
+import six
 from fuzzysearch.common import Match
 from libc.stdlib cimport malloc, free, realloc
 
 
-__all__ = ['find_near_matches_generic_linear_programming']
+__all__ = ['c_find_near_matches_generic_linear_programming']
 
 
 cdef struct GenericSearchCandidate:
     int start, subseq_index, l_dist, n_subs, n_ins, n_dels
 
 
-ALLOWED_TYPES = (bytes, str,)
+ALLOWED_TYPES = (six.binary_type, bytearray)
 try:
     from Bio.Seq import Seq
 except ImportError:
@@ -18,11 +20,11 @@ else:
     ALLOWED_TYPES += (Seq,)
 
 
-def find_near_matches_generic_linear_programming(subsequence, sequence,
-                                                 max_substitutions,
-                                                 max_insertions,
-                                                 max_deletions,
-                                                 max_l_dist=None):
+def c_find_near_matches_generic_linear_programming(subsequence, sequence,
+                                                   max_substitutions,
+                                                   max_insertions,
+                                                   max_deletions,
+                                                   max_l_dist=None):
     """search for near-matches of subsequence in sequence
 
     This searches for near-matches, where the nearly-matching parts of the
@@ -33,13 +35,13 @@ def find_near_matches_generic_linear_programming(subsequence, sequence,
     * and the maximum allowed number of character deletions
     * the total number of substitutions, insertions and deletions
     """
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
-
     if not isinstance(sequence, ALLOWED_TYPES):
         raise TypeError('sequence is of invalid type %s' % type(subsequence))
     if not isinstance(subsequence, ALLOWED_TYPES):
         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
+
+    if not subsequence:
+        raise ValueError('Given subsequence is empty!')
 
     # optimization: prepare some often used things in advance
     cdef int _subseq_len = len(subsequence)
@@ -79,11 +81,11 @@ def find_near_matches_generic_linear_programming(subsequence, sequence,
         free(candidates)
         raise MemoryError()
 
+    cdef unsigned int index
     try:
+        index = 0
         have_realloced = False
-        for index in xrange(len(sequence)):
-            char = c_sequence[index]
-
+        for char in c_sequence[:len(sequence)]:
             candidates[n_candidates] = GenericSearchCandidate(index, 0, 0, 0, 0, 0)
             n_candidates += 1
 
@@ -204,13 +206,15 @@ def find_near_matches_generic_linear_programming(subsequence, sequence,
                     raise MemoryError()
                 new_candidates = _tmp
 
+            index += 1
+
         for n_cand in xrange(n_candidates):
             cand = candidates[n_cand]
-            # note: index + 1 == length(sequence)
+            # note: index == length(sequence)
             n_skipped = _subseq_len - cand.subseq_index
             if cand.n_dels + n_skipped <= c_max_deletions and \
                cand.l_dist + n_skipped <= c_max_l_dist:
-                yield Match(cand.start, index + 1, cand.l_dist + n_skipped)
+                yield Match(cand.start, index, cand.l_dist + n_skipped)
 
     finally:
         free(candidates)

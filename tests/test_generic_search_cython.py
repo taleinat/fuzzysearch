@@ -5,7 +5,7 @@ from tests.test_substitutions_only import TestSubstitionsOnlyBase
 
 try:
     from fuzzysearch._generic_search import \
-        find_near_matches_generic_linear_programming as fnm_generic_lp
+        c_find_near_matches_generic_linear_programming as c_fnm_generic_lp
 except ImportError:
     pass
 else:
@@ -15,9 +15,9 @@ else:
             return [
                 get_best_match_in_group(group)
                 for group in group_matches(
-                    fnm_generic_lp(subsequence.encode('ascii'),
-                                   sequence.encode('ascii'),
-                                   max_l_dist, max_l_dist, max_l_dist, max_l_dist)
+                    c_fnm_generic_lp(subsequence.encode('ascii'),
+                                     sequence.encode('ascii'),
+                                     max_l_dist, max_l_dist, max_l_dist, max_l_dist)
                 )
             ]
 
@@ -26,9 +26,9 @@ else:
                                                unittest.TestCase):
         def search(self, subsequence, sequence, max_subs):
             return list(
-                fnm_generic_lp(subsequence.encode('ascii'),
-                               sequence.encode('ascii'),
-                               max_subs, 0, 0, max_subs)
+                c_fnm_generic_lp(subsequence.encode('ascii'),
+                                 sequence.encode('ascii'),
+                                 max_subs, 0, 0, max_subs)
             )
 
 
@@ -36,9 +36,9 @@ else:
         def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                    max_l_dist=None):
             return list(
-                fnm_generic_lp(pattern.encode('ascii'),
-                               sequence.encode('ascii'),
-                               max_subs, max_ins, max_dels, max_l_dist)
+                c_fnm_generic_lp(pattern.encode('ascii'),
+                                 sequence.encode('ascii'),
+                                 max_subs, max_ins, max_dels, max_l_dist)
             )
 
         def test_empty_sequence(self):

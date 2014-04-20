@@ -149,10 +149,19 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
 
 try:
     from fuzzysearch._generic_search import \
-        find_near_matches_generic_linear_programming
+        c_find_near_matches_generic_linear_programming as c_fnm_generic_lp
 except ImportError:
     find_near_matches_generic_linear_programming = \
         _find_near_matches_generic_linear_programming
+else:
+    def find_near_matches_generic_linear_programming(*args, **kwargs):
+        try:
+            for match in c_fnm_generic_lp(*args, **kwargs):
+                yield match
+        except TypeError:
+            for match in _find_near_matches_generic_linear_programming(
+                    *args, **kwargs):
+                yield match
 
 
 def find_near_matches_generic_ngrams(subsequence, sequence,
