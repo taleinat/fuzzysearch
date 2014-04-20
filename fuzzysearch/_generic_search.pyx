@@ -1,4 +1,3 @@
-import sys
 import six
 from fuzzysearch.common import Match
 from libc.stdlib cimport malloc, free, realloc
