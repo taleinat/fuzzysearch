@@ -18,7 +18,7 @@ GenericSearchCandidate = namedtuple(
 )
 
 
-def find_near_matches_generic_linear_programming(subsequence, sequence,
+def _find_near_matches_generic_linear_programming(subsequence, sequence,
                                                  max_substitutions,
                                                  max_insertions,
                                                  max_deletions,
@@ -145,6 +145,14 @@ def find_near_matches_generic_linear_programming(subsequence, sequence,
         if cand.n_dels + n_skipped <= max_deletions and \
            cand.l_dist + n_skipped <= max_l_dist:
             yield Match(cand.start, index + 1, cand.l_dist + n_skipped)
+
+
+try:
+    from fuzzysearch._generic_search import \
+        find_near_matches_generic_linear_programming
+except ImportError:
+    find_near_matches_generic_linear_programming = \
+        _find_near_matches_generic_linear_programming
 
 
 def find_near_matches_generic_ngrams(subsequence, sequence,
