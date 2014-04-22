@@ -9,8 +9,6 @@ env:
   - TOXENV=py32
   - TOXENV=py33
   - TOXENV=py34
-  - TOXENV=coverage27
-  - TOXENV=coverage33
 script:
   - tox
 after_success:
