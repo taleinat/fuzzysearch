@@ -1,18 +1,16 @@
 language: python
-before_install:
-  - "[ -d ~/.distlib ] && sudo chown -R travis:travis ~/.distlib || true"
 install:
   - pip install tox
   - pip install coveralls
   - "if [[ $TOXENV == 'py34' ]]; then .travis/py34.sh; fi"
 env:
-  - TOX_ENV=py26
-  - TOX_ENV=py27
-  - TOX_ENV=py32
-  - TOX_ENV=py33
-  - TOX_ENV=py34
-  - TOX_ENV=coverage27
-  - TOX_ENV=coverage33
+  - TOXENV=py26
+  - TOXENV=py27
+  - TOXENV=py32
+  - TOXENV=py33
+  - TOXENV=py34
+  - TOXENV=coverage27
+  - TOXENV=coverage33
 script:
   - tox
 after_success:
