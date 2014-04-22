@@ -1,5 +1,5 @@
 from collections import deque, defaultdict
-from itertools import islice, chain
+from itertools import islice
 
 from fuzzysearch.common import Match, search_exact
 
@@ -175,7 +175,6 @@ def has_near_match_substitutions_ngrams(subsequence, sequence,
 
     * the number of character substitutions must be less than max_substitutions
     * no deletions or insertions are allowed
-    * the total number of substitutions, insertions and deletions
     """
     for match in _find_near_matches_substitutions_ngrams(subsequence, sequence,
                                                          max_substitutions):
