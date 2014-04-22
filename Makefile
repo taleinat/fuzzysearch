@@ -4,13 +4,13 @@ help:
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
 	@echo "clean-cython - remove compiled cython files (*.c, *.a, *.o, *.so)"
-	@echo "clean - run all of the above clean commands
+	@echo "clean - run all of the above clean commands"
 	@echo "lint - check style with flake8"
 	@echo "test - run tests quickly with the default Python"
 	@echo "testall - run tests on every Python version with tox"
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
-	@echo "cython - compile *.pyx to *.c with cython
+	@echo "cython - compile *.pyx to *.c with cython"
 	@echo "release - package and upload a release"
 	@echo "sdist - package"
 
@@ -38,13 +38,13 @@ lint:
 	flake8 fuzzysearch tests
 
 test:
-	python setup.py test
+	nose2 --no-user-config tests
 
 test-all:
 	tox
 
 coverage:
-	coverage run --source fuzzysearch setup.py test
+	test-all
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
