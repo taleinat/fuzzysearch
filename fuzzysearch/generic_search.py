@@ -18,11 +18,50 @@ GenericSearchCandidate = namedtuple(
 )
 
 
-def _find_near_matches_generic_linear_programming(subsequence, sequence,
-                                                 max_substitutions,
-                                                 max_insertions,
-                                                 max_deletions,
-                                                 max_l_dist=None):
+def _check_arguments(subsequence, sequence,
+                     max_substitutions, max_insertions,
+                     max_deletions, max_l_dist=None):
+    if not subsequence:
+        raise ValueError('Given subsequence is empty!')
+
+    if max_l_dist is None:
+        if (
+                max_substitutions is None or
+                max_insertions is None or
+                max_deletions is None
+        ):
+            if (
+                    max_substitutions is None and
+                    max_insertions is None and
+                    max_deletions is None
+            ):
+                raise ValueError('No limitations given!')
+
+            if max_substitutions is None:
+                raise ValueError('# substitutions must be limited!')
+            if max_insertions is None:
+                raise ValueError('# insertions must be limited!')
+            if max_deletions is None:
+                raise ValueError('# deletions must be limited!')
+
+
+def _get_max_l_dist(max_substitutions, max_insertions,
+                    max_deletions, max_l_dist):
+    maxes_sum = (
+        (max_substitutions if max_substitutions is not None else (1 << 29)) +
+        (max_insertions if max_insertions is not None else (1 << 29)) +
+        (max_deletions if max_deletions is not None else (1 << 29))
+    )
+    return (
+        max_l_dist
+        if max_l_dist is not None and max_l_dist <= maxes_sum
+        else maxes_sum
+    )
+
+
+def find_near_matches_generic(subsequence, sequence,
+                              max_substitutions, max_insertions,
+                              max_deletions, max_l_dist=None):
     """search for near-matches of subsequence in sequence
 
     This searches for near-matches, where the nearly-matching parts of the
@@ -33,18 +72,63 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
     * and the maximum allowed number of character deletions
     * the total number of substitutions, insertions and deletions
     """
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
+    _check_arguments(subsequence, sequence, max_substitutions, max_insertions,
+                     max_deletions, max_l_dist)
+
+    max_l_dist = _get_max_l_dist(max_substitutions, max_insertions,
+                                 max_deletions, max_l_dist)
+
+    # if the limitations are so strict that only exact matches are allowed,
+    # use search_exact()
+    if max_l_dist == 0:
+        return [
+            Match(start_index, start_index + len(subsequence), 0)
+            for start_index in search_exact(subsequence, sequence)
+        ]
+
+    # if the n-gram length would be at least 3, use the n-gram search method
+    elif len(subsequence) // (max_l_dist + 1) >= 3:
+        return find_near_matches_generic_ngrams(subsequence, sequence,
+                                                max_substitutions,
+                                                max_insertions,
+                                                max_deletions,
+                                                max_l_dist)
+
+    # use the linear programming search method
+    else:
+        matches = find_near_matches_generic_linear_programming(
+            subsequence, sequence,
+            max_substitutions, max_insertions,
+            max_deletions, max_l_dist)
+
+        match_groups = group_matches(matches)
+        best_matches = [get_best_match_in_group(group) for group in match_groups]
+        return sorted(best_matches)
+
+
+def _find_near_matches_generic_linear_programming(subsequence, sequence,
+                                                  max_substitutions,
+                                                  max_insertions,
+                                                  max_deletions,
+                                                  max_l_dist=None):
+    """search for near-matches of subsequence in sequence
+
+    This searches for near-matches, where the nearly-matching parts of the
+    sequence must meet the following limitations (relative to the subsequence):
+
+    * the maximum allowed number of character substitutions
+    * the maximum allowed number of new characters inserted
+    * and the maximum allowed number of character deletions
+    * the total number of substitutions, insertions and deletions
+    """
+    _check_arguments(subsequence, sequence, max_substitutions, max_insertions,
+                     max_deletions, max_l_dist)
+
+    max_l_dist = _get_max_l_dist(max_substitutions, max_insertions,
+                                 max_deletions, max_l_dist)
 
     # optimization: prepare some often used things in advance
     _subseq_len = len(subsequence)
-
-    maxes_sum = sum(
-        (x if x is not None else 0)
-        for x in [max_substitutions, max_insertions, max_deletions]
-    )
-    if max_l_dist is None or max_l_dist >= maxes_sum:
-        max_l_dist = maxes_sum
 
     candidates = []
     for index, char in enumerate(sequence):
@@ -179,13 +263,12 @@ def find_near_matches_generic_ngrams(subsequence, sequence,
     * and the maximum allowed number of character deletions
     * the total number of substitutions, insertions and deletions
     """
-    maxes_sum = (
-        (max_substitutions if max_substitutions is not None else 0) +
-        (max_insertions if max_insertions is not None else 0) +
-        (max_deletions if max_deletions is not None else 0)
-    )
-    if max_l_dist is None or max_l_dist >= maxes_sum:
-        max_l_dist = maxes_sum
+    _check_arguments(subsequence, sequence,
+                     max_substitutions, max_insertions,
+                     max_deletions, max_l_dist)
+
+    max_l_dist = _get_max_l_dist(max_substitutions, max_insertions,
+                                 max_deletions, max_l_dist)
 
     matches = list(_find_near_matches_generic_ngrams(subsequence, sequence,
                                                      max_substitutions,
@@ -244,13 +327,12 @@ def has_near_match_generic_ngrams(subsequence, sequence,
     * and the maximum allowed number of character deletions
     * the total number of substitutions, insertions and deletions
     """
-    maxes_sum = (
-        (max_substitutions if max_substitutions is not None else 0) +
-        (max_insertions if max_insertions is not None else 0) +
-        (max_deletions if max_deletions is not None else 0)
-    )
-    if max_l_dist is None or max_l_dist >= maxes_sum:
-        max_l_dist = maxes_sum
+    _check_arguments(subsequence, sequence,
+                     max_substitutions, max_insertions,
+                     max_deletions, max_l_dist)
+
+    max_l_dist = _get_max_l_dist(max_substitutions, max_insertions,
+                                 max_deletions, max_l_dist)
 
     for match in _find_near_matches_generic_ngrams(subsequence, sequence,
                                                    max_substitutions,

@@ -1,6 +1,8 @@
+from sys import maxint
 import six
 from fuzzysearch.common import Match
 from libc.stdlib cimport malloc, free, realloc
+from libc.string cimport strstr, strncpy
 
 
 __all__ = ['c_find_near_matches_generic_linear_programming']
@@ -43,29 +45,27 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
         raise ValueError('Given subsequence is empty!')
 
     # optimization: prepare some often used things in advance
-    cdef int _subseq_len = len(subsequence)
-    cdef int _subseq_len_minus_one = _subseq_len - 1
+    cdef size_t _subseq_len = len(subsequence)
+    cdef size_t _subseq_len_minus_one = _subseq_len - 1
 
-    maxes_sum = sum(
-        (x if x is not None else 0)
-        for x in [max_substitutions, max_insertions, max_deletions]
+    cdef unsigned int c_max_substitutions = max_substitutions if max_substitutions is not None else (1<<29)
+    cdef unsigned int c_max_insertions = max_insertions if max_insertions is not None else (1<<29)
+    cdef unsigned int c_max_deletions = max_deletions if max_deletions is not None else (1<<29)
+
+    # TODO: write a good comment
+    cdef unsigned int c_max_l_dist = min(
+        max_l_dist if max_l_dist is not None else (1<<29),
+        c_max_substitutions + c_max_insertions + c_max_deletions,
     )
-    if max_l_dist is None or max_l_dist >= maxes_sum:
-        max_l_dist = maxes_sum
 
-    cdef c_max_l_dist = max_l_dist
-    cdef c_max_substitutions = max_substitutions
-    cdef c_max_insertions = max_insertions
-    cdef c_max_deletions = max_deletions
-
-    cdef alloc_size
+    cdef size_t alloc_size
     cdef GenericSearchCandidate* candidates
     cdef GenericSearchCandidate* new_candidates
     cdef GenericSearchCandidate* _tmp
     cdef GenericSearchCandidate cand
-    cdef int n_candidates = 0
-    cdef int n_new_candidates = 0
-    cdef int n_cand
+    cdef size_t n_candidates = 0
+    cdef size_t n_new_candidates = 0
+    cdef size_t n_cand
 
     cdef char* c_sequence = sequence
     cdef char* c_subsequence = subsequence
@@ -80,7 +80,7 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
         free(candidates)
         raise MemoryError()
 
-    cdef unsigned int index
+    cdef size_t index
     try:
         index = 0
         have_realloced = False
@@ -92,7 +92,7 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
                 cand = candidates[n_cand]
 
                 if n_new_candidates + 4 > alloc_size:
-                    alloc_size += alloc_size // 2
+                    alloc_size *= 2
                     _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))
                     if _tmp is NULL:
                         raise MemoryError()
@@ -218,3 +218,80 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
     finally:
         free(candidates)
         free(new_candidates)
+
+
+def c_find_near_matches_generic_ngrams(subsequence, sequence,
+                                       max_substitutions, max_insertions,
+                                       max_deletions, max_l_dist=None):
+    """search for near-matches of subsequence in sequence
+
+    This searches for near-matches, where the nearly-matching parts of the
+    sequence must meet the following limitations (relative to the subsequence):
+
+    * the maximum allowed number of character substitutions
+    * the maximum allowed number of new characters inserted
+    * and the maximum allowed number of character deletions
+    * the total number of substitutions, insertions and deletions
+    """
+    if not isinstance(sequence, ALLOWED_TYPES):
+        raise TypeError('sequence is of invalid type %s' % type(subsequence))
+    if not isinstance(subsequence, ALLOWED_TYPES):
+        raise TypeError('subsequence is of invalid type %s' % type(subsequence))
+
+    if not subsequence:
+        raise ValueError('Given subsequence is empty!')
+
+    # optimization: prepare some often used things in advance
+    cdef size_t _subseq_len = len(subsequence)
+    cdef size_t _subseq_len_minus_one = _subseq_len - 1
+    cdef size_t _seq_len = len(sequence)
+
+    cdef unsigned int c_max_substitutions = max_substitutions if max_substitutions is not None else (1<<29)
+    cdef unsigned int c_max_insertions = max_insertions if max_insertions is not None else (1<<29)
+    cdef unsigned int c_max_deletions = max_deletions if max_deletions is not None else (1<<29)
+
+    # TODO: write a good comment
+    cdef unsigned int c_max_l_dist = min(
+        max_l_dist if max_l_dist is not None else (1<<29),
+        c_max_substitutions + c_max_insertions + c_max_deletions,
+    )
+
+    cdef char* c_sequence = sequence
+    cdef char* c_subsequence = subsequence
+    cdef char* ngram_str
+
+    cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)
+    if ngram_len == 0:
+        raise ValueError('the subsequence length must be greater than max_l_dist')
+
+    ngram_str = <char *> malloc((ngram_len + 1) * sizeof(char))
+    if ngram_str is NULL:
+        raise MemoryError()
+
+    cdef int index
+    cdef size_t ngram_start, small_search_start_index
+    cdef char *match_ptr
+
+    try:
+        ngram_str[ngram_len] = 0
+
+        for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
+            strncpy(ngram_str, c_subsequence + ngram_start, ngram_len)
+
+            match_ptr = strstr(c_sequence, ngram_str)
+            while match_ptr != NULL:
+                index = (match_ptr - c_sequence)
+                small_search_start_index = max(0, index - <int>(ngram_start + c_max_l_dist))
+                # try to expand left and/or right according to n_ngram
+                for match in c_find_near_matches_generic_linear_programming(
+                    subsequence, sequence[small_search_start_index:index - ngram_start + _subseq_len + c_max_l_dist],
+                    max_substitutions, max_insertions, max_deletions, c_max_l_dist,
+                ):
+                    yield match._replace(
+                        start=match.start + small_search_start_index,
+                        end=match.end + small_search_start_index,
+                    )
+                match_ptr = strstr(match_ptr + 1, ngram_str)
+
+    finally:
+        free(ngram_str)

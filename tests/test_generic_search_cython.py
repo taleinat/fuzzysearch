@@ -5,11 +5,12 @@ from tests.test_substitutions_only import TestSubstitionsOnlyBase
 
 try:
     from fuzzysearch._generic_search import \
-        c_find_near_matches_generic_linear_programming as c_fnm_generic_lp
+        c_find_near_matches_generic_linear_programming as c_fnm_generic_lp, \
+        c_find_near_matches_generic_ngrams as c_fnm_generic_ngrams
 except ImportError:
     pass
 else:
-    class TestGenericSearchAsLevenshtein(TestFindNearMatchesLevenshteinBase,
+    class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
                                          unittest.TestCase):
         def search(self, subsequence, sequence, max_l_dist):
             return [
@@ -17,13 +18,27 @@ else:
                 for group in group_matches(
                     c_fnm_generic_lp(subsequence.encode('ascii'),
                                      sequence.encode('ascii'),
-                                     max_l_dist, max_l_dist, max_l_dist, max_l_dist)
+                                     max_l_dist, max_l_dist,
+                                     max_l_dist, max_l_dist)
+                )
+            ]
+
+    class TestGenericSearchNgramsAsLevenshtein(
+        TestFindNearMatchesLevenshteinBase, unittest.TestCase):
+        def search(self, subsequence, sequence, max_l_dist):
+            return [
+                get_best_match_in_group(group)
+                for group in group_matches(
+                    c_fnm_generic_ngrams(subsequence.encode('ascii'),
+                                         sequence.encode('ascii'),
+                                         max_l_dist, max_l_dist,
+                                         max_l_dist, max_l_dist)
                 )
             ]
 
 
-    class TestGenericSearchAsSubstitutionsOnly(TestSubstitionsOnlyBase,
-                                               unittest.TestCase):
+    class TestGenericSearchLpAsSubstitutionsOnly(TestSubstitionsOnlyBase,
+                                                 unittest.TestCase):
         def search(self, subsequence, sequence, max_subs):
             return list(
                 c_fnm_generic_lp(subsequence.encode('ascii'),
@@ -32,15 +47,25 @@ else:
             )
 
 
-    class TestGenericSearch(unittest.TestCase):
-        def search(self, pattern, sequence, max_subs, max_ins, max_dels,
-                   max_l_dist=None):
-            return list(
-                c_fnm_generic_lp(pattern.encode('ascii'),
-                                 sequence.encode('ascii'),
-                                 max_subs, max_ins, max_dels, max_l_dist)
-            )
+    class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
+                                                     unittest.TestCase):
+        def search(self, subsequence, sequence, max_subs):
+            return [
+                get_best_match_in_group(group)
+                for group in group_matches(
+                    c_fnm_generic_ngrams(subsequence.encode('ascii'),
+                                         sequence.encode('ascii'),
+                                         max_subs, 0, 0, max_subs)
+                )
+        ]
 
+        @unittest.skip("Ngrams search doesn't return overlapping matches")
+        def test_double_first_item(self):
+            return super(TestGenericSearchNgramsAsSubstitutionsOnly,
+                         self).test_double_first_item()
+
+
+    class TestGenericSearchBase(object):
         def test_empty_sequence(self):
             self.assertEqual([], self.search('PATTERN', '', 0, 0, 0))
 
@@ -78,11 +103,6 @@ else:
                 self.search('def', 'abcddefg', 1, 0, 0),
             )
 
-            self.assertListEqual(
-                [Match(start=3, end=7, dist=1), Match(start=4, end=7, dist=0)],
-                self.search('def', 'abcddefg', 0, 1, 0),
-            )
-
             self.assertIn(
                 Match(start=4, end=7, dist=0),
                 self.search('def', 'abcddefg', 0, 0, 1),
@@ -117,6 +137,65 @@ else:
                 [Match(start=3, end=5, dist=1)],
             )
 
+        def test_valid_none_arguments(self):
+            # check that no exception is raised when some values are None
+            self.assertEqual(
+                self.search('a', 'b', 0, None, None, 0),
+                [],
+            )
+
+            self.assertEqual(
+                self.search('a', 'b', None, 0, None, 0),
+                [],
+            )
+
+            self.assertEqual(
+                self.search('a', 'b', None, None, 0, 0),
+                [],
+            )
+
+            self.assertEqual(
+                self.search('a', 'b', 0, 0, None, 0),
+                [],
+            )
+
+            self.assertEqual(
+                self.search('a', 'b', 0, None, 0, 0),
+                [],
+            )
+
+            self.assertEqual(
+                self.search('a', 'b', None, 0, 0, 0),
+                [],
+            )
+
+            self.assertEqual(
+                self.search('a', 'b', None, None, None, 0),
+                [],
+            )
+
+            self.assertEqual(
+                self.search('a', 'b', 0, 0, 0, None),
+                [],
+            )
+
+    class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
+        def search(self, pattern, sequence, max_subs, max_ins, max_dels,
+                   max_l_dist=None):
+            return list(c_fnm_generic_lp(pattern.encode('ascii'),
+                                         sequence.encode('ascii'),
+                                         max_subs, max_ins,
+                                         max_dels, max_l_dist))
+
+        def test_double_first_item_two_results(self):
+            # sequence = 'abcdefg'
+            # pattern = 'bde'
+            self.assertListEqual(
+                self.search('def', 'abcddefg', 0, 1, 0),
+                [Match(start=3, end=7, dist=1), Match(start=4, end=7, dist=0)],
+            )
+
+        def test_missing_second_item_complex(self):
             self.assertListEqual(
                 self.search('bde', 'abcdefg', 1, 1, 1, 1),
                 [Match(start=1, end=5, dist=1),
@@ -135,24 +214,24 @@ else:
                 ))
             )
 
-        def test_argument_handling(self):
-            # check that no exception is raised when some values are None
-            self.assertEqual(
-                self.search('a', 'b', 0, None, None, None),
-                [],
-            )
+    class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
+        def search(self, pattern, sequence, max_subs, max_ins, max_dels,
+                   max_l_dist=None):
+            return [
+                get_best_match_in_group(group)
+                for group in group_matches(
+                    c_fnm_generic_ngrams(pattern.encode('ascii'),
+                                         sequence.encode('ascii'),
+                                         max_subs, max_ins,
+                                         max_dels, max_l_dist)
+                )
+            ]
 
-            self.assertEqual(
-                self.search('a', 'b', None, 0, None, None),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', None, None, 0, None),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', None, None, None, 0),
-                [],
+        def test_missing_second_item_complex(self):
+            self.assertTrue(
+                set(self.search('bde', 'abcdefg', 1, 1, 1, 1)).issubset([
+                    Match(start=1, end=5, dist=1),
+                    Match(start=2, end=5, dist=1),
+                    Match(start=3, end=5, dist=1),
+                ])
             )

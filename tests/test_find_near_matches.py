@@ -28,7 +28,7 @@ class TestFindNearMatches(unittest.TestCase):
             MockFunctionFailsUnlessDefined()
         self.mock_find_near_matches_substitutions = \
             MockFunctionFailsUnlessDefined()
-        self.mock_find_near_matches_generic_linear_programming = \
+        self.mock_find_near_matches_generic = \
             MockFunctionFailsUnlessDefined()
 
         patcher = mock.patch.multiple(
@@ -38,8 +38,8 @@ class TestFindNearMatches(unittest.TestCase):
                 self.mock_find_near_matches_levenshtein,
             find_near_matches_substitutions=
                 self.mock_find_near_matches_substitutions,
-            find_near_matches_generic_linear_programming=
-                self.mock_find_near_matches_generic_linear_programming,
+            find_near_matches_generic=
+                self.mock_find_near_matches_generic,
         )
         self.addCleanup(patcher.stop)
         patcher.start()
@@ -154,14 +154,14 @@ class TestFindNearMatches(unittest.TestCase):
         )
 
     def test_generic(self):
-        self.mock_find_near_matches_generic_linear_programming.return_value = [42]
+        self.mock_find_near_matches_generic.return_value = [42]
 
         self.assertEqual(
             find_near_matches('a', 'a', 1, 1, 1),
             [42],
         )
         self.assertEqual(
-            self.mock_find_near_matches_generic_linear_programming.call_count,
+            self.mock_find_near_matches_generic.call_count,
             1,
         )
 
@@ -170,6 +170,6 @@ class TestFindNearMatches(unittest.TestCase):
             [42],
         )
         self.assertEqual(
-            self.mock_find_near_matches_generic_linear_programming.call_count,
+            self.mock_find_near_matches_generic.call_count,
             2,
         )
