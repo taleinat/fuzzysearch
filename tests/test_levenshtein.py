@@ -297,7 +297,7 @@ class TestFindNearMatchesLevenshteinBase(object):
         '''.split())
         pattern = "GGGTTLTTSS"
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_l_dist=2),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=0),
@@ -315,7 +315,7 @@ class TestFindNearMatchesLevenshteinBase(object):
         '''.split())
         pattern = "GGGTTLTTSS"
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_l_dist=2),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=1),

@@ -80,13 +80,13 @@ else:
         def test_double_first_item_two_results(self):
             # sequence = 'abcdefg'
             # pattern = 'bde'
-            self.assertListEqual(
+            self.assertEqual(
                 self.search('def', 'abcddefg', 0, 1, 0),
                 [Match(start=3, end=7, dist=1), Match(start=4, end=7, dist=0)],
             )
 
         def test_missing_second_item_complex(self):
-            self.assertListEqual(
+            self.assertEqual(
                 self.search('bde', 'abcdefg', 1, 1, 1, 1),
                 [Match(start=1, end=5, dist=1),
                  Match(start=2, end=5, dist=1),

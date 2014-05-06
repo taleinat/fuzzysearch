@@ -20,7 +20,7 @@ class TestGroupMatches(unittest.TestCase):
             Match(start=42, end=52, dist=1),
             Match(start=99, end=109, dist=0),
         ]
-        self.assertListEqual(
+        self.assertEqual(
             group_matches(matches),
             [set([m]) for m in matches],
         )
@@ -31,7 +31,7 @@ class TestGroupMatches(unittest.TestCase):
             Match(start=42, end=52, dist=1),
             Match(start=99, end=109, dist=0),
         ]
-        self.assertListEqual(
+        self.assertEqual(
             group_matches(matches + [matches[1]]),
             [set([m]) for m in matches],
         )

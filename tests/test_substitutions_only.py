@@ -45,12 +45,12 @@ class TestSubstitionsOnlyBase(object):
         )
 
     def test_double_first_item(self):
-        self.assertListEqual(
+        self.assertEqual(
             self.search('def', 'abcddefg', max_subs=1),
             [Match(start=4, end=7, dist=0)],
         )
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search('def', 'abcddefg', max_subs=2),
             [Match(start=3, end=6, dist=2),
              Match(start=4, end=7, dist=0)],
@@ -151,20 +151,20 @@ class TestSubstitionsOnlyBase(object):
         '''.split())
         pattern = "GGGTTLTTSS"
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_subs=0),
             [Match(start=42, end=52, dist=0),
              Match(start=99, end=109, dist=0)],
         )
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_subs=1),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=0),
              Match(start=99, end=109, dist=0)],
         )
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_subs=2),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=0),
@@ -182,19 +182,19 @@ class TestSubstitionsOnlyBase(object):
         '''.split())
         pattern = "GGGTTLTTSS"
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_subs=0),
             [Match(start=99, end=109, dist=0)],
         )
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_subs=1),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=1),
              Match(start=99, end=109, dist=0)],
         )
 
-        self.assertListEqual(
+        self.assertEqual(
             self.search(pattern, text, max_subs=2),
             [Match(start=19, end=29, dist=1),
              Match(start=42, end=52, dist=1),
