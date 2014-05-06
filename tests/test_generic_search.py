@@ -6,7 +6,8 @@ from tests.test_substitutions_only import TestSubstitionsOnlyBase, \
 from fuzzysearch.generic_search import \
     _find_near_matches_generic_linear_programming as fnm_generic_lp, \
     find_near_matches_generic_ngrams as fnm_generic_ngrams, \
-    has_near_match_generic_ngrams as hnm_generic_ngrams
+    has_near_match_generic_ngrams as hnm_generic_ngrams, \
+    find_near_matches_generic
 
 
 class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
@@ -53,16 +54,19 @@ class TestGenericSearchBase(object):
                max_l_dist=None):
         raise NotImplementedError
 
+    def expectedOutcomes(self, search_result, expected_outcomes):
+        raise NotImplementedError
+
     def test_empty_sequence(self):
-        self.assertEqual(self.search('PATTERN', '', 0, 0, 0), [])
+        self.assertEqual(self.search('PATTERN', '', 0, 0, 0, 0), [])
 
     def test_empty_subsequence_exeption(self):
         with self.assertRaises(ValueError):
-            self.search('', 'TEXT', 0, 0, 0)
+            self.search('', 'TEXT', 0, 0, 0, 0)
 
     def test_match_identical_sequence(self):
         self.assertEqual(
-            self.search('PATTERN', 'PATTERN', 0, 0, 0),
+            self.search('PATTERN', 'PATTERN', 0, 0, 0, 0),
             [Match(start=0, end=len('PATTERN'), dist=0)],
         )
 
@@ -72,7 +76,7 @@ class TestGenericSearchBase(object):
         expected_match = Match(start=10, end=17, dist=0)
 
         self.assertEqual(
-            self.search(substring, text, 0, 0, 0),
+            self.search(substring, text, 0, 0, 0, 0),
             [expected_match],
         )
 
@@ -80,23 +84,24 @@ class TestGenericSearchBase(object):
         # sequence = 'abcdefg'
         # pattern = 'bde'
 
-        self.assertEqual(
-            self.search('def', 'abcddefg', 0, 0, 0),
+        self.expectedOutcomes(
+            self.search('def', 'abcddefg', 0, 0, 0, 0),
             [Match(start=4, end=7, dist=0)],
         )
 
-        self.assertEqual(
-            self.search('def', 'abcddefg', 1, 0, 0),
+        self.expectedOutcomes(
+            self.search('def', 'abcddefg', 1, 0, 0, 1),
             [Match(start=4, end=7, dist=0)],
         )
 
-        self.assertIn(
-            Match(start=4, end=7, dist=0),
-            self.search('def', 'abcddefg', 0, 0, 1),
+        self.expectedOutcomes(
+            self.search('def', 'abcddefg', 0, 0, 1, 1),
+            [Match(start=4, end=7, dist=0),
+             Match(start=5, end=7, dist=1)]
         )
 
-        self.assertEqual(
-            self.search('def', 'abcddefg', 0, 1, 0, 0),
+        self.expectedOutcomes(
+            self.search('def', 'abcddefg', 0, 1, 0, 1),
             [Match(start=4, end=7, dist=0)],
         )
 
@@ -105,24 +110,35 @@ class TestGenericSearchBase(object):
         # pattern = 'bde'
 
         self.assertEqual(
-            self.search('bde', 'abcdefg', 0, 1, 0),
+            self.search('bde', 'abcdefg', 0, 1, 0, 1),
             [Match(start=1, end=5, dist=1)],
         )
 
         self.assertEqual(
-            self.search('bde', 'abcdefg', 0, 0, 0),
+            self.search('bde', 'abcdefg', 0, 0, 0, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('bde', 'abcdefg', 1, 0, 0),
+            self.search('bde', 'abcdefg', 1, 0, 0, 1),
             [Match(start=2, end=5, dist=1)],
         )
 
         self.assertEqual(
-            self.search('bde', 'abcdefg', 0, 0, 1),
+            self.search('bde', 'abcdefg', 0, 0, 1, 1),
             [Match(start=3, end=5, dist=1)],
         )
+
+
+class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
+    def search(self, pattern, sequence, max_subs, max_ins, max_dels,
+               max_l_dist=None):
+        return list(find_near_matches_generic(pattern, sequence,
+                                              max_subs, max_ins,
+                                              max_dels, max_l_dist))
+
+    def expectedOutcomes(self, search_result, expected_outcomes):
+        return search_result == expected_outcomes
 
     def test_valid_none_arguments(self):
         # check that no exception is raised when some values are None
@@ -179,11 +195,14 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
         return list(fnm_generic_lp(pattern, sequence,
                                    max_subs, max_ins, max_dels, max_l_dist))
 
+    def expectedOutcomes(self, search_result, expected_outcomes):
+        return search_result == expected_outcomes
+
     def test_double_first_item_two_results(self):
         # sequence = 'abcdefg'
         # pattern = 'bde'
         self.assertListEqual(
-            self.search('def', 'abcddefg', 0, 1, 0),
+            self.search('def', 'abcddefg', 0, 1, 0, 1),
             [Match(start=3, end=7, dist=1), Match(start=4, end=7, dist=0)],
         )
 
@@ -212,6 +231,13 @@ class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
         return fnm_generic_ngrams(pattern, sequence,
                                   max_subs, max_ins, max_dels, max_l_dist)
 
+    def expectedOutcomes(self, search_result, expected_outcomes):
+        best_from_groups = [
+            get_best_match_in_group(group)
+            for group in group_matches(search_result)
+        ]
+        return search_result == best_from_groups
+
     def test_missing_second_item_complex(self):
         self.assertTrue(
             set(self.search('bde', 'abcdefg', 1, 1, 1, 1)).issubset([
@@ -236,6 +262,9 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
         return hnm_generic_ngrams(pattern, sequence,
                                   max_subs, max_ins, max_dels, max_l_dist)
 
+    def expectedOutcomes(self, search_result, expected_outcomes):
+        return search_result == bool(expected_outcomes)
+
     def assertEqual(self, actual_value, expected_value, *args, **kwargs):
         return super(TestHasNearMatchGenericNgrams, self).assertEqual(
             actual_value, bool(expected_value), *args, **kwargs)
@@ -243,9 +272,6 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
     def assertListEqual(self, actual_value, expected_value, *args, **kwargs):
         return super(TestHasNearMatchGenericNgrams, self).assertEqual(
             actual_value, bool(expected_value), *args, **kwargs)
-
-    def assertIn(self, member, container, *args, **kwargs):
-        return super(TestHasNearMatchGenericNgrams, self).assertTrue(container)
 
     def test_missing_second_item_complex(self):
         # skip this because ngrams search requires that the subsequence's

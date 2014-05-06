@@ -2,6 +2,7 @@ from tests.compat import unittest
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from tests.test_substitutions_only import TestSubstitionsOnlyBase
+from tests.test_generic_search import TestGenericSearchBase
 
 try:
     from fuzzysearch._generic_search import \
@@ -11,7 +12,7 @@ except ImportError:
     pass
 else:
     class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
-                                         unittest.TestCase):
+                                           unittest.TestCase):
         def search(self, subsequence, sequence, max_l_dist):
             return [
                 get_best_match_in_group(group)
@@ -65,120 +66,6 @@ else:
                          self).test_double_first_item()
 
 
-    class TestGenericSearchBase(object):
-        def test_empty_sequence(self):
-            self.assertEqual([], self.search('PATTERN', '', 0, 0, 0))
-
-        def test_empty_subsequence_exeption(self):
-            with self.assertRaises(ValueError):
-                self.search('', 'TEXT', 0, 0, 0)
-
-        def test_match_identical_sequence(self):
-            self.assertEqual(
-                [Match(start=0, end=len('PATTERN'), dist=0)],
-                self.search('PATTERN', 'PATTERN', 0, 0, 0),
-            )
-
-        def test_substring(self):
-            substring = 'PATTERN'
-            text = 'aaaaaaaaaaPATTERNaaaaaaaaa'
-            expected_match = Match(start=10, end=17, dist=0)
-
-            self.assertEqual(
-                [expected_match],
-                self.search(substring, text, 0, 0, 0)
-            )
-
-        def test_double_first_item(self):
-            # sequence = 'abcdefg'
-            # pattern = 'bde'
-
-            self.assertEqual(
-                [Match(start=4, end=7, dist=0)],
-                self.search('def', 'abcddefg', 0, 0, 0),
-            )
-
-            self.assertEqual(
-                [Match(start=4, end=7, dist=0)],
-                self.search('def', 'abcddefg', 1, 0, 0),
-            )
-
-            self.assertIn(
-                Match(start=4, end=7, dist=0),
-                self.search('def', 'abcddefg', 0, 0, 1),
-            )
-
-            self.assertEqual(
-                [Match(start=4, end=7, dist=0)],
-                self.search('def', 'abcddefg', 0, 1, 0, 0),
-            )
-
-        def test_missing_second_item(self):
-            # sequence = 'abcdefg'
-            # pattern = 'bde'
-
-            self.assertEqual(
-                self.search('bde', 'abcdefg', 0, 1, 0),
-                [Match(start=1, end=5, dist=1)],
-            )
-
-            self.assertEqual(
-                self.search('bde', 'abcdefg', 0, 0, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('bde', 'abcdefg', 1, 0, 0),
-                [Match(start=2, end=5, dist=1)],
-            )
-
-            self.assertEqual(
-                self.search('bde', 'abcdefg', 0, 0, 1),
-                [Match(start=3, end=5, dist=1)],
-            )
-
-        def test_valid_none_arguments(self):
-            # check that no exception is raised when some values are None
-            self.assertEqual(
-                self.search('a', 'b', 0, None, None, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', None, 0, None, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', None, None, 0, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', 0, 0, None, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', 0, None, 0, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', None, 0, 0, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', None, None, None, 0),
-                [],
-            )
-
-            self.assertEqual(
-                self.search('a', 'b', 0, 0, 0, None),
-                [],
-            )
-
     class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
         def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                    max_l_dist=None):
@@ -186,6 +73,9 @@ else:
                                          sequence.encode('ascii'),
                                          max_subs, max_ins,
                                          max_dels, max_l_dist))
+
+        def expectedOutcomes(self, search_result, expected_outcomes):
+            return search_result == expected_outcomes
 
         def test_double_first_item_two_results(self):
             # sequence = 'abcdefg'
@@ -226,6 +116,13 @@ else:
                                          max_dels, max_l_dist)
                 )
             ]
+
+        def expectedOutcomes(self, search_result, expected_outcomes):
+            best_from_groups = [
+                get_best_match_in_group(group)
+                for group in group_matches(search_result)
+            ]
+            return search_result == best_from_groups
 
         def test_missing_second_item_complex(self):
             self.assertTrue(
