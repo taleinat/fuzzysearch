@@ -6,6 +6,7 @@ from six.moves import xrange
 
 
 __all__ = [
+    'find_near_matches_generic',
     'find_near_matches_generic_linear_programming',
     'find_near_matches_generic_ngrams',
     'has_near_match_generic_ngrams',

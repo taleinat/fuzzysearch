@@ -5,7 +5,10 @@ from libc.stdlib cimport malloc, free, realloc
 from libc.string cimport strstr, strncpy
 
 
-__all__ = ['c_find_near_matches_generic_linear_programming']
+__all__ = [
+    'c_find_near_matches_generic_linear_programming',
+    'c_find_near_matches_generic_ngrams',
+]
 
 
 cdef struct GenericSearchCandidate:
@@ -44,19 +47,27 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
     if not subsequence:
         raise ValueError('Given subsequence is empty!')
 
-    # optimization: prepare some often used things in advance
-    cdef size_t _subseq_len = len(subsequence)
-    cdef size_t _subseq_len_minus_one = _subseq_len - 1
+    c_subsequence = <char *>subsequence
+    c_sequence = <char *>sequence
 
-    cdef unsigned int c_max_substitutions = max_substitutions if max_substitutions is not None else (1<<29)
-    cdef unsigned int c_max_insertions = max_insertions if max_insertions is not None else (1<<29)
-    cdef unsigned int c_max_deletions = max_deletions if max_deletions is not None else (1<<29)
-
-    # TODO: write a good comment
-    cdef unsigned int c_max_l_dist = min(
+    return _c_find_near_matches_generic_linear_programming(
+        c_subsequence, len(subsequence),
+        c_sequence, len(sequence),
+        max_substitutions if max_substitutions is not None else (1<<29),
+        max_insertions if max_insertions is not None else (1<<29),
+        max_deletions if max_deletions is not None else (1<<29),
         max_l_dist if max_l_dist is not None else (1<<29),
-        c_max_substitutions + c_max_insertions + c_max_deletions,
     )
+
+def _c_find_near_matches_generic_linear_programming(
+        char* subsequence, size_t subseq_len,
+        char* sequence, size_t seq_len,
+        unsigned int max_substitutions,
+        unsigned int max_insertions,
+        unsigned int max_deletions,
+        unsigned int max_l_dist,
+):
+    cdef unsigned int subseq_len_minus_one = subseq_len - 1
 
     cdef size_t alloc_size
     cdef GenericSearchCandidate* candidates
@@ -67,11 +78,7 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
     cdef size_t n_new_candidates = 0
     cdef size_t n_cand
 
-    cdef char* c_sequence = sequence
-    cdef char* c_subsequence = subsequence
-    cdef char char
-
-    alloc_size = min(10, _subseq_len * 3 + 1)
+    alloc_size = min(10, subseq_len * 3 + 1)
     candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
     if candidates is NULL:
         raise MemoryError()
@@ -80,11 +87,14 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
         free(candidates)
         raise MemoryError()
 
+    matches = []
+
     cdef size_t index
+    cdef char charchar
     try:
         index = 0
         have_realloced = False
-        for char in c_sequence[:len(sequence)]:
+        for charchar in sequence[:seq_len]:
             candidates[n_candidates] = GenericSearchCandidate(index, 0, 0, 0, 0, 0)
             n_candidates += 1
 
@@ -100,10 +110,10 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
                     have_realloced = True
 
                 # if this sequence char is the candidate's next expected char
-                if char == c_subsequence[cand.subseq_index]:
+                if charchar == subsequence[cand.subseq_index]:
                     # if reached the end of the subsequence, return a match
-                    if cand.subseq_index == _subseq_len_minus_one:
-                        yield Match(cand.start, index + 1, cand.l_dist)
+                    if cand.subseq_index == subseq_len_minus_one:
+                        matches.append(Match(cand.start, index + 1, cand.l_dist))
                     # otherwise, update the candidate's subseq_index and keep it
                     else:
                         new_candidates[n_new_candidates] = GenericSearchCandidate(
@@ -118,10 +128,10 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
                     # we can try skipping a sequence or sub-sequence char (or both),
                     # unless this candidate has already skipped the maximum allowed
                     # number of characters
-                    if cand.l_dist == c_max_l_dist:
+                    if cand.l_dist == max_l_dist:
                         continue
 
-                    if cand.n_ins < c_max_insertions:
+                    if cand.n_ins < max_insertions:
                         # add a candidate skipping a sequence char
                         new_candidates[n_new_candidates] = GenericSearchCandidate(
                             cand.start, cand.subseq_index,
@@ -130,8 +140,8 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
                         )
                         n_new_candidates += 1
 
-                    if cand.subseq_index + 1 < _subseq_len:
-                        if cand.n_subs < c_max_substitutions:
+                    if cand.subseq_index + 1 < subseq_len:
+                        if cand.n_subs < max_substitutions:
                             # add a candidate skipping both a sequence char and a
                             # subsequence char
                             new_candidates[n_new_candidates] = GenericSearchCandidate(
@@ -140,7 +150,7 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
                                 cand.n_ins, cand.n_dels,
                             )
                             n_new_candidates += 1
-                        elif cand.n_dels < c_max_deletions and cand.n_ins < c_max_insertions:
+                        elif cand.n_dels < max_deletions and cand.n_ins < max_insertions:
                             # add a candidate skipping both a sequence char and a
                             # subsequence char
                             new_candidates[n_new_candidates] = GenericSearchCandidate(
@@ -152,31 +162,31 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
                     else:
                         # cand.subseq_index == _subseq_len - 1
                         if (
-                                cand.n_subs < c_max_substitutions or
+                                cand.n_subs < max_substitutions or
                                 (
-                                    cand.n_dels < c_max_deletions and
-                                    cand.n_ins < c_max_insertions
+                                    cand.n_dels < max_deletions and
+                                    cand.n_ins < max_insertions
                                 )
                         ):
-                            yield Match(cand.start, index + 1, cand.l_dist + 1)
+                            matches.append(Match(cand.start, index + 1, cand.l_dist + 1))
 
                     # try skipping subsequence chars
-                    for n_skipped in xrange(1, min(c_max_deletions - cand.n_dels, c_max_l_dist - cand.l_dist) + 1):
+                    for n_skipped in xrange(1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + 1):
                         # if skipping n_dels sub-sequence chars reaches the end
                         # of the sub-sequence, yield a match
-                        if cand.subseq_index + n_skipped == _subseq_len:
-                            yield Match(cand.start, index + 1,
-                                        cand.l_dist + n_skipped)
+                        if cand.subseq_index + n_skipped == subseq_len:
+                            matches.append(Match(cand.start, index + 1,
+                                                 cand.l_dist + n_skipped))
                             break
                         # otherwise, if skipping n_skipped sub-sequence chars
                         # reaches a sub-sequence char identical to this sequence
                         # char ...
-                        elif char == c_subsequence[cand.subseq_index + n_skipped]:
+                        elif charchar == subsequence[cand.subseq_index + n_skipped]:
                             # if this is the last char of the sub-sequence, yield
                             # a match
-                            if cand.subseq_index + n_skipped + 1 == _subseq_len:
-                                yield Match(cand.start, index + 1,
-                                            cand.l_dist + n_skipped)
+                            if cand.subseq_index + n_skipped + 1 == subseq_len:
+                                matches.append(Match(cand.start, index + 1,
+                                                     cand.l_dist + n_skipped))
                             # otherwise add a candidate skipping n_skipped
                             # subsequence chars
                             else:
@@ -210,14 +220,17 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
         for n_cand in xrange(n_candidates):
             cand = candidates[n_cand]
             # note: index == length(sequence)
-            n_skipped = _subseq_len - cand.subseq_index
-            if cand.n_dels + n_skipped <= c_max_deletions and \
-               cand.l_dist + n_skipped <= c_max_l_dist:
-                yield Match(cand.start, index, cand.l_dist + n_skipped)
+            n_skipped = subseq_len - cand.subseq_index
+            if cand.n_dels + n_skipped <= max_deletions and \
+               cand.l_dist + n_skipped <= max_l_dist:
+                matches.append(Match(cand.start, index, cand.l_dist + n_skipped))
 
     finally:
         free(candidates)
         free(new_candidates)
+
+    return matches
+
 
 
 def c_find_near_matches_generic_ngrams(subsequence, sequence,
@@ -268,9 +281,11 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence,
     if ngram_str is NULL:
         raise MemoryError()
 
-    cdef int index
-    cdef size_t ngram_start, small_search_start_index
+    cdef int index, small_search_start_index
+    cdef size_t ngram_start
     cdef char *match_ptr
+
+    matches = []
 
     try:
         ngram_str[ngram_len] = 0
@@ -278,20 +293,31 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence,
         for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
             strncpy(ngram_str, c_subsequence + ngram_start, ngram_len)
 
+            # TODO: handle null characters properly!
             match_ptr = strstr(c_sequence, ngram_str)
             while match_ptr != NULL:
                 index = (match_ptr - c_sequence)
-                small_search_start_index = max(0, index - <int>(ngram_start + c_max_l_dist))
+                small_search_start_index = index - ngram_start - c_max_l_dist
+                small_search_length = _subseq_len + (2 * c_max_l_dist)
+                if small_search_start_index < 0:
+                    small_search_length += small_search_start_index
+                    small_search_start_index = 0
+                if small_search_start_index + small_search_length > _seq_len:
+                    small_search_length = _seq_len - small_search_start_index
                 # try to expand left and/or right according to n_ngram
-                for match in c_find_near_matches_generic_linear_programming(
-                    subsequence, sequence[small_search_start_index:index - ngram_start + _subseq_len + c_max_l_dist],
-                    max_substitutions, max_insertions, max_deletions, c_max_l_dist,
+                for match in _c_find_near_matches_generic_linear_programming(
+                    c_subsequence, _subseq_len,
+                    c_sequence + small_search_start_index,
+                    small_search_length,
+                    c_max_substitutions, c_max_insertions, c_max_deletions, c_max_l_dist,
                 ):
-                    yield match._replace(
+                    matches.append(match._replace(
                         start=match.start + small_search_start_index,
                         end=match.end + small_search_start_index,
-                    )
+                    ))
                 match_ptr = strstr(match_ptr + 1, ngram_str)
 
     finally:
         free(ngram_str)
+
+    return matches
