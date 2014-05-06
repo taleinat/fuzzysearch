@@ -102,7 +102,8 @@ class TestGenericSearchBase(object):
 
         self.expectedOutcomes(
             self.search('def', 'abcddefg', 0, 1, 0, 1),
-            [Match(start=4, end=7, dist=0)],
+            [Match(start=3, end=7, dist=1),
+             Match(start=4, end=7, dist=0)],
         )
 
     def test_missing_second_item(self):
