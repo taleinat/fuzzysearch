@@ -67,7 +67,7 @@ class TestGenericSearchBase(object):
     def test_match_identical_sequence(self):
         self.assertEqual(
             self.search('PATTERN', 'PATTERN', 0, 0, 0, 0),
-            [Match(start=0, end=len('PATTERN'), dist=0)],
+            [Match(start=0, end=7, dist=0)],
         )
 
     def test_substring(self):
