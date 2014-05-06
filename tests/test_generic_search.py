@@ -195,8 +195,8 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
         return list(fnm_generic_lp(pattern, sequence,
                                    max_subs, max_ins, max_dels, max_l_dist))
 
-    def expectedOutcomes(self, search_result, expected_outcomes):
-        return search_result == expected_outcomes
+    def expectedOutcomes(self, search_result, expected_outcomes, *args, **kw):
+        self.assertEqual(search_result, expected_outcomes, *args, **kw)
 
     def test_double_first_item_two_results(self):
         # sequence = 'abcdefg'
@@ -263,16 +263,12 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
         return hnm_generic_ngrams(pattern, sequence,
                                   max_subs, max_ins, max_dels, max_l_dist)
 
-    def expectedOutcomes(self, search_result, expected_outcomes):
-        return search_result == bool(expected_outcomes)
+    def expectedOutcomes(self, search_result, expected_outcomes, *args, **kw):
+        self.assertEqual(search_result, bool(expected_outcomes), *args, **kw)
 
-    def assertEqual(self, actual_value, expected_value, *args, **kwargs):
+    def assertEqual(self, actual_value, expected_value, *args, **kw):
         return super(TestHasNearMatchGenericNgrams, self).assertEqual(
-            actual_value, bool(expected_value), *args, **kwargs)
-
-    def assertListEqual(self, actual_value, expected_value, *args, **kwargs):
-        return super(TestHasNearMatchGenericNgrams, self).assertEqual(
-            actual_value, bool(expected_value), *args, **kwargs)
+            actual_value, bool(expected_value), *args, **kw)
 
     def test_missing_second_item_complex(self):
         # skip this because ngrams search requires that the subsequence's

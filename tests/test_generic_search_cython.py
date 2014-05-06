@@ -74,8 +74,9 @@ else:
                                          max_subs, max_ins,
                                          max_dels, max_l_dist))
 
-        def expectedOutcomes(self, search_result, expected_outcomes):
-            return search_result == expected_outcomes
+        def expectedOutcomes(self, search_result, expected_outcomes,
+                             *args, **kw):
+            self.assertEqual(search_result, expected_outcomes, *args, **kw)
 
         def test_double_first_item_two_results(self):
             # sequence = 'abcdefg'
@@ -117,12 +118,13 @@ else:
                 )
             ]
 
-        def expectedOutcomes(self, search_result, expected_outcomes):
+        def expectedOutcomes(self, search_result, expected_outcomes,
+                             *args, **kw):
             best_from_groups = [
                 get_best_match_in_group(group)
                 for group in group_matches(search_result)
             ]
-            return search_result == best_from_groups
+            self.assertEqual(search_result, best_from_groups, *args, **kw)
 
         def test_missing_second_item_complex(self):
             self.assertTrue(
