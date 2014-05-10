@@ -17,7 +17,8 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 _substitutions_only_module = Extension(
     'fuzzysearch._substitutions_only',
-    sources=['fuzzysearch/_substitutions_only.c'],
+    sources=['fuzzysearch/_substitutions_only.c', 'fuzzysearch/kmp.c'],
+    include_dirs=['.'],
 )
 _common_module = Extension(
     'fuzzysearch._common',

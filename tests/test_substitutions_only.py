@@ -298,7 +298,9 @@ class TestHasNearMatchSubstitionsOnly(TestHasNearMatchSubstitionsOnlyBase,
 
 try:
     from fuzzysearch._substitutions_only import \
-        substitutions_only_has_near_matches_byteslike as hnm_subs_byteslike
+        substitutions_only_has_near_matches_byteslike as hnm_subs_byteslike, \
+        substitutions_only_has_near_matches_ngrams_byteslike as \
+            hnm_subs_ngrams_byteslike
 except ImportError:
     pass
 else:
@@ -309,3 +311,9 @@ else:
         def search(self, subsequence, sequence, max_subs):
             return hnm_subs_byteslike(subsequence, sequence, max_subs)
 
+    class TestHasNearMatchesSubstitionsNgramsByteslike(
+            TestHasNearMatchSubstitionsOnlyBase,
+            unittest.TestCase
+    ):
+        def search(self, subsequence, sequence, max_subs):
+            return hnm_subs_ngrams_byteslike(subsequence, sequence, max_subs)
