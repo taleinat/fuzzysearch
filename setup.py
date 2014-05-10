@@ -27,7 +27,8 @@ _common_module = Extension(
 )
 _generic_search_module = Extension(
     'fuzzysearch._generic_search',
-    sources=['fuzzysearch/_generic_search.c'],
+    sources=['fuzzysearch/_generic_search.c', 'fuzzysearch/kmp.c'],
+    include_dirs=['.'],
 )
 
 setup(

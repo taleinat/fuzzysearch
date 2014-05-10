@@ -2,8 +2,18 @@ from sys import maxint
 import six
 from fuzzysearch.common import Match
 from libc.stdlib cimport malloc, free, realloc
-from libc.string cimport strstr, strncpy
 
+cdef extern from "kmp.h":
+    struct KMPstate:
+        pass # no need to specify the fields if they aren't accessed directly
+
+    void preKMP(const char *subsequence, int subsequence_len, int *kmpNext)
+
+    KMPstate KMP_init(const char *subseq, int subseq_len,
+                      const char *seq, int seq_len,
+                      int *kmpNext)
+
+    const char* KMP_find_next(KMPstate *kmp_state)
 
 __all__ = [
     'c_find_near_matches_generic_linear_programming',
@@ -47,8 +57,8 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
     if not subsequence:
         raise ValueError('Given subsequence is empty!')
 
-    c_subsequence = <char *>subsequence
-    c_sequence = <char *>sequence
+    cdef const char *c_subsequence = subsequence
+    cdef const char *c_sequence = sequence
 
     return _c_find_near_matches_generic_linear_programming(
         c_subsequence, len(subsequence),
@@ -59,9 +69,12 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
         max_l_dist if max_l_dist is not None else (1<<29),
     )
 
-def _c_find_near_matches_generic_linear_programming(
-        char* subsequence, size_t subseq_len,
-        char* sequence, size_t seq_len,
+# The following MUST be a cdef, otherwise Cython copies the sequence and
+# subsequence strings, which means if they contain null bytes the data after
+# the first null byte will not be copied.
+cdef _c_find_near_matches_generic_linear_programming(
+        const char* subsequence, size_t subseq_len,
+        const char* sequence, size_t seq_len,
         unsigned int max_substitutions,
         unsigned int max_insertions,
         unsigned int max_deletions,
@@ -90,11 +103,12 @@ def _c_find_near_matches_generic_linear_programming(
     matches = []
 
     cdef size_t index
-    cdef char charchar
+    cdef char seq_char
+
     try:
         index = 0
         have_realloced = False
-        for charchar in sequence[:seq_len]:
+        for seq_char in sequence[:seq_len]:
             candidates[n_candidates] = GenericSearchCandidate(index, 0, 0, 0, 0, 0)
             n_candidates += 1
 
@@ -110,7 +124,7 @@ def _c_find_near_matches_generic_linear_programming(
                     have_realloced = True
 
                 # if this sequence char is the candidate's next expected char
-                if charchar == subsequence[cand.subseq_index]:
+                if seq_char == subsequence[cand.subseq_index]:
                     # if reached the end of the subsequence, return a match
                     if cand.subseq_index == subseq_len_minus_one:
                         matches.append(Match(cand.start, index + 1, cand.l_dist))
@@ -181,7 +195,7 @@ def _c_find_near_matches_generic_linear_programming(
                         # otherwise, if skipping n_skipped sub-sequence chars
                         # reaches a sub-sequence char identical to this sequence
                         # char ...
-                        elif charchar == subsequence[cand.subseq_index + n_skipped]:
+                        elif seq_char == subsequence[cand.subseq_index + n_skipped]:
                             # if this is the last char of the sub-sequence, yield
                             # a match
                             if cand.subseq_index + n_skipped + 1 == subseq_len:
@@ -269,35 +283,32 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence,
         c_max_substitutions + c_max_insertions + c_max_deletions,
     )
 
-    cdef char* c_sequence = sequence
-    cdef char* c_subsequence = subsequence
-    cdef char* ngram_str
+    cdef const char* c_sequence = sequence
+    cdef const char* c_subsequence = subsequence
 
     cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)
     if ngram_len == 0:
         raise ValueError('the subsequence length must be greater than max_l_dist')
 
-    ngram_str = <char *> malloc((ngram_len + 1) * sizeof(char))
-    if ngram_str is NULL:
-        raise MemoryError()
-
     cdef int index, small_search_start_index
     cdef size_t ngram_start
-    cdef char *match_ptr
 
-    matches = []
+    cdef const char *match_ptr
+    cdef int *kmpNext
+    cdef KMPstate kmp_state
+    kmpNext = <int *> malloc(ngram_len * sizeof(int))
+    if kmpNext is NULL:
+        raise MemoryError()
 
     try:
-        ngram_str[ngram_len] = 0
-
+        matches = []
         for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
-            strncpy(ngram_str, c_subsequence + ngram_start, ngram_len)
+            preKMP(c_subsequence + ngram_start, ngram_len, kmpNext)
 
-            # TODO: handle null characters properly!
-            match_ptr = strstr(c_sequence, ngram_str)
+            kmp_state = KMP_init(c_subsequence + ngram_start, ngram_len, c_sequence, _seq_len, kmpNext)
+            match_ptr = KMP_find_next(&kmp_state)
             while match_ptr != NULL:
-                index = (match_ptr - c_sequence)
-                small_search_start_index = index - ngram_start - c_max_l_dist
+                small_search_start_index = (match_ptr - c_sequence) - ngram_start - c_max_l_dist
                 small_search_length = _subseq_len + (2 * c_max_l_dist)
                 if small_search_start_index < 0:
                     small_search_length += small_search_start_index
@@ -315,9 +326,9 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence,
                         start=match.start + small_search_start_index,
                         end=match.end + small_search_start_index,
                     ))
-                match_ptr = strstr(match_ptr + 1, ngram_str)
+                match_ptr = KMP_find_next(&kmp_state)
 
     finally:
-        free(ngram_str)
+        free(kmpNext)
 
     return matches

@@ -130,6 +130,17 @@ class TestGenericSearchBase(object):
             [Match(start=3, end=5, dist=1)],
         )
 
+    def test_null_bytes(self):
+        self.assertEqual(
+            self.search('abc', 'xx\0abcxx', 0, 0, 0, 0),
+            [Match(start=3, end=6, dist=0)],
+        )
+
+        self.assertEqual(
+            self.search('a\0b', 'xxa\0bcxx', 0, 0, 0, 0),
+            [Match(start=2, end=5, dist=0)],
+        )
+
 
 class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
