@@ -302,12 +302,10 @@ try:
 except ImportError:
     pass
 else:
-    class TestFindNearMatchesSubstitionsByteslike(
+    class TestHasNearMatchesSubstitionsByteslike(
             TestHasNearMatchSubstitionsOnlyBase,
             unittest.TestCase
     ):
         def search(self, subsequence, sequence, max_subs):
             return hnm_subs_byteslike(subsequence, sequence, max_subs)
 
-        def test_empty_subsequence_exeption(self):
-            pass

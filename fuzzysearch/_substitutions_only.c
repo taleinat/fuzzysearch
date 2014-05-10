@@ -27,6 +27,11 @@ substitutions_only_has_near_matches_byteslike(PyObject *self, PyObject *args)
         Py_RETURN_FALSE;
     }
 
+    if (subseq_len == 0) {
+        PyErr_SetString(PyExc_ValueError, "Given subsequence is empty!");
+        return NULL;
+    }
+
     sub_counts = (unsigned int *) malloc (sizeof(unsigned int) * subseq_len);
     if (sub_counts == NULL) {
         return PyErr_NoMemory();
