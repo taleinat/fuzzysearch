@@ -1,5 +1,5 @@
 from fuzzysearch.common import Match, group_matches, GroupOfMatches, \
-    search_exact, _count_differences_with_maximum
+    search_exact, count_differences_with_maximum
 from tests.compat import unittest
 
 from six import b, u
@@ -151,7 +151,7 @@ class TestCountDifferencesWithMaximumBase(object):
 class TestCountDifferencesWithMaximum(TestCountDifferencesWithMaximumBase,
                                       unittest.TestCase):
     def count_diffs(self, seq1, seq2, max_diffs):
-        return _count_differences_with_maximum(seq1, seq2, max_diffs)
+        return count_differences_with_maximum(seq1, seq2, max_diffs)
 
 
 try:
