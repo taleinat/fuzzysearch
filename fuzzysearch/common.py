@@ -1,5 +1,6 @@
 import sys
 from collections import namedtuple
+from functools import wraps
 from six.moves import zip
 
 __all__ = [
@@ -41,7 +42,7 @@ def search_exact(subsequence, sequence, start_index=0, end_index=None):
         index = find(subsequence, index + 1, end_index)
 
 
-def _count_differences_with_maximum(sequence1, sequence2, max_differences):
+def count_differences_with_maximum(sequence1, sequence2, max_differences):
     n_different = 0
     for item1, item2 in zip(sequence1, sequence2):
         if item1 != item2:
@@ -51,11 +52,13 @@ def _count_differences_with_maximum(sequence1, sequence2, max_differences):
     return n_different
 
 try:
-    from fuzzysearch._common import count_differences_with_maximum_byteslike
+    from fuzzysearch._common import count_differences_with_maximum_byteslike, \
+        search_exact_byteslike
 except ImportError:
-    count_differences_with_maximum = _count_differences_with_maximum
-    count_differences_with_maximum_byteslike = _count_differences_with_maximum
+    pass
 else:
+    _count_differences_with_maximum = count_differences_with_maximum
+    @wraps(_count_differences_with_maximum)
     def count_differences_with_maximum(sequence1, sequence2, max_differences):
         try:
             return count_differences_with_maximum_byteslike(sequence1,
@@ -64,6 +67,15 @@ else:
         except TypeError:
             return _count_differences_with_maximum(sequence1, sequence2,
                                                    max_differences)
+
+    _search_exact = search_exact
+    @wraps(_search_exact)
+    def search_exact(subsequence, sequence, start_index=0, end_index=None):
+        try:
+            return search_exact_byteslike(subsequence, sequence,
+                                          start_index, end_index)
+        except TypeError:
+            return _search_exact(subsequence, sequence, start_index, end_index)
 
 
 class GroupOfMatches(object):

@@ -21,7 +21,8 @@ _substitutions_only_module = Extension(
 )
 _common_module = Extension(
     'fuzzysearch._common',
-    sources=['fuzzysearch/_common.c'],
+    sources=['fuzzysearch/_common.c', 'fuzzysearch/kmp.c'],
+    include_dirs=['.'],
 )
 _generic_search_module = Extension(
     'fuzzysearch._generic_search',

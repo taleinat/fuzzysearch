@@ -1,8 +1,93 @@
 #include <Python.h>
+#include "fuzzysearch/kmp.h"
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K
 #endif
+
+#ifdef __GNUC__
+  /* Test for GCC > 2.95 */
+  #if __GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95))
+    #define likely(x)   __builtin_expect(!!(x), 1)
+    #define unlikely(x) __builtin_expect(!!(x), 0)
+  #else /* __GNUC__ > 2 ... */
+    #define likely(x)   (x)
+    #define unlikely(x) (x)
+  #endif /* __GNUC__ > 2 ... */
+#else /* __GNUC__ */
+  #define likely(x)   (x)
+  #define unlikely(x) (x)
+#endif /* __GNUC__ */
+
+
+static PyObject *
+search_exact_byteslike(PyObject *self, PyObject *args) {
+    const char *subseq, *seq;
+    int subseq_len, seq_len;
+    PyObject *results = NULL;
+    struct KMPstate kmp_state;
+    int *kmpNext;
+    const char *next_match_ptr;
+    PyObject *next_result;
+
+    if (unlikely(!PyArg_ParseTuple(
+        args, "s#s#",
+        &subseq, &subseq_len,
+        &seq, &seq_len
+    ))) {
+        return NULL;
+    }
+
+    if (unlikely(subseq_len == 0)) {
+        PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
+        return NULL;
+    }
+
+    results = PyList_New(0);
+    if (unlikely(!results)) {
+        return NULL;
+    }
+
+    if (unlikely(subseq_len > seq_len)) {
+        return results;
+    }
+
+    kmpNext = (int *) malloc (subseq_len * sizeof(int));
+    if (unlikely(kmpNext == NULL)) {
+        Py_DECREF(results);
+        return PyErr_NoMemory();
+    }
+
+    preKMP(subseq, subseq_len, kmpNext);
+    kmp_state = KMP_init(subseq, subseq_len, seq, seq_len, kmpNext);
+
+    next_match_ptr = KMP_find_next(&kmp_state);
+    while (next_match_ptr != NULL) {
+#ifdef IS_PY3K
+        next_result = PyLong_FromLong(next_match_ptr - seq);
+#else
+        next_result = PyInt_FromLong(next_match_ptr - seq);
+#endif
+        if (unlikely(next_result == NULL)) {
+            goto error;
+        }
+        if (unlikely(PyList_Append(results, next_result) == -1)) {
+            Py_DECREF(next_result);
+            goto error;
+        }
+        Py_DECREF(next_result);
+
+        next_match_ptr = KMP_find_next(&kmp_state);
+    }
+
+    free(kmpNext);
+    return results;
+
+error:
+    free(kmpNext);
+    Py_DECREF(results);
+    return NULL;
+}
 
 
 static PyObject *
@@ -41,6 +126,8 @@ static PyMethodDef _common_methods[] = {
     {"count_differences_with_maximum_byteslike",
      count_differences_with_maximum_byteslike,
      METH_VARARGS, "DOCSTRING."},
+    {"search_exact_byteslike", search_exact_byteslike,
+     METH_VARARGS, "DOCSTRING"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

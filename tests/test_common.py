@@ -37,25 +37,9 @@ class TestGroupMatches(unittest.TestCase):
         )
 
 
-class TestSearchExact(unittest.TestCase):
+class TestSearchExactBase(object):
     def search(self, sequence, subsequence):
-        return list(search_exact(sequence, subsequence))
-
-    def test_bytes(self):
-        text = b('abc')
-        self.assertEqual(self.search(text, text), [0])
-
-    def test_unicode(self):
-        text = u('abc')
-        self.assertEqual(self.search(text, text), [0])
-
-    def test_biopython_Seq(self):
-        try:
-            from Bio.Seq import Seq
-        except ImportError:
-            raise unittest.SkipTest('Test requires BioPython')
-        else:
-            self.assertEqual(self.search(Seq('abc'), Seq('abc')), [0])
+        raise NotImplementedError
 
     def test_empty_sequence(self):
         self.assertEqual(self.search('PATTERN', ''), [])
@@ -86,6 +70,32 @@ class TestSearchExact(unittest.TestCase):
 
     def test_endswith(self):
         self.assertEqual(self.search('bcd', 'abcd'), [1])
+
+
+class TestSearchExact(TestSearchExactBase, unittest.TestCase):
+    def search(self, sequence, subsequence):
+        return list(search_exact(sequence, subsequence))
+
+    def test_bytes(self):
+        text = b('abc')
+        self.assertEqual(self.search(text, text), [0])
+
+    def test_unicode_identical(self):
+        text = u('abc')
+        self.assertEqual(self.search(text, text), [0])
+
+    def test_unicode_substring(self):
+        pattern = u('\u03A3\u0393')
+        text = u('\u03A0\u03A3\u0393\u0394')
+        self.assertEqual(self.search(pattern, text), [1])
+
+    def test_biopython_Seq(self):
+        try:
+            from Bio.Seq import Seq
+        except ImportError:
+            raise unittest.SkipTest('Test requires BioPython')
+        else:
+            self.assertEqual(self.search(Seq('abc'), Seq('abc')), [0])
 
 
 class TestCountDifferencesWithMaximumBase(object):
@@ -145,12 +155,21 @@ class TestCountDifferencesWithMaximum(TestCountDifferencesWithMaximumBase,
 
 
 try:
-    from fuzzysearch._common import count_differences_with_maximum_byteslike
+    from fuzzysearch._common import count_differences_with_maximum_byteslike, \
+        search_exact_byteslike
 except ImportError:
     pass
 else:
-    class TestCountDifferencesWithMaximum(TestCountDifferencesWithMaximumBase,
-                                          unittest.TestCase):
+    class TestCountDifferencesWithMaximumByteslike(
+        TestCountDifferencesWithMaximumBase, unittest.TestCase):
         def count_diffs(self, seq1, seq2, max_diffs):
             return count_differences_with_maximum_byteslike(seq1, seq2,
                                                             max_diffs)
+
+    class TestSearchExactByteslike(TestSearchExactBase, unittest.TestCase):
+        def search(self, sequence, subsequence):
+            return search_exact_byteslike(sequence, subsequence)
+
+        def test_bytes(self):
+            text = b('abc')
+            self.assertEqual(self.search(text, text), [0])
