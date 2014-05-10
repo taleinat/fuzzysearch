@@ -88,7 +88,7 @@ substitutions_only_has_near_matches_ngrams_byteslike(PyObject *self, PyObject *a
     const char *match_ptr, *seq_ptr, *subseq_ptr, *subseq_end;
     int *kmpNext;
     struct KMPstate kmp_state;
-    int n_differences, i;
+    int n_differences;
 
     if (!PyArg_ParseTuple(
         args, "s#s#i",
