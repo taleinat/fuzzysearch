@@ -1,7 +1,8 @@
 from collections import deque, defaultdict
 from itertools import islice
 
-from fuzzysearch.common import Match, search_exact
+from fuzzysearch.common import Match, search_exact, \
+    count_differences_with_maximum
 
 
 def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
@@ -143,9 +144,9 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
             n_substitutions = 0
             _seq_before = sequence[index - ngram_start:index]
             if _subseq_before != _seq_before:
-                n_substitutions += sum(
-                    (a != b) for (a, b) in zip(_seq_before, _subseq_before)
-                )
+                n_substitutions += count_differences_with_maximum(
+                    _seq_before, _subseq_before,
+                    max_substitutions - n_substitutions + 1)
                 if n_substitutions > max_substitutions:
                     continue
 
@@ -153,9 +154,9 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
             if _subseq_after != _seq_after:
                 if n_substitutions == max_substitutions:
                     continue
-                n_substitutions += sum(
-                    (a != b) for (a, b) in zip(_seq_after, _subseq_after)
-                )
+                n_substitutions += count_differences_with_maximum(
+                    _seq_after, _subseq_after,
+                    max_substitutions - n_substitutions + 1)
                 if n_substitutions > max_substitutions:
                     continue
 
