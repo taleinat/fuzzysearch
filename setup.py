@@ -17,17 +17,17 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 _substitutions_only_module = Extension(
     'fuzzysearch._substitutions_only',
-    sources=['fuzzysearch/_substitutions_only.c', 'fuzzysearch/kmp.c'],
+    sources=['fuzzysearch/_substitutions_only.c', 'fuzzysearch/memmem.c'],
     include_dirs=['.'],
 )
 _common_module = Extension(
     'fuzzysearch._common',
-    sources=['fuzzysearch/_common.c', 'fuzzysearch/kmp.c'],
+    sources=['fuzzysearch/_common.c', 'fuzzysearch/memmem.c'],
     include_dirs=['.'],
 )
 _generic_search_module = Extension(
     'fuzzysearch._generic_search',
-    sources=['fuzzysearch/_generic_search.c', 'fuzzysearch/kmp.c'],
+    sources=['fuzzysearch/_generic_search.c', 'fuzzysearch/memmem.c'],
     include_dirs=['.'],
 )
 

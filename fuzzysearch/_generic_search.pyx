@@ -1,19 +1,12 @@
-from sys import maxint
 import six
 from fuzzysearch.common import Match
 from libc.stdlib cimport malloc, free, realloc
 
-cdef extern from "kmp.h":
-    struct KMPstate:
-        pass # no need to specify the fields if they aren't accessed directly
-
-    void preKMP(const char *subsequence, int subsequence_len, int *kmpNext)
-
-    KMPstate KMP_init(const char *subseq, int subseq_len,
-                      const char *seq, int seq_len,
-                      int *kmpNext)
-
-    const char* KMP_find_next(KMPstate *kmp_state)
+cdef extern from "memmem.h":
+    int calc_sum(const void *sequence, size_t sequence_len)
+    void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
+                                        const void *needle, size_t needlelen,
+                                        int needle_sum)
 
 __all__ = [
     'c_find_near_matches_generic_linear_programming',
@@ -293,42 +286,42 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence,
     cdef int index, small_search_start_index
     cdef size_t ngram_start
 
-    cdef const char *match_ptr
-    cdef int *kmpNext
-    cdef KMPstate kmp_state
-    kmpNext = <int *> malloc(ngram_len * sizeof(int))
-    if kmpNext is NULL:
-        raise MemoryError()
+    cdef char *match_ptr
+    cdef int subseq_sum
 
-    try:
-        matches = []
-        for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
-            preKMP(c_subsequence + ngram_start, ngram_len, kmpNext)
+    matches = []
+    for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
+        subseq_sum = calc_sum(c_subsequence + ngram_start, ngram_len)
 
-            kmp_state = KMP_init(c_subsequence + ngram_start, ngram_len, c_sequence, _seq_len, kmpNext)
-            match_ptr = KMP_find_next(&kmp_state)
-            while match_ptr != NULL:
-                small_search_start_index = (match_ptr - c_sequence) - ngram_start - c_max_l_dist
-                small_search_length = _subseq_len + (2 * c_max_l_dist)
-                if small_search_start_index < 0:
-                    small_search_length += small_search_start_index
-                    small_search_start_index = 0
-                if small_search_start_index + small_search_length > _seq_len:
-                    small_search_length = _seq_len - small_search_start_index
-                # try to expand left and/or right according to n_ngram
-                for match in _c_find_near_matches_generic_linear_programming(
-                    c_subsequence, _subseq_len,
-                    c_sequence + small_search_start_index,
-                    small_search_length,
-                    c_max_substitutions, c_max_insertions, c_max_deletions, c_max_l_dist,
-                ):
-                    matches.append(match._replace(
-                        start=match.start + small_search_start_index,
-                        end=match.end + small_search_start_index,
-                    ))
-                match_ptr = KMP_find_next(&kmp_state)
+        match_ptr = <char *>simple_memmem_with_needle_sum(
+            <void *>c_sequence + ngram_start,
+            _seq_len - ngram_start,
+            <void *>c_subsequence + ngram_start,
+            ngram_len,
+            subseq_sum)
 
-    finally:
-        free(kmpNext)
+        while match_ptr != NULL:
+            small_search_start_index = (match_ptr - c_sequence) - ngram_start - c_max_l_dist
+            small_search_length = _subseq_len + (2 * c_max_l_dist)
+            if small_search_start_index < 0:
+                small_search_length += small_search_start_index
+                small_search_start_index = 0
+            if small_search_start_index + small_search_length > _seq_len:
+                small_search_length = _seq_len - small_search_start_index
+            # try to expand left and/or right according to n_ngram
+            for match in _c_find_near_matches_generic_linear_programming(
+                c_subsequence, _subseq_len,
+                c_sequence + small_search_start_index,
+                small_search_length,
+                c_max_substitutions, c_max_insertions, c_max_deletions, c_max_l_dist,
+            ):
+                matches.append(match._replace(
+                    start=match.start + small_search_start_index,
+                    end=match.end + small_search_start_index,
+                ))
+            match_ptr = <char *>simple_memmem_with_needle_sum(
+                <void *>match_ptr + 1, _seq_len - (match_ptr - c_sequence) - 1,
+                <void *>c_subsequence + ngram_start, ngram_len,
+                subseq_sum);
 
     return matches

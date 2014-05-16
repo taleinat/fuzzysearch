@@ -4,3 +4,4 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 include fuzzysearch/kmp.h
+include fuzzysearch/memmem.h

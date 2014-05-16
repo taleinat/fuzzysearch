@@ -1,5 +1,6 @@
 #include <Python.h>
 #include "fuzzysearch/kmp.h"
+#include "fuzzysearch/memmem.h"
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K
@@ -44,10 +45,6 @@ substitutions_only_has_near_matches_byteslike(PyObject *self, PyObject *args)
             sub_counts[seq_idx - subseq_idx] +=
                 subsequence[subseq_idx] != sequence[seq_idx];
         }
-//        for(count_idx = 0; count_idx <= seq_idx; ++count_idx) {
-//            printf("%d ", sub_counts[count_idx]);
-//        }
-//        printf("\n");
     }
     sub_counts[seq_idx] = 0;
 
@@ -56,11 +53,6 @@ substitutions_only_has_near_matches_byteslike(PyObject *self, PyObject *args)
             sub_counts[(seq_idx - subseq_idx) % subseq_len] +=
                 subsequence[subseq_idx] != sequence[seq_idx];
         }
-
-//        for(count_idx = 0; count_idx < subseq_len; ++count_idx) {
-//            printf("%d ", sub_counts[count_idx]);
-//        }
-//        printf("\n");
 
         ++seq_idx;
         count_idx = seq_idx % subseq_len;
@@ -86,8 +78,7 @@ substitutions_only_has_near_matches_ngrams_byteslike(PyObject *self, PyObject *a
 
     int ngram_len, ngram_start, subseq_len_after_ngram;
     const char *match_ptr, *seq_ptr, *subseq_ptr, *subseq_end;
-    int *kmpNext;
-    struct KMPstate kmp_state;
+    int subseq_sum;
     int n_differences;
 
     if (!PyArg_ParseTuple(
@@ -113,22 +104,17 @@ substitutions_only_has_near_matches_ngrams_byteslike(PyObject *self, PyObject *a
 
     subseq_end = subsequence + subseq_len;
 
-    kmpNext = (int *) malloc(ngram_len * sizeof(int));
-    if (kmpNext == NULL) {
-        return PyErr_NoMemory();
-    }
-
     for (ngram_start = 0; ngram_start <= subseq_len - ngram_len; ngram_start += ngram_len) {
         subseq_len_after_ngram = subseq_len - (ngram_start + ngram_len);
 
-        preKMP(subsequence + ngram_start, ngram_len, kmpNext);
-        kmp_state = KMP_init(subsequence + ngram_start,
-                             ngram_len,
-                             sequence + ngram_start,
-                             seq_len - ngram_start - subseq_len_after_ngram,
-                             kmpNext);
+        subseq_sum = calc_sum(subsequence + ngram_start, ngram_len);
 
-        match_ptr = KMP_find_next(&kmp_state);
+        match_ptr = simple_memmem_with_needle_sum(sequence + ngram_start,
+                                  seq_len - ngram_start - subseq_len_after_ngram,
+                                  subsequence + ngram_start,
+                                  ngram_len,
+                                  subseq_sum);
+
         while (match_ptr != NULL) {
             n_differences = max_substitutions + 1;
 
@@ -146,16 +132,19 @@ substitutions_only_has_near_matches_ngrams_byteslike(PyObject *self, PyObject *a
                 }
 
                 if (n_differences) {
-                    free(kmpNext);
                     Py_RETURN_TRUE;
                 }
             }
 
-            match_ptr = KMP_find_next(&kmp_state);
+            match_ptr = simple_memmem_with_needle_sum(
+                match_ptr + 1,
+                seq_len - (match_ptr + 1 - sequence) - subseq_len_after_ngram,
+                subsequence + ngram_start,
+                ngram_len,
+                subseq_sum);
         }
     }
 
-    free(kmpNext);
     Py_RETURN_FALSE;
 }
 

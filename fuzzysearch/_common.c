@@ -1,5 +1,6 @@
 #include <Python.h>
 #include "fuzzysearch/kmp.h"
+#include "fuzzysearch/memmem.h"
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K
@@ -25,10 +26,10 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
     const char *subseq, *seq;
     int subseq_len, seq_len;
     PyObject *results = NULL;
-    struct KMPstate kmp_state;
-    int *kmpNext;
-    const char *next_match_ptr;
     PyObject *next_result;
+    void *next_match_ptr;
+    size_t next_match_index;
+    int subseq_sum;
 
     if (unlikely(!PyArg_ParseTuple(
         args, "s#s#",
@@ -52,21 +53,16 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
         return results;
     }
 
-    kmpNext = (int *) malloc (subseq_len * sizeof(int));
-    if (unlikely(kmpNext == NULL)) {
-        Py_DECREF(results);
-        return PyErr_NoMemory();
-    }
-
-    preKMP(subseq, subseq_len, kmpNext);
-    kmp_state = KMP_init(subseq, subseq_len, seq, seq_len, kmpNext);
-
-    next_match_ptr = KMP_find_next(&kmp_state);
+    subseq_sum = calc_sum(subseq, subseq_len);
+    next_match_ptr = simple_memmem_with_needle_sum(seq, seq_len,
+                                                   subseq, subseq_len,
+                                                   subseq_sum);
     while (next_match_ptr != NULL) {
+        next_match_index = (const char *)next_match_ptr - seq;
 #ifdef IS_PY3K
-        next_result = PyLong_FromLong(next_match_ptr - seq);
+        next_result = PyLong_FromLong(next_match_index);
 #else
-        next_result = PyInt_FromLong(next_match_ptr - seq);
+        next_result = PyInt_FromLong(next_match_index);
 #endif
         if (unlikely(next_result == NULL)) {
             goto error;
@@ -77,14 +73,15 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
         }
         Py_DECREF(next_result);
 
-        next_match_ptr = KMP_find_next(&kmp_state);
+        next_match_ptr = simple_memmem_with_needle_sum(
+            next_match_ptr + 1, seq_len - next_match_index - 1,
+            subseq, subseq_len,
+            subseq_sum);
     }
 
-    free(kmpNext);
     return results;
 
 error:
-    free(kmpNext);
     Py_DECREF(results);
     return NULL;
 }
