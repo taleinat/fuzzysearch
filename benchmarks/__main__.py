@@ -39,9 +39,7 @@ setup = textwrap.dedent('''\
                                              {benchmark!r})
 ''').format(**args.__dict__)
 
-code = textwrap.dedent('''\
-run_benchmark(search_func, search_args)
-''')
+code = 'run_benchmark(search_func, search_args)'
 
 timings = timeit.Timer(code, setup=setup).repeat(args.repetitions, args.number)
 print_results(timings, args.number, args.repetitions)
