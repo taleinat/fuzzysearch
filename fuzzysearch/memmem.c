@@ -23,7 +23,7 @@ void *simple_memmem(const void *haystack, size_t haystacklen,
             return (void *) haystack;
             break;
         case (1):
-            /* special-case for single-character needles */
+            /* special case for single-character needles */
             return memchr(haystack, *((unsigned char*) needle), haystacklen);
             break;
     }
@@ -102,7 +102,7 @@ void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
             return (void *) haystack;
             break;
         case (1):
-            /* special-case for single-character needles */
+            /* special case for single-character needles */
             return memchr(haystack, *((unsigned char*) needle), haystacklen);
             break;
     }
