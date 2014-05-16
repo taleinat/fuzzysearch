@@ -68,12 +68,11 @@ def find_near_matches(subsequence, sequence,
 
     # if it is enough to just take into account the maximum Levenshtein
     # distance, use find_near_matches_levenshtein()
-    elif max_l_dist <= min([
-            param for param in [
-                max_substitutions, max_insertions, max_deletions
-            ]
-            if param is not None
-    ]):
+    elif max_l_dist <= min(
+        (max_substitutions if max_substitutions is not None else (1 << 29)),
+        (max_insertions if max_insertions is not None else (1 << 29)),
+        (max_deletions if max_deletions is not None else (1 << 29)),
+    ):
         return find_near_matches_levenshtein(subsequence, sequence, max_l_dist)
 
     # if none of the special cases above are met, use the most generic version

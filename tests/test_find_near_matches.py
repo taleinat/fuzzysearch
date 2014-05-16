@@ -107,6 +107,15 @@ class TestFindNearMatches(unittest.TestCase):
         )
         self.assertEqual(self.mock_search_exact.call_count, 1)
 
+    def test_all_none_except_max_l_dist(self):
+        self.mock_find_near_matches_levenshtein.return_value = [42]
+
+        self.assertEqual(
+            find_near_matches('a', 'a', max_l_dist=1),
+            [42],
+        )
+        self.assertEqual(self.mock_find_near_matches_levenshtein.call_count, 1)
+
     def test_levenshtein(self):
         """test cases where 0 < max_l_dist <= max(others)"""
         # in these cases, find_near_matches should call
