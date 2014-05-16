@@ -78,8 +78,8 @@ void *simple_memmem(const void *haystack, size_t haystacklen,
         sums_diff -= *((unsigned char *) haystack++);
         sums_diff += *((unsigned char *) haystack_ptr++);
 
-        /* we know that the sums are equal, so it is enough to compare all but
-           the last characters */
+        /* if sums_diff == 0, we know that the sums are equal, so it is enough
+           to compare all but the last characters */
         if (sums_diff == 0 && memcmp(haystack, needle, needlelen-1) == 0) {
             return (void *) haystack;
         }
@@ -148,8 +148,8 @@ void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
         sums_diff -= *((unsigned char *) haystack++);
         sums_diff += *((unsigned char *) haystack_ptr++);
 
-        /* we know that the sums are equal, so it is enough to compare all but
-           the last characters */
+        /* if sums_diff == 0, we know that the sums are equal, so it is enough
+           to compare all but the last characters */
         if (sums_diff == 0 && memcmp(haystack, needle, needlelen-1) == 0) {
             return (void *) haystack;
         }
