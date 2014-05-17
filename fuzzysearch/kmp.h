@@ -14,3 +14,6 @@ struct KMPstate KMP_init(const char *subseq, int subseq_len,
                          int *kmpNext);
 
 const char* KMP_find_next(struct KMPstate *kmp_state);
+
+void* kmp_memmem(const void *haystack, size_t haystacklen,
+                 const void *needle, size_t needlelen);
