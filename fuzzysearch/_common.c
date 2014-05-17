@@ -23,13 +23,15 @@
 
 static PyObject *
 search_exact_byteslike(PyObject *self, PyObject *args) {
+    /* input params */
     const char *subseq, *seq;
     int subseq_len, seq_len;
-    PyObject *results = NULL;
+
+    PyObject *results;
     PyObject *next_result;
-    void *next_match_ptr;
     size_t next_match_index;
     int subseq_sum;
+    void *next_match_ptr;
 
     if (unlikely(!PyArg_ParseTuple(
         args, "s#s#",
@@ -39,6 +41,8 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
         return NULL;
     }
 
+    /* this is required because simple_memmem_with_needle_sum() returns the
+       haystack if the needle is empty */
     if (unlikely(subseq_len == 0)) {
         PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
         return NULL;
@@ -90,8 +94,10 @@ error:
 static PyObject *
 count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
 {
+    /* input params */
     const char *seq1, *seq2;
     int seq1_len, seq2_len, max_differences;
+
     int i, n_differences;
 
     if (!PyArg_ParseTuple(

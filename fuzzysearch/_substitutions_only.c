@@ -10,9 +10,11 @@
 static PyObject *
 substitutions_only_has_near_matches_byteslike(PyObject *self, PyObject *args)
 {
+    /* input params */
     const char *subsequence;
     const char *sequence;
     int subseq_len, seq_len, max_substitutions;
+
     unsigned int *sub_counts;
     unsigned int seq_idx, subseq_idx, count_idx;
 
@@ -29,8 +31,10 @@ substitutions_only_has_near_matches_byteslike(PyObject *self, PyObject *args)
         Py_RETURN_FALSE;
     }
 
+    /* this is required because simple_memmem_with_needle_sum() returns the
+       haystack if the needle is empty */
     if (subseq_len == 0) {
-        PyErr_SetString(PyExc_ValueError, "Given subsequence is empty!");
+        PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
         return NULL;
     }
 
