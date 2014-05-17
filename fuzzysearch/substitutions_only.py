@@ -1,5 +1,6 @@
 from collections import deque, defaultdict
 from itertools import islice
+from functools import wraps
 
 from fuzzysearch.common import Match, search_exact, \
     count_differences_with_maximum
@@ -189,3 +190,21 @@ def has_near_match_substitutions_ngrams(subsequence, sequence,
                                                          max_substitutions):
         return True
     return False
+
+
+try:
+    from fuzzysearch._substitutions_only import \
+        substitutions_only_has_near_matches_ngrams_byteslike
+except ImportError:
+    pass
+else:
+    _has_near_match_substitutions_ngrams = has_near_match_substitutions_ngrams
+    @wraps(_has_near_match_substitutions_ngrams)
+    def has_near_match_substitutions_ngrams(subsequence, sequence,
+                                            max_substitutions):
+        try:
+            return substitutions_only_has_near_matches_ngrams_byteslike(
+                subsequence, sequence, max_substitutions)
+        except TypeError:
+            return _has_near_match_substitutions_ngrams(
+                subsequence, sequence, max_substitutions)
