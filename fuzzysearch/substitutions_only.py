@@ -5,6 +5,14 @@ from fuzzysearch.common import Match, search_exact, \
     count_differences_with_maximum
 
 
+def _check_arguments(subsequence, sequence, max_substitutions):
+    if not subsequence:
+        raise ValueError('Given subsequence is empty!')
+
+    if max_substitutions is None or max_substitutions < 0:
+        raise ValueError('Maximum number of substitutions must be >= 0!')
+
+
 def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
     """Find near-matches of the subsequence in the sequence.
 
@@ -14,10 +22,7 @@ def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
     Returns a list of fuzzysearch.Match objects describing the matching parts
     of the sequence.
     """
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
-    if max_substitutions < 0:
-        raise ValueError('Maximum number of substitutions must be >= 0!')
+    _check_arguments(subsequence, sequence, max_substitutions)
 
     if max_substitutions == 0:
         return [
@@ -47,8 +52,7 @@ def find_near_matches_substitutions_linear_programming(subsequence,
     * the number of character substitutions must be less than max_substitutions
     * no deletions or insertions are allowed
     """
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
+    _check_arguments(subsequence, sequence, max_substitutions)
 
     # simple optimization: prepare some often used things in advance
     _SUBSEQ_LEN = len(subsequence)
@@ -112,6 +116,8 @@ def find_near_matches_substitutions_ngrams(subsequence, sequence,
     * the number of character substitutions must be less than max_substitutions
     * no deletions or insertions are allowed
     """
+    _check_arguments(subsequence, sequence, max_substitutions)
+
     match_starts = set()
     matches = []
     for match in _find_near_matches_substitutions_ngrams(subsequence, sequence,
@@ -177,6 +183,8 @@ def has_near_match_substitutions_ngrams(subsequence, sequence,
     * the number of character substitutions must be less than max_substitutions
     * no deletions or insertions are allowed
     """
+    _check_arguments(subsequence, sequence, max_substitutions)
+
     for match in _find_near_matches_substitutions_ngrams(subsequence, sequence,
                                                          max_substitutions):
         return True
