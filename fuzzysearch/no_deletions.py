@@ -49,43 +49,44 @@ def find_near_matches_no_deletions_ngrams(subsequence, sequence,
     _check_arguments(subsequence, sequence,
                      max_substitutions, max_insertions,
                      0, max_l_dist)
-    _SUBSEQ_LEN = len(subsequence)
-    _SEQ_LEN = len(sequence)
 
     max_l_dist = _get_max_l_dist(max_substitutions, max_insertions,
                                  0, max_l_dist)
     max_substitutions = min(max_substitutions, max_l_dist)
     max_insertions = min(max_insertions, max_l_dist)
 
-    ngram_len = _SUBSEQ_LEN // (max_substitutions + max_insertions + 1)
+    subseq_len = len(subsequence)
+    seq_len = len(sequence)
+
+    ngram_len = subseq_len // (max_substitutions + max_insertions + 1)
     if ngram_len == 0:
         raise ValueError(
             "The subsequence's length must be greater than max_subs + max_ins!"
         )
 
-    ngrams = [
-        Ngram(start, start + ngram_len)
-        for start in range(0, len(subsequence) - ngram_len + 1, ngram_len)
-    ]
     matches = []
     matched_indexes = set()
 
-    for ngram in ngrams:
-        _subseq_before = subsequence[:ngram.start]
-        _subseq_before_reversed = _subseq_before[::-1]
-        _subseq_after = subsequence[ngram.end:]
-        start_index = max(0, ngram.start - max_insertions)
-        end_index = min(_SEQ_LEN, _SEQ_LEN - (_SUBSEQ_LEN - ngram.end) + max_insertions)
+    for ngram_start in range(0, len(subsequence) - ngram_len + 1, ngram_len):
+        ngram_end = ngram_start + ngram_len
+        subseq_before = subsequence[:ngram_start]
+        subseq_before_reversed = subseq_before[::-1]
+        subseq_after = subsequence[ngram_end:]
+        start_index = max(0, ngram_start - max_insertions)
+        end_index = min(seq_len, seq_len - (subseq_len - ngram_end) + max_insertions)
 
-        for index in search_exact(subsequence[ngram.start:ngram.end], sequence, start_index, end_index):
-            if index - ngram.start in matched_indexes:
+        for index in search_exact(
+                subsequence[ngram_start:ngram_end], sequence,
+                start_index, end_index,
+        ):
+            if index - ngram_start in matched_indexes:
                 continue
 
-            seq_after = sequence[index + ngram_len:index + _SUBSEQ_LEN - ngram.start + max_insertions]
-            if seq_after.startswith(_subseq_after):
+            seq_after = sequence[index + ngram_len:index + subseq_len - ngram_start + max_insertions]
+            if seq_after.startswith(subseq_after):
                 matches_after = [(0, 0)]
             else:
-                matches_after = _expand(_subseq_after, seq_after,
+                matches_after = _expand(subseq_after, seq_after,
                                   max_substitutions, max_insertions, max_l_dist)
                 if not matches_after:
                     continue
@@ -93,12 +94,12 @@ def find_near_matches_no_deletions_ngrams(subsequence, sequence,
             _max_substitutions = max_substitutions - min(m[0] for m in matches_after)
             _max_insertions = max_insertions - min(m[1] for m in matches_after)
             _max_l_dist = max_l_dist - min(m[0] + m[1] for m in matches_after)
-            seq_before = sequence[index - ngram.start - _max_insertions:index]
-            if seq_before.endswith(_subseq_before):
+            seq_before = sequence[index - ngram_start - _max_insertions:index]
+            if seq_before.endswith(subseq_before):
                 matches_before = [(0, 0)]
             else:
                 matches_before = _expand(
-                    _subseq_before_reversed, seq_before[::-1],
+                    subseq_before_reversed, seq_before[::-1],
                     _max_substitutions, _max_insertions, _max_l_dist,
                 )
 
@@ -110,13 +111,13 @@ def find_near_matches_no_deletions_ngrams(subsequence, sequence,
                             subs_before + subs_after + ins_before + ins_after <= max_l_dist
                     ):
                         matches.append(Match(
-                            start=index - ngram.start - ins_before,
-                            end=index - ngram.start + _SUBSEQ_LEN + ins_after,
+                            start=index - ngram_start - ins_before,
+                            end=index - ngram_start + subseq_len + ins_after,
                             dist=subs_before + subs_after + ins_before + ins_after,
                         ))
                         matched_indexes |= set(range(
-                            index - ngram.start - ins_before,
-                            index - ngram.start - ins_before + max_insertions + 1,
+                            index - ngram_start - ins_before,
+                            index - ngram_start - ins_before + max_insertions + 1,
                         ))
 
     return sorted(matches, key=lambda match: match.start)

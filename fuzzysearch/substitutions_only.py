@@ -141,27 +141,27 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
 
     for ngram_start in range(0, len(subsequence) - ngram_len + 1, ngram_len):
         ngram_end = ngram_start + ngram_len
-        _subseq_before = subsequence[:ngram_start]
-        _subseq_after = subsequence[ngram_end:]
+        subseq_before = subsequence[:ngram_start]
+        subseq_after = subsequence[ngram_end:]
         for index in search_exact(
                 subsequence[ngram_start:ngram_end], sequence,
                 ngram_start, seq_len - (subseq_len - ngram_end),
         ):
             n_substitutions = 0
-            _seq_before = sequence[index - ngram_start:index]
-            if _subseq_before != _seq_before:
+            seq_before = sequence[index - ngram_start:index]
+            if subseq_before != seq_before:
                 n_substitutions += count_differences_with_maximum(
-                    _seq_before, _subseq_before,
+                    seq_before, subseq_before,
                     max_substitutions - n_substitutions + 1)
                 if n_substitutions > max_substitutions:
                     continue
 
-            _seq_after = sequence[index + ngram_len:index - ngram_start + subseq_len]
-            if _subseq_after != _seq_after:
+            seq_after = sequence[index + ngram_len:index - ngram_start + subseq_len]
+            if subseq_after != seq_after:
                 if n_substitutions == max_substitutions:
                     continue
                 n_substitutions += count_differences_with_maximum(
-                    _seq_after, _subseq_after,
+                    seq_after, subseq_after,
                     max_substitutions - n_substitutions + 1)
                 if n_substitutions > max_substitutions:
                     continue

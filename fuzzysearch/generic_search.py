@@ -129,7 +129,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
                                  max_deletions, max_l_dist)
 
     # optimization: prepare some often used things in advance
-    _subseq_len = len(subsequence)
+    subseq_len = len(subsequence)
 
     candidates = []
     for index, char in enumerate(sequence):
@@ -140,7 +140,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
             # if this sequence char is the candidate's next expected char
             if char == subsequence[cand.subseq_index]:
                 # if reached the end of the subsequence, return a match
-                if cand.subseq_index + 1 == _subseq_len:
+                if cand.subseq_index + 1 == subseq_len:
                     yield Match(cand.start, index + 1, cand.l_dist)
                 # otherwise, update the candidate's subseq_index and keep it
                 else:
@@ -163,7 +163,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
                         l_dist=cand.l_dist + 1,
                     ))
 
-                if cand.subseq_index + 1 < _subseq_len:
+                if cand.subseq_index + 1 < subseq_len:
                     if cand.n_subs < max_substitutions:
                         # add a candidate skipping both a sequence char and a
                         # subsequence char
@@ -196,7 +196,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
                 for n_skipped in xrange(1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + 1):
                     # if skipping n_dels sub-sequence chars reaches the end
                     # of the sub-sequence, yield a match
-                    if cand.subseq_index + n_skipped == _subseq_len:
+                    if cand.subseq_index + n_skipped == subseq_len:
                         yield Match(cand.start, index + 1,
                                     cand.l_dist + n_skipped)
                         break
@@ -206,7 +206,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
                     elif subsequence[cand.subseq_index + n_skipped] == char:
                         # if this is the last char of the sub-sequence, yield
                         # a match
-                        if cand.subseq_index + n_skipped + 1 == _subseq_len:
+                        if cand.subseq_index + n_skipped + 1 == subseq_len:
                             yield Match(cand.start, index + 1,
                                         cand.l_dist + n_skipped)
                         # otherwise add a candidate skipping n_skipped
@@ -226,7 +226,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence,
 
     for cand in candidates:
         # note: index + 1 == length(sequence)
-        n_skipped = _subseq_len - cand.subseq_index
+        n_skipped = subseq_len - cand.subseq_index
         if cand.n_dels + n_skipped <= max_deletions and \
            cand.l_dist + n_skipped <= max_l_dist:
             yield Match(cand.start, index + 1, cand.l_dist + n_skipped)
@@ -290,21 +290,21 @@ def _find_near_matches_generic_ngrams(subsequence, sequence,
                                       max_deletions,
                                       max_l_dist):
     # optimization: prepare some often used things in advance
-    _subseq_len = len(subsequence)
-    _seq_len = len(sequence)
+    subseq_len = len(subsequence)
+    seq_len = len(sequence)
 
-    ngram_len = _subseq_len // (max_l_dist + 1)
+    ngram_len = subseq_len // (max_l_dist + 1)
     if ngram_len == 0:
         raise ValueError('the subsequence length must be greater than max_l_dist')
 
-    for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
+    for ngram_start in xrange(0, subseq_len - ngram_len + 1, ngram_len):
         ngram_end = ngram_start + ngram_len
         start_index = max(0, ngram_start - max_l_dist)
-        end_index = min(_seq_len, _seq_len - _subseq_len + ngram_end + max_l_dist)
+        end_index = min(seq_len, seq_len - subseq_len + ngram_end + max_l_dist)
         for index in search_exact(subsequence[ngram_start:ngram_end], sequence, start_index, end_index):
             # try to expand left and/or right according to n_ngram
             for match in find_near_matches_generic_linear_programming(
-                subsequence, sequence[max(0, index - ngram_start - max_l_dist):index - ngram_start + _subseq_len + max_l_dist],
+                subsequence, sequence[max(0, index - ngram_start - max_l_dist):index - ngram_start + subseq_len + max_l_dist],
                 max_substitutions, max_insertions, max_deletions, max_l_dist,
             ):
                 yield match._replace(
