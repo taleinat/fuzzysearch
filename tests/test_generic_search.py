@@ -36,6 +36,9 @@ class TestGenericSearchLpAsSubstitutionsOnly(TestSubstitionsOnlyBase,
             fnm_generic_lp(subsequence, sequence, max_subs, 0, 0, max_subs)
         )
 
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+        return self.assertEqual(search_results, expected_outcomes, *args, **kw)
+
 
 class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                              unittest.TestCase):
@@ -43,10 +46,18 @@ class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
         return fnm_generic_ngrams(subsequence, sequence,
                                   max_subs, 0, 0, max_subs)
 
-    @unittest.skip("Ngrams search doesn't return overlapping matches")
-    def test_double_first_item(self):
-        return super(TestGenericSearchNgramsAsSubstitutionsOnly,
-                     self).test_double_first_item()
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+        best_from_grouped_results = [
+            get_best_match_in_group(group)
+            for group in group_matches(search_results)
+        ]
+        best_from_grouped_exepected_outcomes = [
+            get_best_match_in_group(group)
+            for group in group_matches(expected_outcomes)
+        ]
+        return self.assertEqual(best_from_grouped_results,
+                                best_from_grouped_exepected_outcomes,
+                                *args, **kw)
 
 
 class TestGenericSearchBase(object):
@@ -54,7 +65,7 @@ class TestGenericSearchBase(object):
                max_l_dist=None):
         raise NotImplementedError
 
-    def expectedOutcomes(self, search_result, expected_outcomes):
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
         raise NotImplementedError
 
     def test_empty_sequence(self):
@@ -149,8 +160,13 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
                                               max_subs, max_ins,
                                               max_dels, max_l_dist))
 
-    def expectedOutcomes(self, search_result, expected_outcomes):
-        return search_result == expected_outcomes
+    def expectedOutcomes(self, search_results, expected_outcomes):
+        best_from_grouped_exepected_outcomes = [
+            get_best_match_in_group(group)
+            for group in group_matches(expected_outcomes)
+        ]
+        return self.assertEqual(search_results,
+                                best_from_grouped_exepected_outcomes)
 
     def test_valid_none_arguments(self):
         # check that no exception is raised when some values are None
@@ -207,8 +223,8 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
         return list(fnm_generic_lp(pattern, sequence,
                                    max_subs, max_ins, max_dels, max_l_dist))
 
-    def expectedOutcomes(self, search_result, expected_outcomes, *args, **kw):
-        self.assertEqual(search_result, expected_outcomes, *args, **kw)
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+        self.assertEqual(search_results, expected_outcomes, *args, **kw)
 
     def test_double_first_item_two_results(self):
         # sequence = 'abcdefg'
@@ -244,12 +260,17 @@ class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
         return fnm_generic_ngrams(pattern, sequence,
                                   max_subs, max_ins, max_dels, max_l_dist)
 
-    def expectedOutcomes(self, search_result, expected_outcomes):
-        best_from_groups = [
+    def expectedOutcomes(self, search_results, expected_outcomes):
+        best_from_grouped_results = [
             get_best_match_in_group(group)
-            for group in group_matches(search_result)
+            for group in group_matches(search_results)
         ]
-        return search_result == best_from_groups
+        best_from_grouped_exepected_outcomes = [
+            get_best_match_in_group(group)
+            for group in group_matches(expected_outcomes)
+        ]
+        return self.assertEqual(best_from_grouped_results,
+                                best_from_grouped_exepected_outcomes)
 
     def test_missing_second_item_complex(self):
         self.assertTrue(
@@ -275,8 +296,10 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
         return hnm_generic_ngrams(pattern, sequence,
                                   max_subs, max_ins, max_dels, max_l_dist)
 
-    def expectedOutcomes(self, search_result, expected_outcomes, *args, **kw):
-        self.assertEqual(search_result, bool(expected_outcomes), *args, **kw)
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+        self.assertEqual(bool(search_results),
+                         bool(expected_outcomes),
+                         *args, **kw)
 
     def assertEqual(self, actual_value, expected_value, *args, **kw):
         return super(TestHasNearMatchGenericNgrams, self).assertEqual(

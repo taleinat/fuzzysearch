@@ -3,7 +3,7 @@ from itertools import islice
 from functools import wraps
 
 from fuzzysearch.common import Match, search_exact, \
-    count_differences_with_maximum
+    count_differences_with_maximum, get_best_match_in_group, group_matches
 
 
 def _check_arguments(subsequence, sequence, max_substitutions):
@@ -194,17 +194,48 @@ def has_near_match_substitutions_ngrams(subsequence, sequence,
 
 try:
     from fuzzysearch._substitutions_only import \
-        substitutions_only_has_near_matches_ngrams_byteslike
+        substitutions_only_has_near_matches_ngrams_byteslike, \
+        substitutions_only_find_near_matches_ngrams_byteslike as \
+            _subs_only_fnm_ngram_byteslike
 except ImportError:
     pass
 else:
-    _has_near_match_substitutions_ngrams = has_near_match_substitutions_ngrams
-    @wraps(_has_near_match_substitutions_ngrams)
+    py_has_near_match_substitutions_ngrams = has_near_match_substitutions_ngrams
+    @wraps(py_has_near_match_substitutions_ngrams)
     def has_near_match_substitutions_ngrams(subsequence, sequence,
                                             max_substitutions):
         try:
             return substitutions_only_has_near_matches_ngrams_byteslike(
                 subsequence, sequence, max_substitutions)
         except TypeError:
-            return _has_near_match_substitutions_ngrams(
+            return py_has_near_match_substitutions_ngrams(
                 subsequence, sequence, max_substitutions)
+
+    py_find_near_matches_substitutions_ngrams = \
+        find_near_matches_substitutions_ngrams
+    @wraps(py_find_near_matches_substitutions_ngrams)
+    def find_near_matches_substitutions_ngrams(subsequence, sequence,
+                                               max_substitutions):
+        try:
+            results = _subs_only_fnm_ngram_byteslike(
+                subsequence, sequence, max_substitutions)
+        except TypeError:
+            return py_find_near_matches_substitutions_ngrams(
+                subsequence, sequence, max_substitutions)
+        else:
+            matches = [
+                Match(
+                    index,
+                    index + len(subsequence),
+                    count_differences_with_maximum(
+                        sequence[index:index+len(subsequence)],
+                        subsequence,
+                        max_substitutions + 1,
+                    ),
+                )
+                for index in results
+            ]
+            return [
+                get_best_match_in_group(group)
+                for group in group_matches(matches)
+            ]

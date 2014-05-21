@@ -53,7 +53,7 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    if (unlikely(subseq_len > seq_len)) {
+    if (unlikely(seq_len < subseq_len)) {
         return results;
     }
 

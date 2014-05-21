@@ -47,6 +47,11 @@ else:
                                  max_subs, 0, 0, max_subs)
             )
 
+        def expectedOutcomes(self, search_results, expected_outcomes,
+                             *args, **kw):
+            return self.assertEqual(search_results, expected_outcomes,
+                                    *args, **kw)
+
 
     class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                                      unittest.TestCase):
@@ -60,10 +65,19 @@ else:
                 )
         ]
 
-        @unittest.skip("Ngrams search doesn't return overlapping matches")
-        def test_double_first_item(self):
-            return super(TestGenericSearchNgramsAsSubstitutionsOnly,
-                         self).test_double_first_item()
+        def expectedOutcomes(self, search_results, expected_outcomes,
+                             *args, **kw):
+            best_from_grouped_results = [
+                get_best_match_in_group(group)
+                for group in group_matches(search_results)
+            ]
+            best_from_grouped_exepected_outcomes = [
+                get_best_match_in_group(group)
+                for group in group_matches(expected_outcomes)
+            ]
+            return self.assertEqual(best_from_grouped_results,
+                                    best_from_grouped_exepected_outcomes,
+                                    *args, **kw)
 
 
     class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
