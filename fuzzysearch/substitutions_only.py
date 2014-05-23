@@ -14,6 +14,25 @@ def _check_arguments(subsequence, sequence, max_substitutions):
         raise ValueError('Maximum number of substitutions must be >= 0!')
 
 
+def has_near_match_substitutions(subsequence, sequence, max_substitutions):
+    _check_arguments(subsequence, sequence, max_substitutions)
+
+    if max_substitutions == 0:
+        for start_index in search_exact(subsequence, sequence):
+            return True
+        return False
+
+    elif len(subsequence) // (max_substitutions + 1) >= 3:
+        return has_near_match_substitutions_ngrams(
+            subsequence, sequence, max_substitutions,
+        )
+
+    else:
+        return has_near_match_substitutions_lp(
+            subsequence, sequence, max_substitutions,
+        )
+
+
 def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
     """Find near-matches of the subsequence in the sequence.
 
@@ -37,14 +56,13 @@ def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
         )
 
     else:
-        return list(find_near_matches_substitutions_linear_programming(
+        return find_near_matches_substitutions_lp(
             subsequence, sequence, max_substitutions,
-        ))
+        )
 
 
-def find_near_matches_substitutions_linear_programming(subsequence,
-                                                       sequence,
-                                                       max_substitutions):
+def find_near_matches_substitutions_lp(subsequence, sequence,
+                                       max_substitutions):
     """search for near-matches of subsequence in sequence
 
     This searches for near-matches, where the nearly-matching parts of the
@@ -55,6 +73,12 @@ def find_near_matches_substitutions_linear_programming(subsequence,
     """
     _check_arguments(subsequence, sequence, max_substitutions)
 
+    return list(_find_near_matches_substitutions_lp(subsequence, sequence,
+                                                    max_substitutions))
+
+
+def _find_near_matches_substitutions_lp(subsequence, sequence,
+                                        max_substitutions):
     # simple optimization: prepare some often used things in advance
     _SUBSEQ_LEN = len(subsequence)
     _SUBSEQ_LEN_MINUS_ONE = _SUBSEQ_LEN - 1
@@ -105,6 +129,15 @@ def find_near_matches_substitutions_linear_programming(subsequence,
                 end=index + 1,
                 dist=n_substitutions,
             )
+
+
+def has_near_match_substitutions_lp(subsequence, sequence, max_substitutions):
+    _check_arguments(subsequence, sequence, max_substitutions)
+
+    for match in _find_near_matches_substitutions_lp(subsequence, sequence,
+                                                     max_substitutions):
+        return True
+    return False
 
 
 def find_near_matches_substitutions_ngrams(subsequence, sequence,

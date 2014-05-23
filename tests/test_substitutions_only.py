@@ -1,8 +1,11 @@
 from fuzzysearch.common import group_matches, get_best_match_in_group
 from fuzzysearch.substitutions_only import \
-    find_near_matches_substitutions_linear_programming as fnm_subs_lp, \
+    has_near_match_substitutions as hnm_subs, \
+    find_near_matches_substitutions as fnm_subs, \
+    find_near_matches_substitutions_lp as fnm_subs_lp, \
+    has_near_match_substitutions_lp as hnm_subs_lp, \
     find_near_matches_substitutions_ngrams as fnm_subs_ngrams, \
-    has_near_match_substitutions_ngrams
+    has_near_match_substitutions_ngrams as hnm_subs_ngrams
 
 from tests.compat import unittest
 
@@ -211,6 +214,25 @@ class TestSubstitionsOnlyBase(object):
         )
 
 
+class TestFindNearMatchesSubstitions(TestSubstitionsOnlyBase,
+                                     unittest.TestCase):
+    def search(self, subsequence, sequence, max_subs):
+        return fnm_subs(subsequence, sequence, max_subs)
+
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+        best_from_grouped_results = [
+            get_best_match_in_group(group)
+            for group in group_matches(search_results)
+        ]
+        best_from_grouped_exepected_outcomes = [
+            get_best_match_in_group(group)
+            for group in group_matches(expected_outcomes)
+        ]
+        return self.assertEqual(best_from_grouped_results,
+                                best_from_grouped_exepected_outcomes,
+                                *args, **kw)
+
+
 class TestFindNearMatchesSubstitionsLinearProgramming(TestSubstitionsOnlyBase,
                                                       unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
@@ -253,12 +275,27 @@ class TestHasNearMatchSubstitionsOnlyBase(TestSubstitionsOnlyBase):
 class TestHasNearMatchSubstitionsOnly(TestHasNearMatchSubstitionsOnlyBase,
                                       unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
-        return has_near_match_substitutions_ngrams(subsequence, sequence, max_subs)
+        return hnm_subs(subsequence, sequence, max_subs)
+
+
+class TestHasNearMatchSubstitionsOnlyNgrams(TestHasNearMatchSubstitionsOnlyBase,
+                                            unittest.TestCase):
+    def search(self, subsequence, sequence, max_subs):
+        return hnm_subs_ngrams(subsequence, sequence, max_subs)
+
+
+class TestHasNearMatchSubstitionsOnlyLp(TestHasNearMatchSubstitionsOnlyBase,
+                                        unittest.TestCase):
+    def search(self, subsequence, sequence, max_subs):
+        return hnm_subs_lp(subsequence, sequence, max_subs)
 
 
 try:
     from fuzzysearch._substitutions_only import \
-        substitutions_only_has_near_matches_byteslike as hnm_subs_byteslike, \
+        substitutions_only_has_near_matches_lp_byteslike as \
+            hnm_subs_lp_byteslike, \
+        substitutions_only_find_near_matches_lp_byteslike as \
+            fnm_subs_lp_byteslike, \
         substitutions_only_has_near_matches_ngrams_byteslike as \
             hnm_subs_ngrams_byteslike, \
         substitutions_only_find_near_matches_ngrams_byteslike as \
@@ -266,12 +303,12 @@ try:
 except ImportError:
     pass
 else:
-    class TestHasNearMatchesSubstitionsByteslike(
+    class TestHasNearMatchesSubstitionsLpByteslike(
             TestHasNearMatchSubstitionsOnlyBase,
             unittest.TestCase
     ):
         def search(self, subsequence, sequence, max_subs):
-            return hnm_subs_byteslike(subsequence, sequence, max_subs)
+            return hnm_subs_lp_byteslike(subsequence, sequence, max_subs)
 
     class TestHasNearMatchesSubstitionsNgramsByteslike(
             TestHasNearMatchSubstitionsOnlyBase,
@@ -279,6 +316,31 @@ else:
     ):
         def search(self, subsequence, sequence, max_subs):
             return hnm_subs_ngrams_byteslike(subsequence, sequence, max_subs)
+
+    class TestFindNearMatchesSubstitionsLpByteslike(
+            TestSubstitionsOnlyBase,
+            unittest.TestCase
+    ):
+        def search(self, subsequence, sequence, max_subs):
+            results = fnm_subs_lp_byteslike(subsequence, sequence, max_subs)
+            matches = [
+                Match(
+                    index,
+                    index + len(subsequence),
+                    count_differences_with_maximum(
+                        sequence[index:index+len(subsequence)],
+                        subsequence,
+                        max_subs + 1,
+                    ),
+                )
+                for index in results
+            ]
+            return matches
+
+        def expectedOutcomes(self, search_results, expected_outcomes,
+                             *args, **kw):
+            return self.assertEqual(search_results, expected_outcomes,
+                                    *args, **kw)
 
     class TestFindNearMatchesSubstitionsNgramsByteslike(
             TestSubstitionsOnlyBase,

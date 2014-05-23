@@ -19,6 +19,8 @@
 #endif /* __GNUC__ */
 
 
+#define DO_FREES
+
 static PyObject *
 FUNCTION_NAME(PyObject *self, PyObject *args)
 {
@@ -41,8 +43,6 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    PREPARE;
-
     ngram_len = subseq_len / (max_substitutions + 1);
     if (ngram_len == 0) {
         PyErr_SetString(PyExc_ValueError,
@@ -50,6 +50,8 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         );
         return NULL;
     }
+
+    PREPARE;
 
     if (seq_len < subseq_len) {
         RETURN_AT_END;
@@ -98,5 +100,8 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         }
     }
 
+    DO_FREES;
     RETURN_AT_END;
 }
+
+#undef DO_FREES
