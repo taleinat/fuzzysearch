@@ -30,6 +30,11 @@ _generic_search_module = Extension(
     sources=['fuzzysearch/_generic_search.c', 'fuzzysearch/memmem.c'],
     include_dirs=['.'],
 )
+pymemmem_module = Extension(
+    'fuzzysearch._pymemmem',
+    sources=['fuzzysearch/_pymemmem.c', 'fuzzysearch/memmem.c', 'fuzzysearch/kmp.c'],
+    include_dirs=['.'],
+)
 
 setup(
     name='fuzzysearch',
@@ -43,7 +48,8 @@ setup(
         'fuzzysearch',
     ],
     package_dir={'fuzzysearch': 'fuzzysearch'},
-    ext_modules=[_substitutions_only_module, _common_module, _generic_search_module],
+    ext_modules=[_substitutions_only_module, _common_module,
+                 _generic_search_module, pymemmem_module],
     license="MIT",
     keywords='fuzzysearch',
     classifiers=[

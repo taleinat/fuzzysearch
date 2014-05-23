@@ -12,4 +12,7 @@ void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
                                     const void *needle, size_t needlelen,
                                     int needle_sum);
 
+void *wordlen_memmem(const void *haystack, size_t haystacklen,
+                     const void *needle, size_t needlelen);
+
 #endif /* MEMMEM_H */

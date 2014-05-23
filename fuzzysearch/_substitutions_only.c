@@ -5,7 +5,6 @@
 #endif
 
 
-#define FUNCTION_NAME substitutions_only_has_near_matches_ngrams_byteslike
 #define PREPARE
 #define OUTPUT_VALUE(x) DO_FREES; Py_RETURN_TRUE
 #define RETURN_AT_END Py_RETURN_FALSE
