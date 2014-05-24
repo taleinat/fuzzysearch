@@ -58,7 +58,15 @@ class TestMemmemBase(object):
             subseq = letters[:subseq_length]
             self.assertEqual(self.search(subseq, letters), 0)
             self.assertEqual(self.search(subseq, 'a!'*50 + letters), 100)
-
+            self.assertEqual(self.search(subseq, '!'*100), None)
+            self.assertEqual(self.search(subseq, '!'), None)
+            self.assertEqual(self.search(subseq, '!'*50 + 'a' + '!'*50), None)
+            self.assertEqual(self.search(subseq, '!'*50 + 'a'), None)
+            self.assertEqual(self.search(subseq, subseq[:-1]), None)
+            self.assertEqual(self.search(subseq, subseq[:-1] * 2), None)
+            self.assertEqual(self.search(subseq, subseq[:-1] + 'aa'), None)
+            self.assertEqual(self.search(subseq, 'aa' + subseq[:-1]), None)
+            self.assertEqual(self.search(subseq, 'aa' + subseq[:-1] + 'aa'), None)
 
 try:
     from fuzzysearch._pymemmem import simple_memmem, wordlen_memmem, kmp_memmem
