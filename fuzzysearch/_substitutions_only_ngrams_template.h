@@ -54,6 +54,7 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     PREPARE;
 
     if (seq_len < subseq_len) {
+        DO_FREES;
         RETURN_AT_END;
     }
 
