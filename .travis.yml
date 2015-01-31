@@ -2,7 +2,6 @@ language: python
 install:
   - pip install tox
   - pip install coveralls
-  - "if [[ $TOXENV == 'py34' ]]; then .travis/py34.sh; fi"
 env:
   - TOXENV=py26
   - TOXENV=py27
