@@ -1,5 +1,4 @@
 #include <Python.h>
-#include "fuzzysearch/kmp.h"
 #include "fuzzysearch/memmem.h"
 #include "fuzzysearch/wordlen_memmem.h"
 
@@ -84,37 +83,6 @@ py_wordlen_memmem(PyObject *self, PyObject *args) {
     }
 }
 
-static PyObject *
-py_kmp_memmem(PyObject *self, PyObject *args) {
-    /* input params */
-    const char *haystack, *needle;
-    int haystack_len, needle_len;
-
-    const char *result;
-    PyObject *py_result;
-
-    if (unlikely(!PyArg_ParseTuple(
-        args, "s#s#",
-        &needle, &needle_len,
-        &haystack, &haystack_len
-    ))) {
-        return NULL;
-    }
-
-    result = kmp_memmem(haystack, haystack_len,
-                        needle, needle_len);
-    if (result == NULL) {
-        Py_RETURN_NONE;
-    }
-    else {
-        py_result = PyInt_FromLong(result - haystack);
-        if (unlikely(py_result == NULL)) {
-            return NULL;
-        }
-        return py_result;
-    }
-}
-
 
 static PyMethodDef _pymemmem_methods[] = {
     {"simple_memmem",
@@ -122,9 +90,6 @@ static PyMethodDef _pymemmem_methods[] = {
      METH_VARARGS, "DOCSTRING."},
     {"wordlen_memmem",
      py_wordlen_memmem,
-     METH_VARARGS, "DOCSTRING."},
-    {"kmp_memmem",
-     py_kmp_memmem,
      METH_VARARGS, "DOCSTRING."},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };

@@ -69,7 +69,7 @@ class TestMemmemBase(object):
             self.assertEqual(self.search(subseq, 'aa' + subseq[:-1] + 'aa'), None)
 
 try:
-    from fuzzysearch._pymemmem import simple_memmem, wordlen_memmem, kmp_memmem
+    from fuzzysearch._pymemmem import simple_memmem, wordlen_memmem
 except ImportError:
     pass
 else:
@@ -80,8 +80,3 @@ else:
     class TestWordlenMemmem(TestMemmemBase, unittest.TestCase):
         def search(self, subsequence, sequence):
             return wordlen_memmem(subsequence, sequence)
-
-    @unittest.skip("kmp_memmem is currently broken")
-    class TestKmpMemmem(TestMemmemBase, unittest.TestCase):
-        def search(self, subsequence, sequence):
-            return kmp_memmem(subsequence, sequence)

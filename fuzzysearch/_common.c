@@ -1,5 +1,4 @@
 #include <Python.h>
-#include "fuzzysearch/kmp.h"
 #include "fuzzysearch/memmem.h"
 
 #if PY_MAJOR_VERSION >= 3
