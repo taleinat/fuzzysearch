@@ -32,7 +32,7 @@ _generic_search_module = Extension(
 )
 pymemmem_module = Extension(
     'fuzzysearch._pymemmem',
-    sources=['fuzzysearch/_pymemmem.c', 'fuzzysearch/memmem.c', 'fuzzysearch/kmp.c'],
+    sources=['fuzzysearch/_pymemmem.c', 'fuzzysearch/memmem.c', 'fuzzysearch/kmp.c', 'fuzzysearch/wordlen_memmem.c'],
     include_dirs=['.'],
 )
 
