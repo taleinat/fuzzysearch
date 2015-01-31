@@ -16,7 +16,7 @@ fuzzysearch
 
 fuzzysearch is useful for finding approximate subsequence matches
 
-* Free software: MIT license
+* Free software: `MIT license <LICENSE>`_
 * Documentation: http://fuzzysearch.rtfd.org.
 
 Features
@@ -59,8 +59,3 @@ If needed you can choose a specific search implementation, such as
     >>> from fuzzysearch import find_near_matches_with_ngrams
     >>> find_near_matches_with_ngrams(subsequence, sequence, max_distance)
     [Match(start=3, end=24, dist=1)]
-
-License
--------
-.. include:: LICENSE
-   :literal:
