@@ -1,3 +1,3 @@
 [run]
-source = fuzzysearch
-include = fuzzysearch/*.py
+source = src
+include = src/fuzzysearch/*.py
