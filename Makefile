@@ -29,10 +29,10 @@ clean-pyc:
 	find . -type d -name __pycache__ -exec rm -rf {} +
 
 clean-cython:
-	find src/fuzzysearch -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . \( -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so \) -not -path "./.tox/*" | grep -v '^\./build/' | xargs rm -vf
+	find . -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . \( -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so \) -not -path "./.tox/*" | grep -v '^\./build/' | xargs rm -vf
 
 clean-build-ext-inplace:
-	find src/fuzzysearch -name '*.so' -not -path "./.tox/*" -exec rm {} +
+	find . -name '*.so' -not -path "./.tox/*" -exec rm {} +
 
 lint:
 	flake8 fuzzysearch tests
