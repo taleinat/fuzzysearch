@@ -103,48 +103,48 @@ class TestCountDifferencesWithMaximumBase(object):
         raise NotImplementedError
 
     def test_empty(self):
-        result = self.count_diffs(b'', b'', 1)
+        result = self.count_diffs('', '', 1)
         self.assertEqual(result, 0)
 
     def test_identical_one_character(self):
-        result = self.count_diffs(b'a', b'a', 1)
+        result = self.count_diffs('a', 'a', 1)
         self.assertEqual(result, 0)
 
     def test_identical_word(self):
-        result = self.count_diffs(b'word', b'word', 1)
+        result = self.count_diffs('word', 'word', 1)
         self.assertEqual(result, 0)
 
     def test_identical_long(self):
-        result = self.count_diffs(b'long'*10, b'long'*10, 1)
+        result = self.count_diffs('long'*10, 'long'*10, 1)
         self.assertEqual(result, 0)
 
     def test_different_less_than_max(self):
-        result = self.count_diffs(b'abc', b'def', 4)
+        result = self.count_diffs('abc', 'def', 4)
         self.assertEqual(result, 3)
 
     def test_different_more_than_max(self):
-        result = self.count_diffs(b'abc', b'def', 2)
+        result = self.count_diffs('abc', 'def', 2)
         self.assertEqual(result, 2)
 
     def test_partially_different_in_middle(self):
-        result = self.count_diffs(b'abcdef', b'a--d-f', 4)
+        result = self.count_diffs('abcdef', 'a--d-f', 4)
         self.assertEqual(result, 3)
 
-        result = self.count_diffs(b'abcdef', b'a--d-f', 2)
+        result = self.count_diffs('abcdef', 'a--d-f', 2)
         self.assertEqual(result, 2)
 
     def test_partially_different_at_start(self):
-        result = self.count_diffs(b'abcdef', b'--c-ef', 4)
+        result = self.count_diffs('abcdef', '--c-ef', 4)
         self.assertEqual(result, 3)
 
-        result = self.count_diffs(b'abcdef', b'--c-ef', 2)
+        result = self.count_diffs('abcdef', '--c-ef', 2)
         self.assertEqual(result, 2)
 
     def test_partially_different_at_end(self):
-        result = self.count_diffs(b'abcdef', b'ab-d--', 4)
+        result = self.count_diffs('abcdef', 'ab-d--', 4)
         self.assertEqual(result, 3)
 
-        result = self.count_diffs(b'abcdef', b'ab-d--', 2)
+        result = self.count_diffs('abcdef', 'ab-d--', 2)
         self.assertEqual(result, 2)
 
 
@@ -161,15 +161,15 @@ except ImportError:
     pass
 else:
     class TestCountDifferencesWithMaximumByteslike(
-        TestCountDifferencesWithMaximumBase, unittest.TestCase):
+            TestCountDifferencesWithMaximumBase, unittest.TestCase):
         def count_diffs(self, seq1, seq2, max_diffs):
-            return count_differences_with_maximum_byteslike(seq1, seq2,
+            return count_differences_with_maximum_byteslike(b(seq1), b(seq2),
                                                             max_diffs)
 
     class TestSearchExactByteslike(TestSearchExactBase, unittest.TestCase):
         def search(self, sequence, subsequence):
-            return search_exact_byteslike(sequence, subsequence)
+            return search_exact_byteslike(b(sequence), b(subsequence))
 
         def test_bytes(self):
             text = b('abc')
-            self.assertEqual(self.search(text, text), [0])
+            self.assertEqual(search_exact_byteslike(text, text), [0])

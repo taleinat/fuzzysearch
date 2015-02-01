@@ -35,7 +35,16 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     int n_differences;
 
     if (!PyArg_ParseTuple(
-        args, "s#s#i",
+        args,
+#ifdef IS_PY3K
+        "y#y#i",
+#else
+    #if PY_HEX_VERSION >= 0x02070000
+        "t#t#i",
+    #else
+        "s#s#i",
+    #endif
+#endif
         &subsequence, &subseq_len,
         &sequence, &seq_len,
         &max_substitutions

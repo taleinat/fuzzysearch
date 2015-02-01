@@ -33,7 +33,16 @@ py_simple_memmem(PyObject *self, PyObject *args) {
     PyObject *py_result;
 
     if (unlikely(!PyArg_ParseTuple(
-        args, "s#s#",
+        args,
+#ifdef IS_PY3K
+        "y#y#",
+#else
+    #if PY_HEX_VERSION >= 0x02070000
+        "t#t#",
+    #else
+        "s#s#",
+    #endif
+#endif
         &needle, &needle_len,
         &haystack, &haystack_len
     ))) {
@@ -64,7 +73,16 @@ py_wordlen_memmem(PyObject *self, PyObject *args) {
     PyObject *py_result;
 
     if (unlikely(!PyArg_ParseTuple(
-        args, "s#s#",
+        args,
+#ifdef IS_PY3K
+        "y#y#",
+#else
+    #if PY_HEX_VERSION >= 0x02070000
+        "t#t#",
+    #else
+        "s#s#",
+    #endif
+#endif
         &needle, &needle_len,
         &haystack, &haystack_len
     ))) {

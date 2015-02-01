@@ -1,5 +1,7 @@
 from tests.compat import unittest
 
+from six import b
+
 
 class TestMemmemBase(object):
     def search(self, sequence, subsequence):
@@ -75,8 +77,8 @@ except ImportError:
 else:
     class TestSimpleMemmem(TestMemmemBase, unittest.TestCase):
         def search(self, subsequence, sequence):
-            return simple_memmem(subsequence, sequence)
+            return simple_memmem(b(subsequence), b(sequence))
 
     class TestWordlenMemmem(TestMemmemBase, unittest.TestCase):
         def search(self, subsequence, sequence):
-            return wordlen_memmem(subsequence, sequence)
+            return wordlen_memmem(b(subsequence), b(sequence))

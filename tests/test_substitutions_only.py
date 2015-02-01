@@ -1,4 +1,5 @@
-from fuzzysearch.common import group_matches, get_best_match_in_group
+from fuzzysearch.common import group_matches, Match, get_best_match_in_group, \
+    count_differences_with_maximum
 from fuzzysearch.substitutions_only import \
     has_near_match_substitutions as hnm_subs, \
     find_near_matches_substitutions as fnm_subs, \
@@ -9,7 +10,7 @@ from fuzzysearch.substitutions_only import \
 
 from tests.compat import unittest
 
-from fuzzysearch.common import Match, count_differences_with_maximum
+from six import b
 
 
 class TestSubstitionsOnlyBase(object):
@@ -308,21 +309,24 @@ else:
             unittest.TestCase
     ):
         def search(self, subsequence, sequence, max_subs):
-            return hnm_subs_lp_byteslike(subsequence, sequence, max_subs)
+            return hnm_subs_lp_byteslike(b(subsequence), b(sequence),
+                                         max_subs)
 
     class TestHasNearMatchesSubstitionsNgramsByteslike(
             TestHasNearMatchSubstitionsOnlyBase,
             unittest.TestCase
     ):
         def search(self, subsequence, sequence, max_subs):
-            return hnm_subs_ngrams_byteslike(subsequence, sequence, max_subs)
+            return hnm_subs_ngrams_byteslike(b(subsequence), b(sequence),
+                                             max_subs)
 
     class TestFindNearMatchesSubstitionsLpByteslike(
             TestSubstitionsOnlyBase,
             unittest.TestCase
     ):
         def search(self, subsequence, sequence, max_subs):
-            results = fnm_subs_lp_byteslike(subsequence, sequence, max_subs)
+            results = fnm_subs_lp_byteslike(b(subsequence), b(sequence),
+                                            max_subs)
             matches = [
                 Match(
                     index,
@@ -347,7 +351,8 @@ else:
             unittest.TestCase
     ):
         def search(self, subsequence, sequence, max_subs):
-            results = fnm_subs_ngrams_byteslike(subsequence, sequence, max_subs)
+            results = fnm_subs_ngrams_byteslike(b(subsequence), b(sequence),
+                                                max_subs)
             matches = [
                 Match(
                     index,

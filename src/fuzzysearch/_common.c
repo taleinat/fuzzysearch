@@ -33,7 +33,16 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
     void *next_match_ptr;
 
     if (unlikely(!PyArg_ParseTuple(
-        args, "s#s#",
+        args,
+#ifdef IS_PY3K
+        "y#y#",
+#else
+    #if PY_HEX_VERSION >= 0x02070000
+        "t#t#",
+    #else
+        "s#s#",
+    #endif
+#endif
         &subseq, &subseq_len,
         &seq, &seq_len
     ))) {
@@ -100,7 +109,16 @@ count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
     int i, n_differences;
 
     if (!PyArg_ParseTuple(
-        args, "s#s#i",
+        args,
+#ifdef IS_PY3K
+        "y#y#i",
+#else
+    #if PY_HEX_VERSION >= 0x02070000
+        "t#t#i",
+    #else
+        "s#s#i",
+    #endif
+#endif
         &seq1, &seq1_len,
         &seq2, &seq2_len,
         &max_differences
