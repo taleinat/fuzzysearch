@@ -81,6 +81,16 @@ class TestGenericSearchBase(object):
             [Match(start=0, end=7, dist=0)],
         )
 
+    def test_short_substring(self):
+        substring = 'XY'
+        text = 'abcdefXYghij'
+        expected_match = Match(start=6, end=8, dist=0)
+
+        self.assertEqual(
+            self.search(substring, text, 0, 0, 0, 0),
+            [expected_match],
+        )
+
     def test_substring(self):
         substring = 'PATTERN'
         text = 'aaaaaaaaaaPATTERNaaaaaaaaa'
@@ -88,6 +98,63 @@ class TestGenericSearchBase(object):
 
         self.assertEqual(
             self.search(substring, text, 0, 0, 0, 0),
+            [expected_match],
+        )
+
+    def test_substring_in_long_text(self):
+        substring = 'PATTERN'
+        text = ''.join([x.strip() for x in '''\
+            FySijRLMtLLWkMnWxTbzIWuxOUbfAahWYKUlOZyhoQhfExJPOSwXxBLrlqdoUwpRW
+            FEtHFiepnOTbkttuagADQaUTvkvKzvqaFaMnAPfolPpmXitKLDQhAqDOJwFzdcKmk
+            cfVStxZGDUbrHjrDwVVRihbklyfqLJjrzGuhVGDzgSpCHXvaGPHebbcUAnAgfqqpA
+            uMOowtptcoQUeAbdqJAmieLDxCrOPivbSwmriQwfFCDTXbswFqClZPnSkDkCyvPCi
+            bmAjVGnuVsrZlPypglXlVVQKzMpQuWQynOLGDqwrAnsvYTcArkEhFpEgahWVQGOvv
+            CTvbYZRVqqPCDRsyWeTVgANxZIyVAtENnndbsHzpEcPUfqCBUroIGRNEIMHYIZANy
+            LeeVKEwihbvWZVOWPeAlmNKnhhoEPIcpDJDzPOYHSltxhSsZeeWMqtAnuSoFOIrqB
+            EPUFIlKkpamljHylnTIWqaESoWbYESVPEeZtlAzpInuwFaNIYUvzpJNIlPtuOjUuT
+            efaGnOXvQeHdaRPrdHCepPATTERNDdnkzuLHQcVWKpgHhGifBySAkWkthrzfZDHDU
+            HJxjpLXseKuldLRftyctGvVKyrRTUCRAakjwTSWivGdksOZabnkBoRtMstlNwXcwg
+            UCFLaWFxjqjasOfNeThrbubVGtyYRROYUOTMUmeSdJcBKxVXiaWDZoHyKtQRXwpVO
+            pEmlpdzKWkFpDtHHdImhDJIXwxzjwyNLaTgPLHmcyhJGqncCblxALMdPEDaRtGFMg
+            BskUxPGATTLKMFeIjgFJpudyMWlASyFSiaDWrOCgRfwjfpMYfuNQIqzvZbguWsnaq
+            tRaXcxavobetBbbfMDjstQLjoJLwiajVRKhFVspIdgrmTMEBbjtpMnSpTkmFcRBZZ
+            GUOWnesGgZeKkIQhlxlRPTtjUbbpaPlmxeiBdUKHHApgvEybUwWwXCoXFsauNiINm
+            AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()])
+        expected_match = Match(start=541, end=548, dist=0)
+
+        self.assertEqual(
+            self.search(substring, text, 0, 0, 0, 0),
+            [expected_match],
+        )
+
+    def test_single_substitution_in_long_text(self):
+        substring = 'PATTERN'
+        text = ''.join([x.strip() for x in '''\
+            FySijRLMtLLWkMnWxTbzIWuxOUbfAahWYKUlOZyhoQhfExJPOSwXxBLrlqdoUwpRW
+            FEtHFiepnOTbkttuagADQaUTvkvKzvqaFaMnAPfolPpmXitKLDQhAqDOJwFzdcKmk
+            cfVStxZGDUbrHjrDwVVRihbklyfqLJjrzGuhVGDzgSpCHXvaGPHebbcUAnAgfqqpA
+            uMOowtptcoQUeAbdqJAmieLDxCrOPivbSwmriQwfFCDTXbswFqClZPnSkDkCyvPCi
+            bmAjVGnuVsrZlPypglXlVVQKzMpQuWQynOLGDqwrAnsvYTcArkEhFpEgahWVQGOvv
+            CTvbYZRVqqPCDRsyWeTVgANxZIyVAtENnndbsHzpEcPUfqCBUroIGRNEIMHYIZANy
+            LeeVKEwihbvWZVOWPeAlmNKnhhoEPIcpDJDzPOYHSltxhSsZeeWMqtAnuSoFOIrqB
+            EPUFIlKkpamljHylnTIWqaESoWbYESVPEeZtlAzpInuwFaNIYUvzpJNIlPtuOjUuT
+            efaGnOXvQeHdaRPrdHCepPATXERNDdnkzuLHQcVWKpgHhGifBySAkWkthrzfZDHDU
+            HJxjpLXseKuldLRftyctGvVKyrRTUCRAakjwTSWivGdksOZabnkBoRtMstlNwXcwg
+            UCFLaWFxjqjasOfNeThrbubVGtyYRROYUOTMUmeSdJcBKxVXiaWDZoHyKtQRXwpVO
+            pEmlpdzKWkFpDtHHdImhDJIXwxzjwyNLaTgPLHmcyhJGqncCblxALMdPEDaRtGFMg
+            BskUxPGATTLKMFeIjgFJpudyMWlASyFSiaDWrOCgRfwjfpMYfuNQIqzvZbguWsnaq
+            tRaXcxavobetBbbfMDjstQLjoJLwiajVRKhFVspIdgrmTMEBbjtpMnSpTkmFcRBZZ
+            GUOWnesGgZeKkIQhlxlRPTtjUbbpaPlmxeiBdUKHHApgvEybUwWwXCoXFsauNiINm
+            AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()])
+        expected_match = Match(start=541, end=548, dist=1)
+
+        self.assertEqual(
+            self.search(substring, text, 1, 0, 0, 1),
+            [expected_match],
+        )
+
+        self.assertEqual(
+            self.search(substring, text, 1, 1, 1, 1),
             [expected_match],
         )
 
