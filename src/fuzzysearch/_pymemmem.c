@@ -4,7 +4,9 @@
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K
+#define PyInt_FromLong PyLong_FromLong
 #endif
+
 
 #ifdef __GNUC__
   /* Test for GCC > 2.95 */
