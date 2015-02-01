@@ -1,4 +1,4 @@
-#include "fuzzysearch/memmem.h"
+#include "src/fuzzysearch/memmem.h"
 
 #if PY_MAJOR_VERSION >= 3
 #define IS_PY3K

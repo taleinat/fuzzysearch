@@ -3,7 +3,7 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
-include fuzzysearch/memmem.h
-include fuzzysearch/_substitutions_only_lp_template.h
-include fuzzysearch/_substitutions_only_ngrams_template.h
-include fuzzysearch/wordlen_memmem.h
+include src/fuzzysearch/memmem.h
+include src/fuzzysearch/_substitutions_only_lp_template.h
+include src/fuzzysearch/_substitutions_only_ngrams_template.h
+include src/fuzzysearch/wordlen_memmem.h

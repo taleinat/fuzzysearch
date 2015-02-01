@@ -20,7 +20,7 @@ clean-build:
 	rm -fr build/
 	rm -fr dist/
 	rm -fr *.egg-info
-	find fuzzysearch -name '*.so' -exec rm -f {} +
+	find src/fuzzysearch -name '*.so' -exec rm -f {} +
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -29,10 +29,10 @@ clean-pyc:
 	find . -type d -name __pycache__ -exec rm -rf {} +
 
 clean-cython:
-	find fuzzysearch -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so | grep -v '^\./build/' | xargs rm -vf
+	find src/fuzzysearch -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so | grep -v '^\./build/' | xargs rm -vf
 
 clean-build-ext-inplace:
-	find fuzzysearch -name '*.so' -exec rm {} +
+	find src/fuzzysearch -name '*.so' -exec rm {} +
 
 lint:
 	flake8 fuzzysearch tests
@@ -52,17 +52,17 @@ coverage:
 docs:
 	rm -f docs/fuzzysearch.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ fuzzysearch
+	sphinx-apidoc -o docs/ src/fuzzysearch/
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	open docs/_build/html/index.html
 
-fuzzysearch/_generic_search.c: fuzzysearch/_generic_search.pyx
-	cython fuzzysearch/_generic_search.pyx
+src/fuzzysearch/_generic_search.c: src/fuzzysearch/_generic_search.pyx
+	cython src/fuzzysearch/_generic_search.pyx
 
-cython: fuzzysearch/_generic_search.c
+cython: src/fuzzysearch/_generic_search.c
 
-build-ext-inplace: fuzzysearch/_generic_search.c fuzzysearch/_common.c fuzzysearch/_substitutions_only.c
+build-ext-inplace: src/fuzzysearch/_generic_search.c src/fuzzysearch/_common.c src/fuzzysearch/_substitutions_only.c
 	python setup.py --quiet build_ext --inplace
 
 release: clean

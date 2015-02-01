@@ -1,6 +1,6 @@
 #include <limits.h>
 #include <string.h>
-#include "fuzzysearch/wordlen_memmem.h"
+#include "src/fuzzysearch/wordlen_memmem.h"
 
 /* Endian detection, taken from: http://esr.ibiblio.org/?p=5095 */
 /*

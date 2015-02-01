@@ -1,5 +1,5 @@
 #include <string.h>
-#include "fuzzysearch/memmem.h"
+#include "src/fuzzysearch/memmem.h"
 
 
 int calc_sum(const void *sequence, size_t sequence_len) {
