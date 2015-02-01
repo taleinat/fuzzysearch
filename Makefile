@@ -14,7 +14,7 @@ help:
 	@echo "release - package and upload a release"
 	@echo "sdist - package"
 
-clean: clean-build clean-pyc clean-cython
+clean: clean-build clean-pyc clean-cython clean-build-ext-inplace
 
 clean-build:
 	rm -fr build/
@@ -29,10 +29,10 @@ clean-pyc:
 	find . -type d -name __pycache__ -exec rm -rf {} +
 
 clean-cython:
-	find src/fuzzysearch -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so | grep -v '^\./build/' | xargs rm -vf
+	find src/fuzzysearch -name '*.pyx' | sed -n 's/\(.*\/\)*\([^\/]*\)\.pyx$$/\2/p' | xargs -I {} find . \( -name {}.a -o -name {}.o -o -name {}.c -o -name {}.so \) -not -path "./.tox/*" | grep -v '^\./build/' | xargs rm -vf
 
 clean-build-ext-inplace:
-	find src/fuzzysearch -name '*.so' -exec rm {} +
+	find src/fuzzysearch -name '*.so' -not -path "./.tox/*" -exec rm {} +
 
 lint:
 	flake8 fuzzysearch tests
@@ -62,7 +62,7 @@ src/fuzzysearch/_generic_search.c: src/fuzzysearch/_generic_search.pyx
 
 cython: src/fuzzysearch/_generic_search.c
 
-build-ext-inplace: src/fuzzysearch/_generic_search.c src/fuzzysearch/_common.c src/fuzzysearch/_substitutions_only.c
+build-ext-inplace: src/fuzzysearch/_generic_search.c src/fuzzysearch/_common.c src/fuzzysearch/_substitutions_only.c src/fuzzysearch/wordlen_memmem.c src/fuzzysearch/_substitutions_only_lp_template.h src/fuzzysearch/_substitutions_only_ngrams_template.h
 	python setup.py --quiet build_ext --inplace
 
 release: clean
