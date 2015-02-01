@@ -11,9 +11,13 @@ if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
+def readfile(file_path):
+    dir_path = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(dir_path, file_path), 'r') as f:
+        return f.read()
+
+readme = readfile('README.rst')
+history = readfile('HISTORY.rst').replace('.. :changelog:', '')
 
 _substitutions_only_module = Extension(
     'fuzzysearch._substitutions_only',
