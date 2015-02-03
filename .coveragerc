@@ -1,3 +1,0 @@
-[run]
-source = src
-include = src/fuzzysearch/*.py
