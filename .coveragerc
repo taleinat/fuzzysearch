@@ -1,0 +1,4 @@
+[paths]
+source =
+    src/fuzzysearch
+    */site-packages/fuzzysearch
