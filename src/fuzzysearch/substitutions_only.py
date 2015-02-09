@@ -2,6 +2,9 @@ from collections import deque, defaultdict
 from itertools import islice
 from functools import wraps
 
+import six
+
+
 from fuzzysearch.common import Match, search_exact, \
     count_differences_with_maximum, get_best_match_in_group, group_matches
 
@@ -237,38 +240,50 @@ else:
     @wraps(py_has_near_match_substitutions_ngrams)
     def has_near_match_substitutions_ngrams(subsequence, sequence,
                                             max_substitutions):
-        try:
-            return substitutions_only_has_near_matches_ngrams_byteslike(
-                subsequence, sequence, max_substitutions)
-        except TypeError:
-            return py_has_near_match_substitutions_ngrams(
-                subsequence, sequence, max_substitutions)
+        if not (
+            isinstance(subsequence, six.text_type) or
+            isinstance(sequence, six.text_type)
+        ):
+            try:
+                return substitutions_only_has_near_matches_ngrams_byteslike(
+                    subsequence, sequence, max_substitutions)
+            except TypeError:
+                pass
+
+        return py_has_near_match_substitutions_ngrams(
+            subsequence, sequence, max_substitutions)
 
     py_find_near_matches_substitutions_ngrams = \
         find_near_matches_substitutions_ngrams
     @wraps(py_find_near_matches_substitutions_ngrams)
     def find_near_matches_substitutions_ngrams(subsequence, sequence,
                                                max_substitutions):
-        try:
-            results = _subs_only_fnm_ngram_byteslike(
-                subsequence, sequence, max_substitutions)
-        except TypeError:
-            return py_find_near_matches_substitutions_ngrams(
-                subsequence, sequence, max_substitutions)
-        else:
-            matches = [
-                Match(
-                    index,
-                    index + len(subsequence),
-                    count_differences_with_maximum(
-                        sequence[index:index+len(subsequence)],
-                        subsequence,
-                        max_substitutions + 1,
-                    ),
-                )
-                for index in results
-            ]
-            return [
-                get_best_match_in_group(group)
-                for group in group_matches(matches)
-            ]
+        if not (
+            isinstance(subsequence, six.text_type) or
+            isinstance(sequence, six.text_type)
+        ):
+            try:
+                results = _subs_only_fnm_ngram_byteslike(
+                    subsequence, sequence, max_substitutions)
+            except TypeError:
+                pass
+            else:
+                matches = [
+                    Match(
+                        index,
+                        index + len(subsequence),
+                        count_differences_with_maximum(
+                            sequence[index:index+len(subsequence)],
+                            subsequence,
+                            max_substitutions + 1,
+                        ),
+                    )
+                    for index in results
+                ]
+                return [
+                    get_best_match_in_group(group)
+                    for group in group_matches(matches)
+                ]
+
+        return py_find_near_matches_substitutions_ngrams(
+            subsequence, sequence, max_substitutions)

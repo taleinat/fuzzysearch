@@ -1,8 +1,12 @@
 from tests.compat import unittest
+from tests.utils import skip_if_arguments_are_unicode
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from tests.test_substitutions_only import TestSubstitionsOnlyBase
 from tests.test_generic_search import TestGenericSearchBase
+
+from six import b
+
 
 try:
     from fuzzysearch._generic_search import \
@@ -13,12 +17,13 @@ except ImportError:
 else:
     class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
                                            unittest.TestCase):
+        @skip_if_arguments_are_unicode
         def search(self, subsequence, sequence, max_l_dist):
             return [
                 get_best_match_in_group(group)
                 for group in group_matches(
-                    c_fnm_generic_lp(subsequence.encode('ascii'),
-                                     sequence.encode('ascii'),
+                    c_fnm_generic_lp(subsequence,
+                                     sequence,
                                      max_l_dist, max_l_dist,
                                      max_l_dist, max_l_dist)
                 )
@@ -26,12 +31,13 @@ else:
 
     class TestGenericSearchNgramsAsLevenshtein(
         TestFindNearMatchesLevenshteinBase, unittest.TestCase):
+        @skip_if_arguments_are_unicode
         def search(self, subsequence, sequence, max_l_dist):
             return [
                 get_best_match_in_group(group)
                 for group in group_matches(
-                    c_fnm_generic_ngrams(subsequence.encode('ascii'),
-                                         sequence.encode('ascii'),
+                    c_fnm_generic_ngrams(subsequence,
+                                         sequence,
                                          max_l_dist, max_l_dist,
                                          max_l_dist, max_l_dist)
                 )
@@ -40,10 +46,11 @@ else:
 
     class TestGenericSearchLpAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                                  unittest.TestCase):
+        @skip_if_arguments_are_unicode
         def search(self, subsequence, sequence, max_subs):
             return list(
-                c_fnm_generic_lp(subsequence.encode('ascii'),
-                                 sequence.encode('ascii'),
+                c_fnm_generic_lp(subsequence,
+                                 sequence,
                                  max_subs, 0, 0, max_subs)
             )
 
@@ -55,12 +62,13 @@ else:
 
     class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                                      unittest.TestCase):
+        @skip_if_arguments_are_unicode
         def search(self, subsequence, sequence, max_subs):
             return [
                 get_best_match_in_group(group)
                 for group in group_matches(
-                    c_fnm_generic_ngrams(subsequence.encode('ascii'),
-                                         sequence.encode('ascii'),
+                    c_fnm_generic_ngrams(subsequence,
+                                         sequence,
                                          max_subs, 0, 0, max_subs)
                 )
         ]
@@ -81,10 +89,11 @@ else:
 
 
     class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
+        @skip_if_arguments_are_unicode
         def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                    max_l_dist=None):
-            return list(c_fnm_generic_lp(pattern.encode('ascii'),
-                                         sequence.encode('ascii'),
+            return list(c_fnm_generic_lp(pattern,
+                                         sequence,
                                          max_subs, max_ins,
                                          max_dels, max_l_dist))
 
@@ -93,16 +102,14 @@ else:
             self.assertEqual(search_result, expected_outcomes, *args, **kw)
 
         def test_double_first_item_two_results(self):
-            # sequence = 'abcdefg'
-            # pattern = 'bde'
             self.assertEqual(
-                self.search('def', 'abcddefg', 0, 1, 0),
+                self.search(b('def'), b('abcddefg'), 0, 1, 0),
                 [Match(start=3, end=7, dist=1), Match(start=4, end=7, dist=0)],
             )
 
         def test_missing_second_item_complex(self):
             self.assertEqual(
-                self.search('bde', 'abcdefg', 1, 1, 1, 1),
+                self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1),
                 [Match(start=1, end=5, dist=1),
                  Match(start=2, end=5, dist=1),
                  Match(start=3, end=5, dist=1)],
@@ -115,18 +122,19 @@ else:
                     Match(start=3, end=5, dist=1),
                     Match(start=2, end=5, dist=3),
                 ]).issubset(set(
-                    self.search('bde', 'abcdefg', 1, 1, 1, 3),
+                    self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3),
                 ))
             )
 
     class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
+        @skip_if_arguments_are_unicode
         def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                    max_l_dist=None):
             return [
                 get_best_match_in_group(group)
                 for group in group_matches(
-                    c_fnm_generic_ngrams(pattern.encode('ascii'),
-                                         sequence.encode('ascii'),
+                    c_fnm_generic_ngrams(pattern,
+                                         sequence,
                                          max_subs, max_ins,
                                          max_dels, max_l_dist)
                 )
@@ -142,7 +150,7 @@ else:
 
         def test_missing_second_item_complex(self):
             self.assertTrue(
-                set(self.search('bde', 'abcdefg', 1, 1, 1, 1)).issubset([
+                set(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1)).issubset([
                     Match(start=1, end=5, dist=1),
                     Match(start=2, end=5, dist=1),
                     Match(start=3, end=5, dist=1),

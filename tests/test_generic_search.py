@@ -9,6 +9,8 @@ from fuzzysearch.generic_search import \
     has_near_match_generic_ngrams as hnm_generic_ngrams, \
     find_near_matches_generic
 
+from six import b
+
 
 class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
                                        unittest.TestCase):
@@ -69,21 +71,21 @@ class TestGenericSearchBase(object):
         raise NotImplementedError
 
     def test_empty_sequence(self):
-        self.assertEqual(self.search('PATTERN', '', 0, 0, 0, 0), [])
+        self.assertEqual(self.search(b('PATTERN'), b(''), 0, 0, 0, 0), [])
 
     def test_empty_subsequence_exeption(self):
         with self.assertRaises(ValueError):
-            self.search('', 'TEXT', 0, 0, 0, 0)
+            self.search(b(''), b('TEXT'), 0, 0, 0, 0)
 
     def test_match_identical_sequence(self):
         self.assertEqual(
-            self.search('PATTERN', 'PATTERN', 0, 0, 0, 0),
+            self.search(b('PATTERN'), b('PATTERN'), 0, 0, 0, 0),
             [Match(start=0, end=7, dist=0)],
         )
 
     def test_short_substring(self):
-        substring = 'XY'
-        text = 'abcdefXYghij'
+        substring = b('XY')
+        text = b('abcdefXYghij')
         expected_match = Match(start=6, end=8, dist=0)
 
         self.assertEqual(
@@ -92,8 +94,8 @@ class TestGenericSearchBase(object):
         )
 
     def test_substring(self):
-        substring = 'PATTERN'
-        text = 'aaaaaaaaaaPATTERNaaaaaaaaa'
+        substring = b('PATTERN')
+        text = b('aaaaaaaaaaPATTERNaaaaaaaaa')
         expected_match = Match(start=10, end=17, dist=0)
 
         self.assertEqual(
@@ -102,8 +104,8 @@ class TestGenericSearchBase(object):
         )
 
     def test_substring_in_long_text(self):
-        substring = 'PATTERN'
-        text = ''.join([x.strip() for x in '''\
+        substring = b('PATTERN')
+        text = b(''.join([x.strip() for x in '''\
             FySijRLMtLLWkMnWxTbzIWuxOUbfAahWYKUlOZyhoQhfExJPOSwXxBLrlqdoUwpRW
             FEtHFiepnOTbkttuagADQaUTvkvKzvqaFaMnAPfolPpmXitKLDQhAqDOJwFzdcKmk
             cfVStxZGDUbrHjrDwVVRihbklyfqLJjrzGuhVGDzgSpCHXvaGPHebbcUAnAgfqqpA
@@ -119,7 +121,7 @@ class TestGenericSearchBase(object):
             BskUxPGATTLKMFeIjgFJpudyMWlASyFSiaDWrOCgRfwjfpMYfuNQIqzvZbguWsnaq
             tRaXcxavobetBbbfMDjstQLjoJLwiajVRKhFVspIdgrmTMEBbjtpMnSpTkmFcRBZZ
             GUOWnesGgZeKkIQhlxlRPTtjUbbpaPlmxeiBdUKHHApgvEybUwWwXCoXFsauNiINm
-            AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()])
+            AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()]))
         expected_match = Match(start=541, end=548, dist=0)
 
         self.assertEqual(
@@ -128,8 +130,8 @@ class TestGenericSearchBase(object):
         )
 
     def test_single_substitution_in_long_text(self):
-        substring = 'PATTERN'
-        text = ''.join([x.strip() for x in '''\
+        substring = b('PATTERN')
+        text = b(''.join([x.strip() for x in '''\
             FySijRLMtLLWkMnWxTbzIWuxOUbfAahWYKUlOZyhoQhfExJPOSwXxBLrlqdoUwpRW
             FEtHFiepnOTbkttuagADQaUTvkvKzvqaFaMnAPfolPpmXitKLDQhAqDOJwFzdcKmk
             cfVStxZGDUbrHjrDwVVRihbklyfqLJjrzGuhVGDzgSpCHXvaGPHebbcUAnAgfqqpA
@@ -145,7 +147,7 @@ class TestGenericSearchBase(object):
             BskUxPGATTLKMFeIjgFJpudyMWlASyFSiaDWrOCgRfwjfpMYfuNQIqzvZbguWsnaq
             tRaXcxavobetBbbfMDjstQLjoJLwiajVRKhFVspIdgrmTMEBbjtpMnSpTkmFcRBZZ
             GUOWnesGgZeKkIQhlxlRPTtjUbbpaPlmxeiBdUKHHApgvEybUwWwXCoXFsauNiINm
-            AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()])
+            AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()]))
         expected_match = Match(start=541, end=548, dist=1)
 
         self.assertEqual(
@@ -159,63 +161,57 @@ class TestGenericSearchBase(object):
         )
 
     def test_double_first_item(self):
-        # sequence = 'abcdefg'
-        # pattern = 'bde'
-
         self.expectedOutcomes(
-            self.search('def', 'abcddefg', 0, 0, 0, 0),
+            self.search(b('def'), b('abcddefg'), 0, 0, 0, 0),
             [Match(start=4, end=7, dist=0)],
         )
 
         self.expectedOutcomes(
-            self.search('def', 'abcddefg', 1, 0, 0, 1),
+            self.search(b('def'), b('abcddefg'), 1, 0, 0, 1),
             [Match(start=4, end=7, dist=0)],
         )
 
         self.expectedOutcomes(
-            self.search('def', 'abcddefg', 0, 0, 1, 1),
+            self.search(b('def'), b('abcddefg'), 0, 0, 1, 1),
             [Match(start=4, end=7, dist=0),
              Match(start=5, end=7, dist=1)]
         )
 
         self.expectedOutcomes(
-            self.search('def', 'abcddefg', 0, 1, 0, 1),
+            self.search(b('def'), b('abcddefg'), 0, 1, 0, 1),
             [Match(start=3, end=7, dist=1),
              Match(start=4, end=7, dist=0)],
         )
 
     def test_missing_second_item(self):
-        # sequence = 'abcdefg'
-        # pattern = 'bde'
-
         self.assertEqual(
-            self.search('bde', 'abcdefg', 0, 1, 0, 1),
+            self.search(b('bde'), b('abcdefg'), 0, 1, 0, 1),
             [Match(start=1, end=5, dist=1)],
         )
 
         self.assertEqual(
-            self.search('bde', 'abcdefg', 0, 0, 0, 0),
+            self.search(b('bde'), b('abcdefg'), 0, 0, 0, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('bde', 'abcdefg', 1, 0, 0, 1),
+            self.search(b('bde'), b('abcdefg'), 1, 0, 0, 1),
             [Match(start=2, end=5, dist=1)],
         )
 
         self.assertEqual(
-            self.search('bde', 'abcdefg', 0, 0, 1, 1),
+            self.search(b('bde'), b('abcdefg'), 0, 0, 1, 1),
             [Match(start=3, end=5, dist=1)],
         )
 
     def test_null_bytes(self):
         self.assertEqual(
-            self.search('abc', 'xx\0abcxx', 0, 0, 0, 0),
+            self.search(b('abc'), b('xx\0abcxx'), 0, 0, 0, 0),
             [Match(start=3, end=6, dist=0)],
         )
 
         self.assertEqual(
-            self.search('a\0b', 'xxa\0bcxx', 0, 0, 0, 0),
+            self.search(b('a\0b'), b('xxa\0bcxx'), 0, 0, 0, 0),
             [Match(start=2, end=5, dist=0)],
         )
 
@@ -238,42 +234,42 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
     def test_valid_none_arguments(self):
         # check that no exception is raised when some values are None
         self.assertEqual(
-            self.search('a', 'b', 0, None, None, 0),
+            self.search(b('a'), b('b'), 0, None, None, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('a', 'b', None, 0, None, 0),
+            self.search(b('a'), b('b'), None, 0, None, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('a', 'b', None, None, 0, 0),
+            self.search(b('a'), b('b'), None, None, 0, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('a', 'b', 0, 0, None, 0),
+            self.search(b('a'), b('b'), 0, 0, None, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('a', 'b', 0, None, 0, 0),
+            self.search(b('a'), b('b'), 0, None, 0, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('a', 'b', None, 0, 0, 0),
+            self.search(b('a'), b('b'), None, 0, 0, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('a', 'b', None, None, None, 0),
+            self.search(b('a'), b('b'), None, None, None, 0),
             [],
         )
 
         self.assertEqual(
-            self.search('a', 'b', 0, 0, 0, None),
+            self.search(b('a'), b('b'), 0, 0, 0, None),
             [],
         )
 
@@ -281,7 +277,7 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
         # check that an exception is raised when max_l_dist is None as well as
         # at least one other limitation
         with self.assertRaises(ValueError):
-            self.search('a', 'b', None, None, None, None)
+            self.search(b('a'), b('b'), None, None, None, None)
 
 
 class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
@@ -294,17 +290,15 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
         self.assertEqual(search_results, expected_outcomes, *args, **kw)
 
     def test_double_first_item_two_results(self):
-        # sequence = 'abcdefg'
-        # pattern = 'bde'
         self.expectedOutcomes(
-            self.search('def', 'abcddefg', 0, 1, 0, 1),
+            self.search(b('def'), b('abcddefg'), 0, 1, 0, 1),
             [Match(start=3, end=7, dist=1),
              Match(start=4, end=7, dist=0)],
         )
 
     def test_missing_second_item_complex(self):
         self.expectedOutcomes(
-            self.search('bde', 'abcdefg', 1, 1, 1, 1),
+            self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1),
             [Match(start=1, end=5, dist=1),
              Match(start=2, end=5, dist=1),
              Match(start=3, end=5, dist=1)],
@@ -317,7 +311,7 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
                 Match(start=3, end=5, dist=1),
                 Match(start=2, end=5, dist=3),
             ]).issubset(set(
-                self.search('bde', 'abcdefg', 1, 1, 1, 3),
+                self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3),
             ))
         )
 
@@ -341,7 +335,7 @@ class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
 
     def test_missing_second_item_complex(self):
         self.assertTrue(
-            set(self.search('bde', 'abcdefg', 1, 1, 1, 1)).issubset([
+            set(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1)).issubset([
                 Match(start=1, end=5, dist=1),
                 Match(start=2, end=5, dist=1),
                 Match(start=3, end=5, dist=1),
@@ -375,5 +369,5 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
     def test_missing_second_item_complex(self):
         # skip this because ngrams search requires that the subsequence's
         # length is greater than the maximum Levenshtein distance
-        # self.assertTrue(self.search('bde', 'abcdefg', 1, 1, 1, 3))
+        # self.assertTrue(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3))
         pass

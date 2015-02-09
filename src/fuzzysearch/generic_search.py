@@ -2,6 +2,7 @@ from collections import namedtuple
 from fuzzysearch.common import Match, search_exact, \
     group_matches, get_best_match_in_group
 
+import six
 from six.moves import xrange
 
 
@@ -239,14 +240,23 @@ except ImportError:
     find_near_matches_generic_linear_programming = \
         _find_near_matches_generic_linear_programming
 else:
-    def find_near_matches_generic_linear_programming(*args, **kwargs):
-        try:
-            for match in c_fnm_generic_lp(*args, **kwargs):
-                yield match
-        except TypeError:
-            for match in _find_near_matches_generic_linear_programming(
-                    *args, **kwargs):
-                yield match
+    def find_near_matches_generic_linear_programming(subsequence, sequence,
+                                                     *args, **kwargs):
+        if not (
+            isinstance(subsequence, six.text_type) or
+            isinstance(sequence, six.text_type)
+        ):
+            try:
+                for match in c_fnm_generic_lp(subsequence, sequence,
+                                              *args, **kwargs):
+                    yield match
+            except TypeError:
+                pass
+
+        for match in _find_near_matches_generic_linear_programming(
+                subsequence, sequence,
+                *args, **kwargs):
+            yield match
 
 
 def find_near_matches_generic_ngrams(subsequence, sequence,
