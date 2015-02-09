@@ -6,7 +6,7 @@ History
 ?.?.? (????-??-??)
 ++++++++++++++++++
 
-* Added `--noexts` option for setup.py to avoid trying to build the C extensions
+* Added ``--noexts`` option for setup.py to avoid trying to build the C extensions
 
 0.2.2 (2014-03-27)
 ++++++++++++++++++
@@ -23,7 +23,7 @@ History
 0.2.0 (2013-03-13)
 ++++++++++++++++++
 
-* New utility function `find_near_matches()` for easier use
+* New utility function ``find_near_matches()`` for easier use
 * Additional documentation
 
 0.1.0 (2013-11-12)
