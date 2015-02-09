@@ -10,9 +10,13 @@ from distutils.command.build_ext import build_ext
 from distutils.errors import CCompilerError, DistutilsExecError, \
      DistutilsPlatformError
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
+# --noexts: don't try building the C extensions
+if '--noexts' in sys.argv[1:]:
+    del sys.argv[sys.argv[1:].index('--noexts') + 1]
+    noexts = True
+else:
+    noexts = False
+
 
 def readfile(file_path):
     dir_path = os.path.dirname(os.path.abspath(__file__))
@@ -151,7 +155,7 @@ def try_building_extension():
         echo(line)
 
 
-if not (is_pypy or is_jython):
+if not (noexts or is_pypy or is_jython):
     try_building_extension()
 else:
     run_setup(False)

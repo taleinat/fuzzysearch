@@ -19,6 +19,12 @@ fuzzysearch is useful for finding approximate subsequence matches
 * Free software: `MIT license <LICENSE>`_
 * Documentation: http://fuzzysearch.rtfd.org.
 
+Installation
+------------
+Just install using pip::
+
+    $ pip install fuzzysearch
+
 Features
 --------
 
