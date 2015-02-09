@@ -280,6 +280,31 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
             self.search(b('a'), b('b'), None, None, None, None)
 
 
+class TestNgramsBase(object):
+    def test_subseq_length_less_than_max_l_dist(self):
+        with self.assertRaises(ValueError):
+            self.search(b('b'), b('abc'), 2, 2, 2, 2)
+
+        with self.assertRaises(ValueError):
+            self.search(b('b'), b('abc'), 5, 5, 5, 5)
+
+        with self.assertRaises(ValueError):
+            self.search(b('PATTERN'), b('PATTERN'),
+                        len('PATTERN') + 1,
+                        len('PATTERN') + 1,
+                        len('PATTERN') + 1,
+                        len('PATTERN') + 1,
+                        )
+
+        with self.assertRaises(ValueError):
+            self.search(b('PATTERN'), b('PATTERN'),
+                        len('PATTERN') + 7,
+                        len('PATTERN') + 7,
+                        len('PATTERN') + 7,
+                        len('PATTERN') + 7,
+                        )
+
+
 class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                max_l_dist=None):
@@ -315,7 +340,9 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
             ))
         )
 
-class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
+class TestGenericSearchNgrams(TestGenericSearchBase,
+                              TestNgramsBase,
+                              unittest.TestCase):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                max_l_dist=None):
         return fnm_generic_ngrams(pattern, sequence,
@@ -351,7 +378,9 @@ class TestHasNearMatchGenericNgramsAsSubstitutionsOnly(
                                   max_subs, 0, 0, max_subs)
 
 
-class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
+class TestHasNearMatchGenericNgrams(TestGenericSearchBase,
+                                    TestNgramsBase,
+                                    unittest.TestCase):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                max_l_dist=None):
         return hnm_generic_ngrams(pattern, sequence,
@@ -367,7 +396,4 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase, unittest.TestCase):
             actual_value, bool(expected_value), *args, **kw)
 
     def test_missing_second_item_complex(self):
-        # skip this because ngrams search requires that the subsequence's
-        # length is greater than the maximum Levenshtein distance
-        # self.assertTrue(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3))
-        pass
+        self.assertTrue(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1))

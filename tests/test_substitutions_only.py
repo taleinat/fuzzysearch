@@ -224,6 +224,22 @@ class TestSubstitionsOnlyBase(object):
         )
 
 
+class TestNgramsBase(object):
+    def test_subseq_length_less_than_max_substitutions(self):
+        with self.assertRaises(ValueError):
+            self.search(b('b'), b('abc'), 2)
+
+        with self.assertRaises(ValueError):
+            self.search(b('b'), b('abc'), 5)
+
+        with self.assertRaises(ValueError):
+            self.search(b('PATTERN'), b('PATTERN'), len('PATTERN') + 1)
+
+        with self.assertRaises(ValueError):
+            self.search(b('PATTERN'), b('PATTERN'), len('PATTERN') + 7)
+
+
+
 class TestFindNearMatchesSubstitions(TestSubstitionsOnlyBase,
                                      unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
@@ -253,6 +269,7 @@ class TestFindNearMatchesSubstitionsLinearProgramming(TestSubstitionsOnlyBase,
 
 
 class TestFindNearMatchesSubstitionsNgrams(TestSubstitionsOnlyBase,
+                                           TestNgramsBase,
                                            unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
         return fnm_subs_ngrams(subsequence, sequence, max_subs)
@@ -269,7 +286,6 @@ class TestFindNearMatchesSubstitionsNgrams(TestSubstitionsOnlyBase,
         return self.assertEqual(best_from_grouped_results,
                                 best_from_grouped_exepected_outcomes,
                                 *args, **kw)
-
 
 
 class TestHasNearMatchSubstitionsOnlyBase(TestSubstitionsOnlyBase):
@@ -289,6 +305,7 @@ class TestHasNearMatchSubstitionsOnly(TestHasNearMatchSubstitionsOnlyBase,
 
 
 class TestHasNearMatchSubstitionsOnlyNgrams(TestHasNearMatchSubstitionsOnlyBase,
+                                            TestNgramsBase,
                                             unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
         return hnm_subs_ngrams(subsequence, sequence, max_subs)
@@ -324,6 +341,7 @@ else:
 
     class TestHasNearMatchesSubstitionsNgramsByteslike(
             TestHasNearMatchSubstitionsOnlyBase,
+            TestNgramsBase,
             unittest.TestCase
     ):
         @skip_if_arguments_are_unicode
@@ -360,6 +378,7 @@ else:
 
     class TestFindNearMatchesSubstitionsNgramsByteslike(
             TestSubstitionsOnlyBase,
+            TestNgramsBase,
             unittest.TestCase
     ):
         @skip_if_arguments_are_unicode
