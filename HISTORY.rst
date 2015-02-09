@@ -6,7 +6,7 @@ History
 ?.?.? (????-??-??)
 ++++++++++++++++++
 
-* Added --noexts option for setup.py to avoid trying to build the C extensions
+* Added `--noexts` option for setup.py to avoid trying to build the C extensions
 
 0.2.2 (2014-03-27)
 ++++++++++++++++++
