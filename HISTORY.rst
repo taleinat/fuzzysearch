@@ -3,10 +3,14 @@
 History
 -------
 
-?.?.? (????-??-??)
+0.3.0 (2015-02-12)
 ++++++++++++++++++
 
-* Added ``--noexts`` option for setup.py to avoid trying to build the C extensions
+* Added C extensions for several search functions as well as internal functions
+* Use C extensions if available, or pure-Python implementations otherwise
+* setup.py attempts to build C extensions, but installs without if build fails
+* Added ``--noexts`` setup.py option to avoid trying to build the C extensions
+* Greatly improved testing and coverage
 
 0.2.2 (2014-03-27)
 ++++++++++++++++++
