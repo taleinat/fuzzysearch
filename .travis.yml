@@ -1,6 +1,6 @@
 language: python
 install:
-  - pip install tox
+  - pip install tox==1.8.1
   - pip install coveralls
 env:
   - TOXENV=py26-without_coverage
