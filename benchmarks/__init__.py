@@ -7,10 +7,10 @@ from fuzzysearch.levenshtein_ngram import \
     find_near_matches_levenshtein_ngrams as fnm_levenshtein_ngrams
 from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_ngrams as fnm_substitutions_ngrams, \
-    find_near_matches_substitutions_linear_programming, \
+    find_near_matches_substitutions_lp, \
     has_near_match_substitutions_ngrams
 from fuzzysearch._substitutions_only import \
-    substitutions_only_has_near_matches_byteslike, \
+    substitutions_only_has_near_matches_lp_byteslike, \
     substitutions_only_has_near_matches_ngrams_byteslike
 from fuzzysearch.generic_search import \
     find_near_matches_generic_linear_programming, \
@@ -25,7 +25,7 @@ def fnm_levenshtein_lp(subsequence, sequence, max_l_dist):
         subsequence, sequence, max_l_dist))
 
 def fnm_substitutions_lp(subsequence, sequence, max_substitutions):
-    return list(find_near_matches_substitutions_linear_programming(
+    return list(find_near_matches_substitutions_lp(
         subsequence, sequence, max_substitutions))
 
 def fnm_generic_lp(subsequence, sequence, max_l_dist):
@@ -49,7 +49,7 @@ def hnm_substitutions_ngrams(subsequence, sequence, max_substitutions):
         subsequence, sequence, max_substitutions)
 
 def hnm_substitutions_byteslike(subsequence, sequence, max_substitutions):
-    return substitutions_only_has_near_matches_byteslike(
+    return substitutions_only_has_near_matches_lp_byteslike(
         subsequence, sequence, max_substitutions)
 
 def hnm_substitutions_ngrams_byteslike(subsequence, sequence, max_substitutions):
