@@ -5,7 +5,7 @@ from __future__ import with_statement
 import os
 import sys
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 from distutils.command.build_ext import build_ext
 from distutils.errors import CCompilerError, DistutilsExecError, \
      DistutilsPlatformError
