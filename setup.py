@@ -27,8 +27,8 @@ readme = readfile('README.rst')
 history = readfile('HISTORY.rst').replace('.. :changelog:', '')
 
 
-# fail safe compilation shamelessly stolen from the simplejson
-# setup.py file.  Original author: Bob Ippolito
+# Fail safe compilation based on markupsafe's, which in turn was shamelessly
+# stolen from the simplejson setup.py file.  Original author: Bob Ippolito
 
 is_jython = 'java' in sys.platform
 is_pypy = hasattr(sys, 'pypy_version_info')
@@ -37,7 +37,8 @@ ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError)
 if sys.platform == 'win32' and sys.version_info > (2, 6):
     # 2.6's distutils.msvc9compiler can raise an IOError when failing to
     # find the compiler
-    ext_errors += (IOError,)
+    # It can also raise ValueError http://bugs.python.org/issue7511
+    ext_errors += (IOError, ValueError)
 
 
 class BuildFailed(Exception):
