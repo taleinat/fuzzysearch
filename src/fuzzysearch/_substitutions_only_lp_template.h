@@ -11,6 +11,8 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     unsigned int *sub_counts;
     unsigned int seq_idx, subseq_idx, count_idx;
 
+    DECLARE_VARS;
+
     if (!PyArg_ParseTuple(
         args,
 #ifdef IS_PY3K

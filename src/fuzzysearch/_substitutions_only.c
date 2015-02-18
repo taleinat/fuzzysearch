@@ -5,6 +5,7 @@
 #endif
 
 
+#define DECLARE_VARS
 #define PREPARE
 #define OUTPUT_VALUE(x) DO_FREES; Py_RETURN_TRUE
 #define RETURN_AT_END Py_RETURN_FALSE
@@ -17,14 +18,16 @@
 #undef RETURN_AT_END
 #undef OUTPUT_VALUE
 #undef PREPARE
+#undef DECLARE_VARS
 
 
 #ifdef IS_PY3K
 #define PyInt_FromLong(x) PyLong_FromLong(x)
 #endif
+#define DECLARE_VARS       \
+    PyObject *results;     \
+    PyObject *next_result
 #define PREPARE              \
-    PyObject *results;       \
-    PyObject *next_result;   \
     results = PyList_New(0); \
     if (unlikely(!results))  \
         return NULL;
@@ -51,6 +54,7 @@
 #undef RETURN_AT_END
 #undef OUTPUT_VALUE
 #undef PREPARE
+#undef DECLARE_VARS
 
 
 static PyMethodDef substitutions_only_methods[] = {

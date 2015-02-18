@@ -34,6 +34,8 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     int subseq_sum;
     int n_differences;
 
+    DECLARE_VARS;
+
     if (!PyArg_ParseTuple(
         args,
 #ifdef IS_PY3K
