@@ -2,17 +2,33 @@
 fuzzysearch
 ===============================
 
-.. image:: https://badge.fury.io/py/fuzzysearch.png
-    :target: http://badge.fury.io/py/fuzzysearch
+.. image:: https://pypip.in/version/fuzzysearch/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/fuzzysearch
+    :alt: Latest Version
 
-.. image:: https://travis-ci.org/taleinat/fuzzysearch.png?branch=master
-        :target: https://travis-ci.org/taleinat/fuzzysearch
+.. image:: https://travis-ci.org/taleinat/fuzzysearch.svg?branch=master
+    :target: https://travis-ci.org/taleinat/fuzzysearch/branches
+    :alt: Build & Tests Status
 
-.. image:: https://coveralls.io/repos/taleinat/fuzzysearch/badge.png?branch=master
-        :target: https://coveralls.io/r/taleinat/fuzzysearch?branch=master
+.. image:: https://coveralls.io/repos/taleinat/fuzzysearch/badge.svg?branch=master
+    :target: https://coveralls.io/r/taleinat/fuzzysearch?branch=master
+    :alt: Test Coverage
 
-.. image:: https://pypip.in/d/fuzzysearch/badge.png
-        :target: https://crate.io/packages/fuzzysearch?version=latest
+.. image:: https://pypip.in/download/fuzzysearch/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/fuzzysearch
+    :alt: Downloads
+
+.. image:: https://pypip.in/py_versions/fuzzysearch/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/fuzzysearch
+    :alt: Supported Python versions
+
+.. image:: https://pypip.in/implementation/fuzzysearch/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/fuzzysearch
+    :alt: Supported Python implementations
+
+.. image:: https://pypip.in/license/fuzzysearch/badge.svg?style=flat
+    :target: https://pypi.python.org/pypi/fuzzysearch/
+    :alt: License
 
 fuzzysearch is useful for finding approximate subsequence matches
 
