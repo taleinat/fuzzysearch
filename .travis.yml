@@ -16,4 +16,6 @@ env:
 script:
   - tox
 after_success:
-  - coveralls
+  if [[ "TOXENV" ~= "with_coverage" ]]; then
+    coveralls
+  fi
