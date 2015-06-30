@@ -2,31 +2,35 @@
 fuzzysearch
 ===============================
 
-.. image:: https://pypip.in/version/fuzzysearch/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/v/fuzzysearch.svg?style=flat
     :target: https://pypi.python.org/pypi/fuzzysearch
     :alt: Latest Version
 
-.. image:: https://travis-ci.org/taleinat/fuzzysearch.svg?branch=master
+.. image:: https://img.shields.io/travis/taleinat/fuzzysearch.svg?branch=master
     :target: https://travis-ci.org/taleinat/fuzzysearch/branches
     :alt: Build & Tests Status
 
-.. image:: https://coveralls.io/repos/taleinat/fuzzysearch/badge.svg?branch=master
+.. image:: https://img.shields.io/coveralls/taleinat/fuzzysearch.svg?branch=master
     :target: https://coveralls.io/r/taleinat/fuzzysearch?branch=master
     :alt: Test Coverage
 
-.. image:: https://pypip.in/download/fuzzysearch/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/dm/fuzzysearch.svg?style=flat
     :target: https://pypi.python.org/pypi/fuzzysearch
     :alt: Downloads
 
-.. image:: https://pypip.in/py_versions/fuzzysearch/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/wheel/fuzzysearch.svg?style=flat
+    :target: https://pypi.python.org/pypi/fuzzysearch
+    :alt: Wheels
+
+.. image:: https://img.shields.io/pypi/pyversions/fuzzysearch.svg?style=flat
     :target: https://pypi.python.org/pypi/fuzzysearch
     :alt: Supported Python versions
 
-.. image:: https://pypip.in/implementation/fuzzysearch/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/implementation/fuzzysearch.svg?style=flat
     :target: https://pypi.python.org/pypi/fuzzysearch
     :alt: Supported Python implementations
 
-.. image:: https://pypip.in/license/fuzzysearch/badge.svg?style=flat
+.. image:: https://img.shields.io/pypi/l/fuzzysearch.svg?style=flat
     :target: https://pypi.python.org/pypi/fuzzysearch/
     :alt: License
 
