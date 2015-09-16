@@ -40,3 +40,7 @@ nosetests.xml
 
 # Generated files
 MANIFEST
+build/
+build_bug/
+dist/
+py*dist/
