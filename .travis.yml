@@ -8,11 +8,12 @@ env:
   - TOXENV=py32-without_coverage
   - TOXENV=py33-without_coverage
   - TOXENV=py34-without_coverage
+  - TOXENV=py35-without_coverage
   - TOXENV=py26-with_coverage
   - TOXENV=py27-with_coverage
   - TOXENV=py32-with_coverage
   - TOXENV=py33-with_coverage
-  - TOXENV=py34-with_coverage
+  - TOXENV=py35-with_coverage
 script:
   - tox
 after_success:
