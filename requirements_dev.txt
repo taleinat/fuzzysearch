@@ -1,4 +1,4 @@
 bumpversion
 cython
 sphinx
-tox
+tox==2.1.1

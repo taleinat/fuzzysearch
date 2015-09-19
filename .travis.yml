@@ -1,8 +1,8 @@
 sudo: false # use Travis's container-based infrastructure
 language: python
 install:
-  - pip install tox==1.8.1
   - pip install coveralls
+  - pip install tox==2.1.1
 env:
   - TOXENV=py26-without_coverage
   - TOXENV=py27-without_coverage
