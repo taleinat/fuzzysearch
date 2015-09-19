@@ -1,5 +1,7 @@
 sudo: false # use Travis's container-based infrastructure
 language: python
+python:
+  - "3.5"
 install:
   - pip install coveralls
   - pip install tox==2.1.1
