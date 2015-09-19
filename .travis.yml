@@ -1,3 +1,4 @@
+sudo: false # use Travis's container-based infrastructure
 language: python
 install:
   - pip install tox==1.8.1
@@ -23,5 +24,3 @@ after_success:
       coveralls
       ;;
   esac
-
-      
