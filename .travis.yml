@@ -4,6 +4,8 @@ python:
   - "3.5"
 install:
   - pip install coveralls
+  # virtualenv < 14 is required to keep the Python 3.2 builds running
+  - pip install "virtualenv<14"
   - pip install tox==2.1.1
 env:
   - TOXENV=py26-without_coverage
