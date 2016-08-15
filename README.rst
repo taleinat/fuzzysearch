@@ -34,7 +34,9 @@ fuzzysearch
     :target: https://pypi.python.org/pypi/fuzzysearch/
     :alt: License
 
-fuzzysearch is useful for finding approximate subsequence matches
+fuzzysearch is a Python library for fuzzy substring searches. It implements efficient
+ad-hoc searching for approximate sub-sequences. Matching is done using a generalized
+Levenshtein Distance metric, with configurable parameters.
 
 * Free software: `MIT license <LICENSE>`_
 * Documentation: http://fuzzysearch.rtfd.org.
@@ -49,28 +51,25 @@ Features
 --------
 
 * Fuzzy sub-sequence search: Find parts of a sequence which match a given
-  sub-sequence up to a given maximum Levenshtein distance.
-* Set individual limits for the number of substitutions, insertions and/or
-  deletions allowed for a near-match.
-* Includes optimized implementations for specific use-cases, e.g. only allowing
-  substitutions in near-matches.
+  sub-sequence.
+* Easy to use: A single function to call which returns a list of matches.
+* Set a maximum Levenshtein Distance for matches, including individual limits
+  for the number of substitutions, insertions and/or deletions allowed for
+  near-matches.
+* Includes optimized implementations for specific use-cases, e.g. allowing
+  only substitutions.
 
-Simple Example
---------------
-You can usually just use the `find_near_matches()` utility function, which
-chooses a suitable fuzzy search implementation according to the given
-parameters:
+Simple Examples
+---------------
+Just call `find_near_matches()` with the sequence to search, the sub-sequence
+you're looking for, and the matching parameters:
 
 .. code:: python
 
     >>> from fuzzysearch import find_near_matches
-    >>> find_near_matches('PATTERN', 'aaaPATERNaaa', max_l_dist=1)
+    # search for 'PATTERN' with a maximum Levenshtein Distance of 1
+    >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
     [Match(start=3, end=9, dist=1)]
-
-Advanced Example
-----------------
-If needed you can choose a specific search implementation, such as
-`find_near_matches_with_ngrams()`:
 
 .. code:: python
 
@@ -79,9 +78,16 @@ If needed you can choose a specific search implementation, such as
     TTGGACATACATAGAAACACACACACATACATTAGATACGAACATAGAAACACACATTAGACGCGTACATAGACA
     CAAACACATTGACAGGCAGTTCAGATGATGACGCCCGACTGATACTCGCGTAGTCGTGGGAGGCAAGGCACACAG
     GGGATAGG'''
-    >>> subsequence = 'TGCACTGTAGGGATAACAAT' #distance 1
-    >>> max_distance = 2
+    >>> subsequence = 'TGCACTGTAGGGATAACAAT' # distance = 1
+    >>> find_near_matches(subsequence, sequence, max_l_dist=2)
+    [Match(start=3, end=24, dist=1)]
+
+Advanced Example
+----------------
+If needed (for optimization) you can choose a specific search implementation:
+
+.. code:: python
 
     >>> from fuzzysearch import find_near_matches_with_ngrams
-    >>> find_near_matches_with_ngrams(subsequence, sequence, max_distance)
+    >>> find_near_matches_with_ngrams(subsequence, sequence, max_l_dist=2)
     [Match(start=3, end=24, dist=1)]
