@@ -27,6 +27,64 @@ Match = namedtuple('Match', ['start', 'end', 'dist'])
 Ngram = namedtuple('Ngram', ['start', 'end'])
 
 
+class LevenshteinSearchParams(object):
+    def __init__(self,
+                 max_substitutions=None,
+                 max_insertions=None,
+                 max_deletions=None,
+                 max_l_dist=None):
+        self.check_params_valid(max_substitutions, max_insertions,
+                                max_deletions, max_l_dist)
+
+        self.max_substitutions = max_substitutions
+        self.max_insertions = max_insertions
+        self.max_deletions = max_deletions
+        self.max_l_dist = self._get_max_l_dist(
+            max_substitutions, max_insertions,
+            max_deletions, max_l_dist,
+        )
+
+    @property
+    def unpacked(self):
+        return self.max_substitutions, self.max_insertions, self.max_deletions, self.max_l_dist
+
+    @classmethod
+    def check_params_valid(cls,
+                     max_substitutions, max_insertions,
+                     max_deletions, max_l_dist):
+        if max_l_dist is None:
+            n_limits = (
+                (1 if max_substitutions is not None else 0) +
+                (1 if max_insertions is not None else 0) +
+                (1 if max_deletions is not None else 0)
+            )
+            if n_limits < 3:
+                if n_limits == 0:
+                    raise ValueError('No limitations given!')
+                elif max_substitutions is None:
+                    raise ValueError('# substitutions must be limited!')
+                elif max_insertions is None:
+                    raise ValueError('# insertions must be limited!')
+                elif max_deletions is None:
+                    raise ValueError('# deletions must be limited!')
+
+    @classmethod
+    def _get_max_l_dist(cls,
+                        max_substitutions, max_insertions,
+                        max_deletions, max_l_dist):
+        bignum = 1 << 29
+        maxes_sum = (
+            (max_substitutions if max_substitutions is not None else bignum) +
+            (max_insertions if max_insertions is not None else bignum) +
+            (max_deletions if max_deletions is not None else bignum)
+        )
+        return (
+            max_l_dist
+            if max_l_dist is not None and max_l_dist <= maxes_sum
+            else maxes_sum
+        )
+
+
 def search_exact(subsequence, sequence, start_index=0, end_index=None):
     if isinstance(sequence, CLASSES_WITH_FIND):
         find = sequence.find

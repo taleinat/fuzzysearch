@@ -1,9 +1,17 @@
 from tests.compat import unittest, mock
 
-from fuzzysearch.common import Match
+from fuzzysearch.common import Match, LevenshteinSearchParams
 from fuzzysearch.no_deletions import _expand, \
-    find_near_matches_no_deletions_ngrams as fnm_nodels_ngrams
+    find_near_matches_no_deletions_ngrams
 from tests.test_substitutions_only import TestFindNearMatchesSubstitionsNgrams
+
+
+def fnm_nodels_ngrams(sequence, subsequence, max_substitutions, max_insertions, max_l_dist=None):
+    return find_near_matches_no_deletions_ngrams(
+        sequence, subsequence, LevenshteinSearchParams(
+            max_substitutions, max_insertions, 0, max_l_dist,
+        )
+    )
 
 
 class TestExpand(unittest.TestCase):

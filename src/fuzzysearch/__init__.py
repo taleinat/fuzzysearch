@@ -21,13 +21,10 @@ __all__ = [
 ]
 
 
-from fuzzysearch.common import Match, get_best_match_in_group, group_matches, \
-    search_exact
+from fuzzysearch.common import Match, search_exact, LevenshteinSearchParams
 from fuzzysearch.levenshtein import find_near_matches_levenshtein
 from fuzzysearch.substitutions_only import find_near_matches_substitutions
-from fuzzysearch.generic_search import find_near_matches_generic, \
-    find_near_matches_generic_linear_programming, _check_arguments, \
-    _get_max_l_dist
+from fuzzysearch.generic_search import find_near_matches_generic
 
 
 def find_near_matches(subsequence, sequence,
@@ -46,25 +43,38 @@ def find_near_matches(subsequence, sequence,
     * the total number of substitutions, insertions and deletions
       (a.k.a. the Levenshtein distance)
     """
-    _check_arguments(subsequence, sequence, max_substitutions, max_insertions,
-                     max_deletions, max_l_dist)
+    search_params = LevenshteinSearchParams(max_substitutions,
+                                            max_insertions,
+                                            max_deletions,
+                                            max_l_dist)
+    search_func = choose_search_func(search_params)
+    return search_func(subsequence, sequence, search_params)
 
-    max_l_dist = _get_max_l_dist(max_substitutions, max_insertions,
-                                 max_deletions, max_l_dist)
+
+def choose_search_func(search_params):
+    max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
 
     # if the limitations are so strict that only exact matches are allowed,
     # use search_exact()
-    if max_l_dist == 0:
-        return [
-            Match(start_index, start_index + len(subsequence), 0)
-            for start_index in search_exact(subsequence, sequence)
+    if search_params.max_l_dist == 0:
+        return lambda sequence, subsequence, search_params: [
+            Match(index, index + len(subsequence), 0)
+            for index in search_exact(sequence, subsequence)
         ]
+        # return [
+        #     Match(start_index, start_index + len(subsequence), 0)
+        #     for start_index in search_exact(subsequence, sequence)
+        # ]
 
     # if only substitutions are allowed, use find_near_matches_substitutions()
     elif max_insertions == 0 and max_deletions == 0:
-        max_subs = \
-            min([x for x in [max_l_dist, max_substitutions] if x is not None])
-        return find_near_matches_substitutions(subsequence, sequence, max_subs)
+        # max_subs = \
+        #     min([x for x in [max_l_dist, max_substitutions] if x is not None])
+        return lambda sequence, subsequence, search_params:\
+            find_near_matches_substitutions(
+                sequence, subsequence,
+                min([x for x in [search_params.max_l_dist, search_params.max_substitutions] if x is not None])
+            )
 
     # if it is enough to just take into account the maximum Levenshtein
     # distance, use find_near_matches_levenshtein()
@@ -73,10 +83,9 @@ def find_near_matches(subsequence, sequence,
         (max_insertions if max_insertions is not None else (1 << 29)),
         (max_deletions if max_deletions is not None else (1 << 29)),
     ):
-        return find_near_matches_levenshtein(subsequence, sequence, max_l_dist)
+        return lambda sequence, subsequence, search_params:\
+            find_near_matches_levenshtein(sequence, subsequence, search_params.max_l_dist)
 
     # if none of the special cases above are met, use the most generic version
     else:
-        return find_near_matches_generic(subsequence, sequence,
-                                         max_substitutions, max_insertions,
-                                         max_deletions, max_l_dist)
+        return find_near_matches_generic

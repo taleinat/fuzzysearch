@@ -27,11 +27,7 @@ else:
     ALLOWED_TYPES += (Seq,)
 
 
-def c_find_near_matches_generic_linear_programming(subsequence, sequence,
-                                                   max_substitutions,
-                                                   max_insertions,
-                                                   max_deletions,
-                                                   max_l_dist=None):
+def c_find_near_matches_generic_linear_programming(subsequence, sequence, search_params):
     """search for near-matches of subsequence in sequence
 
     This searches for near-matches, where the nearly-matching parts of the
@@ -49,6 +45,8 @@ def c_find_near_matches_generic_linear_programming(subsequence, sequence,
 
     if not subsequence:
         raise ValueError('Given subsequence is empty!')
+
+    max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
 
     cdef const char *c_subsequence = subsequence
     cdef const char *c_sequence = sequence

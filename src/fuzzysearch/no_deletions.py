@@ -35,9 +35,7 @@ def _expand(subsequence, sequence, max_substitutions, max_insertions,
     ]
 
 
-def find_near_matches_no_deletions_ngrams(subsequence, sequence,
-                                          max_substitutions, max_insertions,
-                                          max_l_dist=None):
+def find_near_matches_no_deletions_ngrams(subsequence, sequence, search_params):
     """search for near-matches of subsequence in sequence
 
     This searches for near-matches, where the nearly-matching parts of the
@@ -46,12 +44,11 @@ def find_near_matches_no_deletions_ngrams(subsequence, sequence,
     * the number of character substitutions must be less than max_substitutions
     * no deletions or insertions are allowed
     """
-    _check_arguments(subsequence, sequence,
-                     max_substitutions, max_insertions,
-                     0, max_l_dist)
+    if not subsequence:
+        raise ValueError('Given subsequence is empty!')
 
-    max_l_dist = _get_max_l_dist(max_substitutions, max_insertions,
-                                 0, max_l_dist)
+    max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
+
     max_substitutions = min(max_substitutions, max_l_dist)
     max_insertions = min(max_insertions, max_l_dist)
 
@@ -87,7 +84,7 @@ def find_near_matches_no_deletions_ngrams(subsequence, sequence,
                 matches_after = [(0, 0)]
             else:
                 matches_after = _expand(subseq_after, seq_after,
-                                  max_substitutions, max_insertions, max_l_dist)
+                                        max_substitutions, max_insertions, max_l_dist)
                 if not matches_after:
                     continue
 

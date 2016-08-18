@@ -1,6 +1,6 @@
 from tests.compat import unittest
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
-from fuzzysearch.common import Match, get_best_match_in_group, group_matches
+from fuzzysearch.common import Match, get_best_match_in_group, group_matches, LevenshteinSearchParams
 from tests.test_substitutions_only import TestSubstitionsOnlyBase, \
     TestHasNearMatchSubstitionsOnly
 from fuzzysearch.generic_search import \
@@ -18,8 +18,8 @@ class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
         return [
             get_best_match_in_group(group)
             for group in group_matches(
-                fnm_generic_lp(subsequence, sequence, max_l_dist,
-                               max_l_dist, max_l_dist, max_l_dist)
+                fnm_generic_lp(subsequence, sequence,
+                               LevenshteinSearchParams(max_l_dist, max_l_dist, max_l_dist, max_l_dist))
             )
         ]
 
@@ -27,15 +27,15 @@ class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
 class TestGenericSearchNgramsAsLevenshtein(TestFindNearMatchesLevenshteinBase,
                                        unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
-        return fnm_generic_ngrams(subsequence, sequence, max_l_dist,
-                                  max_l_dist, max_l_dist, max_l_dist)
+        return fnm_generic_ngrams(subsequence, sequence,
+                                  LevenshteinSearchParams(max_l_dist, max_l_dist, max_l_dist, max_l_dist))
 
 
 class TestGenericSearchLpAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                              unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
         return list(
-            fnm_generic_lp(subsequence, sequence, max_subs, 0, 0, max_subs)
+            fnm_generic_lp(subsequence, sequence, LevenshteinSearchParams(max_subs, 0, 0, max_subs))
         )
 
     def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
@@ -46,7 +46,7 @@ class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                              unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
         return fnm_generic_ngrams(subsequence, sequence,
-                                  max_subs, 0, 0, max_subs)
+                                  LevenshteinSearchParams(max_subs, 0, 0, max_subs))
 
     def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
         best_from_grouped_results = [
@@ -220,8 +220,7 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                max_l_dist=None):
         return list(find_near_matches_generic(pattern, sequence,
-                                              max_subs, max_ins,
-                                              max_dels, max_l_dist))
+                                              LevenshteinSearchParams(max_subs, max_ins, max_dels, max_l_dist)))
 
     def expectedOutcomes(self, search_results, expected_outcomes):
         best_from_grouped_exepected_outcomes = [
@@ -309,7 +308,7 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                max_l_dist=None):
         return list(fnm_generic_lp(pattern, sequence,
-                                   max_subs, max_ins, max_dels, max_l_dist))
+                                   LevenshteinSearchParams(max_subs, max_ins, max_dels, max_l_dist)))
 
     def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
         self.assertEqual(search_results, expected_outcomes, *args, **kw)
@@ -346,7 +345,7 @@ class TestGenericSearchNgrams(TestGenericSearchBase,
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                max_l_dist=None):
         return fnm_generic_ngrams(pattern, sequence,
-                                  max_subs, max_ins, max_dels, max_l_dist)
+                                  LevenshteinSearchParams(max_subs, max_ins, max_dels, max_l_dist))
 
     def expectedOutcomes(self, search_results, expected_outcomes):
         best_from_grouped_results = [
@@ -375,7 +374,7 @@ class TestHasNearMatchGenericNgramsAsSubstitutionsOnly(
 ):
     def search(self, subsequence, sequence, max_subs):
         return hnm_generic_ngrams(subsequence, sequence,
-                                  max_subs, 0, 0, max_subs)
+                                  LevenshteinSearchParams(max_subs, 0, 0, max_subs))
 
 
 class TestHasNearMatchGenericNgrams(TestGenericSearchBase,
@@ -384,7 +383,7 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase,
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                max_l_dist=None):
         return hnm_generic_ngrams(pattern, sequence,
-                                  max_subs, max_ins, max_dels, max_l_dist)
+                                  LevenshteinSearchParams(max_subs, max_ins, max_dels, max_l_dist))
 
     def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
         self.assertEqual(bool(search_results),
