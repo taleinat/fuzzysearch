@@ -15,6 +15,10 @@ def _expand(subsequence, sequence, max_substitutions, max_insertions,
     if not subsequence:
         return (0, 0)
 
+    # Calculate the minimum number of substitutions required for each number
+    # of insertions between 0 and max_insertions.
+    #
+    # This is done using a "dynamic programming" algorithm.
     n_subs = array.array('L', [0] * (max_insertions + 1))
     for subseq_index, char in enumerate(subsequence):
         n_subs[0] += (char != sequence[subseq_index])

@@ -1,12 +1,7 @@
 sudo: false # use Travis's container-based infrastructure
 language: python
-python:
-  - "3.5"
-install:
-  - pip install coveralls
-  # virtualenv < 14 is required to keep the Python 3.2 builds running
-  - pip install "virtualenv<14"
-  - pip install tox==2.1.1
+
+python: "3.5"
 env:
   - TOXENV=py26-without_coverage
   - TOXENV=py27-without_coverage
@@ -20,8 +15,23 @@ env:
   - TOXENV=py33-with_coverage
   - TOXENV=py34-with_coverage
   - TOXENV=py35-with_coverage
+
+matrix:
+  include:
+    - python: "3.6"
+      env:
+        - TOXENV=py36-without_coverage
+        - TOXENV=py36-with_coverage
+
+install:
+  - pip install coveralls
+  # virtualenv < 14 is required to keep the Python 3.2 builds running
+  - pip install "virtualenv<14"
+  - pip install tox==2.1.1
+
 script:
   - tox
+
 after_success:
   case "$TOXENV" in
     *with_coverage*)
