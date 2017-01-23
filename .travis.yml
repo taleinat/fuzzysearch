@@ -21,6 +21,8 @@ matrix:
     - python: "3.6"
       env:
         - TOXENV=py36-without_coverage
+    - python: "3.6"
+      env:
         - TOXENV=py36-with_coverage
 
 install:
