@@ -84,10 +84,27 @@ you're looking for, and the matching parameters:
 
 Advanced Example
 ----------------
-If needed (for optimization) you can choose a specific search implementation:
+The search function supports four possible match criteria, which may be supplied in any combination:
+* maximum Levenshtein distance
+* maximum # of subsitutions
+* maximum # of deletions (elements appearing in the pattern search for, which are skipped in the matching sub-sequence)
+* maximum # of insertions (elements added in the matching sub-sequence which don't appear in the pattern search for)
+
+Not supplying a criterion means that there is no limit for it. For this reason, one must always supply `max_l_dist` and/or all of the other three criteria.
 
 .. code:: python
 
-    >>> from fuzzysearch import find_near_matches_with_ngrams
-    >>> find_near_matches_with_ngrams(subsequence, sequence, max_l_dist=2)
-    [Match(start=3, end=24, dist=1)]
+    >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
+    [Match(start=3, end=9, dist=1)]
+    
+    # this will not match since max-deletions is set to zero
+    >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1, max_deletions=0)
+    []
+    
+    # note that a deletion + insertion may be combined to match a substution
+    >>> find_near_matches('PATTERN', '---PAT-ERN---', max_deletions=1, max_insertions=1, max_substitutions=0)
+    [Match(start=3, end=10, dist=1)] # the Levenshtein distance is still 1
+
+    # ... but deletion + insertion may also match other, non-substitution differences
+    >>> find_near_matches('PATTERN', '---PATERRN---', max_deletions=1, max_insertions=1, max_substitutions=0)
+    [Match(start=3, end=10, dist=2)]
