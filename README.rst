@@ -82,15 +82,16 @@ you're looking for, and the matching parameters:
     >>> find_near_matches(subsequence, sequence, max_l_dist=2)
     [Match(start=3, end=24, dist=1)]
 
-Advanced Example
-----------------
+Advanced Search Criteria
+------------------------
 The search function supports four possible match criteria, which may be supplied in any combination:
+
 * maximum Levenshtein distance
 * maximum # of subsitutions
 * maximum # of deletions (elements appearing in the pattern search for, which are skipped in the matching sub-sequence)
 * maximum # of insertions (elements added in the matching sub-sequence which don't appear in the pattern search for)
 
-Not supplying a criterion means that there is no limit for it. For this reason, one must always supply `max_l_dist` and/or all of the other three criteria.
+Not supplying a criterion means that there is no limit for it. For this reason, one must always supply `max_l_dist` and/or all other criteria.
 
 .. code:: python
 
