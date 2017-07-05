@@ -1,7 +1,7 @@
 from tests.compat import unittest
 from tests.utils import skip_if_arguments_are_unicode
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
-from fuzzysearch.common import Match, get_best_match_in_group, group_matches
+from fuzzysearch.common import Match, get_best_match_in_group, group_matches, LevenshteinSearchParams
 from tests.test_substitutions_only import TestSubstitionsOnlyBase
 from tests.test_generic_search import TestGenericSearchBase
 
@@ -24,8 +24,7 @@ else:
                 for group in group_matches(
                     c_fnm_generic_lp(subsequence,
                                      sequence,
-                                     max_l_dist, max_l_dist,
-                                     max_l_dist, max_l_dist)
+                                     LevenshteinSearchParams(max_l_dist, max_l_dist, max_l_dist, max_l_dist))
                 )
             ]
 
@@ -38,8 +37,7 @@ else:
                 for group in group_matches(
                     c_fnm_generic_ngrams(subsequence,
                                          sequence,
-                                         max_l_dist, max_l_dist,
-                                         max_l_dist, max_l_dist)
+                                         LevenshteinSearchParams(max_l_dist, max_l_dist, max_l_dist, max_l_dist))
                 )
             ]
 
@@ -51,7 +49,7 @@ else:
             return list(
                 c_fnm_generic_lp(subsequence,
                                  sequence,
-                                 max_subs, 0, 0, max_subs)
+                                 LevenshteinSearchParams(max_subs, 0, 0, max_subs))
             )
 
         def expectedOutcomes(self, search_results, expected_outcomes,
@@ -69,7 +67,7 @@ else:
                 for group in group_matches(
                     c_fnm_generic_ngrams(subsequence,
                                          sequence,
-                                         max_subs, 0, 0, max_subs)
+                                         LevenshteinSearchParams(max_subs, 0, 0, max_subs))
                 )
         ]
 
@@ -94,8 +92,10 @@ else:
                    max_l_dist=None):
             return list(c_fnm_generic_lp(pattern,
                                          sequence,
-                                         max_subs, max_ins,
-                                         max_dels, max_l_dist))
+                                         LevenshteinSearchParams(
+                                             max_subs, max_ins,
+                                             max_dels, max_l_dist,
+                                         )))
 
         def expectedOutcomes(self, search_result, expected_outcomes,
                              *args, **kw):
@@ -135,8 +135,10 @@ else:
                 for group in group_matches(
                     c_fnm_generic_ngrams(pattern,
                                          sequence,
-                                         max_subs, max_ins,
-                                         max_dels, max_l_dist)
+                                         LevenshteinSearchParams(
+                                             max_subs, max_ins,
+                                             max_dels, max_l_dist,
+                                         ))
                 )
             ]
 

@@ -343,8 +343,7 @@ class TestGenericSearchNgrams(TestGenericSearchBase,
                               TestNgramsBase,
                               unittest.TestCase):
     def search(self, pattern, sequence, max_subs, max_ins, max_dels,
-               max_l_dist=None):
-        return fnm_generic_ngrams(pattern, sequence,
+               max_l_dist=None):        return fnm_generic_ngrams(pattern, sequence,
                                   LevenshteinSearchParams(max_subs, max_ins, max_dels, max_l_dist))
 
     def expectedOutcomes(self, search_results, expected_outcomes):
