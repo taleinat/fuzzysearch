@@ -32,7 +32,7 @@ install:
   - pip install tox==2.1.1
 
 script:
-  - tox
+  - tox -vv
 
 after_success:
   case "$TOXENV" in
