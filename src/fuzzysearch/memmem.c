@@ -2,26 +2,26 @@
 #include "src/fuzzysearch/memmem.h"
 
 
-int calc_sum(const void *sequence, size_t sequence_len) {
+int calc_sum(const char *sequence, size_t sequence_len) {
     int seq_sum = 0;
-    const void *seq_end = sequence + sequence_len;
+    const char *seq_end = sequence + sequence_len;
     while (sequence != seq_end) {
         seq_sum += *((const unsigned char *)sequence++);
     }
     return seq_sum;
 }
 
-void *simple_memmem(const void *haystack, size_t haystacklen,
-                    const void *needle, size_t needlelen)
+char *simple_memmem(const char *haystack, size_t haystacklen,
+                    const char *needle, size_t needlelen)
 {
-    const void* needle_ptr;
-    const void* haystack_ptr;
+    const char* needle_ptr;
+    const char* haystack_ptr;
     int sums_diff;
 
     switch (needlelen) {
         case (0):
             /* empty needle */
-            return (void *) haystack;
+            return (char *) haystack;
             break;
         case (1):
             /* special case for single-character needles */
@@ -50,7 +50,7 @@ void *simple_memmem(const void *haystack, size_t haystacklen,
     */
 
     /* calculate the sum of the first needlelen characters of haystack,
-       minus the furst needlelen characters of needle */
+       minus the first needlelen characters of needle */
 
     sums_diff = 0;
     needle_ptr = needle + 1;
@@ -69,7 +69,7 @@ void *simple_memmem(const void *haystack, size_t haystacklen,
        the sums are equal, so it is enough to compare all but the first and
        last characters */
     if (sums_diff == 0 && memcmp(haystack+1, needle+1, needlelen-2) == 0) {
-        return (void *) haystack;
+        return (char *) haystack;
     }
 
     /* iterate through the remainder of haystack, updating the sums' difference
@@ -82,25 +82,25 @@ void *simple_memmem(const void *haystack, size_t haystacklen,
         /* if sums_diff == 0, we know that the sums are equal, so it is enough
            to compare all but the last characters */
         if (sums_diff == 0 && memcmp(haystack, needle, needlelen-1) == 0) {
-            return (void *) haystack;
+            return (char *) haystack;
         }
     }
 
     return NULL;
 }
 
-void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
-                                    const void *needle, size_t needlelen,
+void *simple_memmem_with_needle_sum(const char *haystack, size_t haystacklen,
+                                    const char *needle, size_t needlelen,
                                     int needle_sum)
 {
-    const void* needle_ptr;
-    const void* haystack_ptr;
+    const char* needle_ptr;
+    const char* haystack_ptr;
     int sums_diff;
 
     switch (needlelen) {
         case (0):
             /* empty needle */
-            return (void *) haystack;
+            return (char *) haystack;
             break;
         case (1):
             /* special case for single-character needles */
@@ -137,7 +137,7 @@ void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
        the sums are equal, so it is enough to compare all but the first and
        last characters */
     if (sums_diff == 0 && memcmp(haystack+1, needle+1, needlelen-2) == 0) {
-        return (void *) haystack;
+        return (char *) haystack;
     }
 
 
@@ -152,7 +152,7 @@ void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
         /* if sums_diff == 0, we know that the sums are equal, so it is enough
            to compare all but the last characters */
         if (sums_diff == 0 && memcmp(haystack, needle, needlelen-1) == 0) {
-            return (void *) haystack;
+            return (char *) haystack;
         }
     }
 

@@ -20,6 +20,16 @@
 #endif /* __GNUC__ */
 
 
+#ifdef IS_PY3K
+    #define ARG_TYPES_DEF "y#y#"
+#else
+    #if PY_HEX_VERSION >= 0x02070000
+        #define ARG_TYPES_DEF "t#t#"
+    #else
+        #define ARG_TYPES_DEF "s#s#"
+    #endif
+#endif
+
 static PyObject *
 search_exact_byteslike(PyObject *self, PyObject *args) {
     /* input params */
@@ -30,19 +40,11 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
     PyObject *next_result;
     size_t next_match_index;
     int subseq_sum;
-    void *next_match_ptr;
+    char *next_match_ptr;
 
     if (unlikely(!PyArg_ParseTuple(
         args,
-#ifdef IS_PY3K
-        "y#y#",
-#else
-    #if PY_HEX_VERSION >= 0x02070000
-        "t#t#",
-    #else
-        "s#s#",
-    #endif
-#endif
+        ARG_TYPES_DEF,
         &subseq, &subseq_len,
         &seq, &seq_len
     ))) {

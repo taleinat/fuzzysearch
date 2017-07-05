@@ -4,8 +4,8 @@ from libc.stdlib cimport malloc, free, realloc
 
 cdef extern from "memmem.h":
     int calc_sum(const void *sequence, size_t sequence_len)
-    void *simple_memmem_with_needle_sum(const void *haystack, size_t haystacklen,
-                                        const void *needle, size_t needlelen,
+    char *simple_memmem_with_needle_sum(const char *haystack, size_t haystacklen,
+                                        const char *needle, size_t needlelen,
                                         int needle_sum)
 
 __all__ = [
@@ -292,9 +292,9 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):
         subseq_sum = calc_sum(c_subsequence + ngram_start, ngram_len)
 
         match_ptr = <char *>simple_memmem_with_needle_sum(
-            <void *>c_sequence + ngram_start,
+            <char *>c_sequence + ngram_start,
             _seq_len - ngram_start,
-            <void *>c_subsequence + ngram_start,
+            <char *>c_subsequence + ngram_start,
             ngram_len,
             subseq_sum)
 
@@ -318,8 +318,8 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):
                     end=match.end + small_search_start_index,
                 ))
             match_ptr = <char *>simple_memmem_with_needle_sum(
-                <void *>match_ptr + 1, _seq_len - (match_ptr - c_sequence) - 1,
-                <void *>c_subsequence + ngram_start, ngram_len,
+                <char *>match_ptr + 1, _seq_len - (match_ptr - c_sequence) - 1,
+                <char *>c_subsequence + ngram_start, ngram_len,
                 subseq_sum);
 
     return matches

@@ -23,6 +23,16 @@
 #endif /* __GNUC__ */
 
 
+#ifdef IS_PY3K
+    #define ARG_TYPES_DEF "y#y#"
+#else
+    #if PY_HEX_VERSION >= 0x02070000
+        #define ARG_TYPES_DEF "t#t#"
+    #else
+        #define ARG_TYPES_DEF "s#s#"
+    #endif
+#endif
+
 static PyObject *
 py_simple_memmem(PyObject *self, PyObject *args) {
     /* input params */
@@ -34,15 +44,7 @@ py_simple_memmem(PyObject *self, PyObject *args) {
 
     if (unlikely(!PyArg_ParseTuple(
         args,
-#ifdef IS_PY3K
-        "y#y#",
-#else
-    #if PY_HEX_VERSION >= 0x02070000
-        "t#t#",
-    #else
-        "s#s#",
-    #endif
-#endif
+        ARG_TYPES_DEF,
         &needle, &needle_len,
         &haystack, &haystack_len
     ))) {
@@ -74,15 +76,7 @@ py_wordlen_memmem(PyObject *self, PyObject *args) {
 
     if (unlikely(!PyArg_ParseTuple(
         args,
-#ifdef IS_PY3K
-        "y#y#",
-#else
-    #if PY_HEX_VERSION >= 0x02070000
-        "t#t#",
-    #else
-        "s#s#",
-    #endif
-#endif
+        ARG_TYPES_DEF,
         &needle, &needle_len,
         &haystack, &haystack_len
     ))) {
