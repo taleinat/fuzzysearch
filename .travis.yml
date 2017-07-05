@@ -29,10 +29,10 @@ install:
   - pip install coveralls
   # virtualenv < 14 is required to keep the Python 3.2 builds running
   - pip install "virtualenv<14"
-  - pip install tox==2.1.1
+  - pip install "tox<3"
 
 script:
-  - tox
+  - tox -vv
 
 after_success:
   case "$TOXENV" in
