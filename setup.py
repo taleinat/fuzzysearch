@@ -144,25 +144,22 @@ def try_building_extension():
     try:
         run_setup(True)
     except BuildFailed:
-        def echo(msg=''):
-            sys.stdout.write(msg + '\n')
         line = '=' * 74
         build_ext_warning = 'WARNING: The C extensions could not be ' \
                             'compiled; speedups are not enabled.'
 
-        echo(line)
-        echo(build_ext_warning)
-        echo('Failure information, if any, is above.')
-        echo('Retrying the build without the C extension now.')
-        echo()
+        print(line)
+        print(build_ext_warning)
+        print('Failure information, if any, is above.')
+        print('Retrying the build without the C extension now.')
+        print('')
 
         run_setup(False)
 
-        echo(line)
-        echo(build_ext_warning)
-        echo('Plain-Python installation succeeded.')
-        echo(line)
-
+        print(line)
+        print(build_ext_warning)
+        print('Plain-Python installation succeeded.')
+        print(line)
 
 if not (noexts or is_pypy or is_jython):
     try_building_extension()
