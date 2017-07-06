@@ -1,0 +1,57 @@
+environment:
+
+  matrix:
+
+    # For Python versions available on Appveyor, see
+    # http://www.appveyor.com/docs/installed-software#python
+
+    - PYTHON: "C:\\Python26"
+      TOX_ENV: "py26"
+    - PYTHON: "C:\\Python26-x64"
+      TOX_ENV: "py26"
+    - PYTHON: "C:\\Python27"
+      TOX_ENV: "py27"
+    - PYTHON: "C:\\Python27-x64"
+      TOX_ENV: "py27"
+    - PYTHON: "C:\\Python33"
+      TOX_ENV: "py33"
+#    - PYTHON: "C:\\Python33-x64"
+#      TOX_ENV: "py33"
+#      DISTUTILS_USE_SDK: "1"
+    - PYTHON: "C:\\Python34"
+      TOX_ENV: "py34"
+#    - PYTHON: "C:\\Python34-x64"
+#      TOX_ENV: "py34"
+#      DISTUTILS_USE_SDK: "1"
+    - PYTHON: "C:\\Python35"
+      TOX_ENV: "py35"
+    - PYTHON: "C:\\Python35-x64"
+      TOX_ENV: "py35"
+    - PYTHON: "C:\\Python36"
+      TOX_ENV: "py36"
+    - PYTHON: "C:\\Python36-x64"
+      TOX_ENV: "py36"
+
+install:
+  # We need wheel installed to build wheels
+  - "%PYTHON%\\Scripts\\pip.exe install wheel"
+  - "%PYTHON%\\Scripts\\pip.exe install coveralls"
+  - "%PYTHON%\\Scripts\\pip.exe install \"virtualenv<14\""
+  - "%PYTHON%\\Scripts\\pip.exe install \"tox<3\""
+
+build: off
+
+test_script:
+  - "build.cmd %PYTHON%\\Scripts\\tox.exe -e %TOX_ENV%-without_coverage-appveyor -vv"
+
+after_test:
+  - "build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
+
+artifacts:
+  # bdist_wheel puts your built wheel in the dist directory
+  - path: dist\*
+
+#on_success:
+#  You can use this step to upload your artifacts to a public website.
+#  See Appveyor's documentation for more details. Or you can simply
+#  access your wheels from the Appveyor "artifacts" tab for your build.
