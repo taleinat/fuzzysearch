@@ -89,7 +89,7 @@ char *simple_memmem(const char *haystack, size_t haystacklen,
     return NULL;
 }
 
-void *simple_memmem_with_needle_sum(const char *haystack, size_t haystacklen,
+char *simple_memmem_with_needle_sum(const char *haystack, size_t haystacklen,
                                     const char *needle, size_t needlelen,
                                     int needle_sum)
 {
