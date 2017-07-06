@@ -22,15 +22,15 @@ environment:
 
 install:
   # We need wheel installed to build wheels
-  - "%PYTHON%\\python.exe -m pip install wheel"
-  - "%PYTHON%\\python.exe -m pip install coveralls"
-  - "%PYTHON%\\python.exe -m pip install \"virtualenv<14\""
-  - "%PYTHON%\\python.exe -m pip install \"tox<3\""
+  - "%PYTHON%\\Scripts\\pip.exe install wheel"
+  - "%PYTHON%\\Scripts\\pip.exe install coveralls"
+  - "%PYTHON%\\Scripts\\pip.exe install \"virtualenv<14\""
+  - "%PYTHON%\\Scripts\\pip.exe install \"tox<3\""
 
 build: off
 
 test_script:
-  - "build.cmd %PYTHON%\\python.exe -m tox -vv"
+  - "build.cmd %PYTHON%\\Scripts\\tox.exe -vv"
 
 after_test:
   - "build.cmd %PYTHON%\\python.exe setup.py bdist_wheel"
