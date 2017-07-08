@@ -1,59 +1,77 @@
 sudo: false # use Travis's container-based infrastructure
 language: python
 
-os:
-  - linux
-  - osx
-
 matrix:
-  - python: "2.6"
-    env:
-      - TOXENV=py26-without_coverage
-  - python: "2.6"
-    env:
-      - TOXENV=py26-with_coverage
-  - python: "2.7"
-    env:
-      - TOXENV=py27-without_coverage
-  - python: "2.7"
-    env:
-      - TOXENV=py27-with_coverage
-  - python: "3.6"
-    env:
-      - TOXENV=py32-without_coverage
-  - python: "3.2"
-    env:
-      - TOXENV=py32-with_coverage
-  - python: "3.2"
-    env:
-      - TOXENV=py33-without_coverage
-  - python: "3.3"
-    env:
-      - TOXENV=py33-with_coverage
-  - python: "3.3"
-    env:
-      - TOXENV=py34-without_coverage
-  - python: "3.4"
-    env:
-      - TOXENV=py34-with_coverage
-  - python: "3.4"
-    env:
-      - TOXENV=py35-without_coverage
-  - python: "3.5"
-    env:
-      - TOXENV=py35-with_coverage
-  - python: "3.5"
-    env:
-      - TOXENV=py36-without_coverage
-  - python: "3.6"
-    env:
-      - TOXENV=py36-with_coverage
+  include:
+    # Use the built in venv for linux builds
+    - os: linux
+    # Use generic language for osx
+    - os: osx
+      sudo: required
+      language: generic
 
-install:
-  - pip install coveralls
+#    - python: "2.6"
+#      env:
+#        - TOXENV=py26-without_coverage
+#    - python: "2.6"
+#      env:
+#        - TOXENV=py26-with_coverage
+#    - python: "2.7"
+#      env:
+#        - TOXENV=py27-without_coverage
+#    - python: "2.7"
+#      env:
+#        - TOXENV=py27-with_coverage
+#    - python: "3.6"
+#      env:
+#        - TOXENV=py32-without_coverage
+#    - python: "3.2"
+#      env:
+#        - TOXENV=py32-with_coverage
+#    - python: "3.2"
+#      env:
+#        - TOXENV=py33-without_coverage
+#    - python: "3.3"
+#      env:
+#        - TOXENV=py33-with_coverage
+#    - python: "3.3"
+#      env:
+#        - TOXENV=py34-without_coverage
+#    - python: "3.4"
+#      env:
+#        - TOXENV=py34-with_coverage
+#    - python: "3.4"
+#      env:
+#        - TOXENV=py35-without_coverage
+#    - python: "3.5"
+#      env:
+#        - TOXENV=py35-with_coverage
+#    - python: "3.5"
+#      env:
+#        - TOXENV=py36-without_coverage
+    - python: "3.6"
+      env:
+        - TOXENV=py36-with_coverage PYENV_PYTHON=3.6.2
+
+# On macOS: perform the manual steps to install Python and activate venv
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update                     ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install "$MY_PYTHON"       ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv -p "$MY_PYTHON" ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate        ; fi
+
+install: |
+  if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+      brew update;
+      brew install pyenv;
+      pyenv install "$PYENV_PYTHON";
+      pyenv local "$PYENV_PYTHON";
+      virtualenv venv;
+      source venv/bin/activate;
+  fi
+  pip install coveralls
   # virtualenv < 14 is required to keep the Python 3.2 builds running
-  - pip install "virtualenv<14"
-  - pip install "tox<3"
+  pip install "virtualenv<14"
+  pip install "tox<3"
 
 script:
   - tox -vv
@@ -66,17 +84,27 @@ after_success:
   esac
 
 deploy:
-  distributions: "bdist_wheel"
-  on:
-    all_branches: true # TODO: REMOVE!!!
-    #tags: true
-    os: osx
-    repo: taleinat/fuzzysearch
   - provider: pypi
+    distributions: "bdist_wheel"
+    file_glob: true
+    file: "dist/*"
+    on:
+      all_branches: true # TODO: REMOVE!!!
+      #tags: true
+      repo: taleinat/fuzzysearch
+      condition: python -c 'import sys; sys.exit(~sys.platform.startswith("darwin"))'
     user: taleinat
-    secure:
-      password: "FjE1JyQWuFkhwIwgmqkWqXC23qw+F4B6qpopFi6Ry53CbzA1RtJkET73WUhkJqxlQVQZ0yrPwOevs/bJlk19vzu3tHHJ5AXzIF8DLb1D1Qvc11Kso0RQXkdW2nanHSI/nuy54jgij0PF7JivMwavZybKUxy8K9ZZmueM3OT+2XA="
-  - provider: github
+    password:
+      secure: "FjE1JyQWuFkhwIwgmqkWqXC23qw+F4B6qpopFi6Ry53CbzA1RtJkET73WUhkJqxlQVQZ0yrPwOevs/bJlk19vzu3tHHJ5AXzIF8DLb1D1Qvc11Kso0RQXkdW2nanHSI/nuy54jgij0PF7JivMwavZybKUxy8K9ZZmueM3OT+2XA="
+  - provider: releases
+    distributions: "bdist_wheel"
+    file_glob: true
+    file: "dist/*"
+    on:
+      all_branches: true # TODO: REMOVE!!!
+      #tags: true
+      repo: taleinat/fuzzysearch
+      condition: python -c 'import sys; sys.exit(~sys.platform.startswith("darwin"))'
     user: taleinat
-    secure:
-      api_key: "Qb9+9bcMJZpBOvkrPiTElyosk7VUtOxRpQGUFF8SAkjDidWrdtKU4tscS4eJXpquFyKeP6UkFrHcCRg0LetsSK2WJokk1pa2IIaYIP/XaAhOfAMbGxCYs2hIs/g/BMejvgxO0/BrvZqXy/que4YZBwM+pIU8y8jw+Lhic4pd9g8="
+    api_key:
+      secure: "Qb9+9bcMJZpBOvkrPiTElyosk7VUtOxRpQGUFF8SAkjDidWrdtKU4tscS4eJXpquFyKeP6UkFrHcCRg0LetsSK2WJokk1pa2IIaYIP/XaAhOfAMbGxCYs2hIs/g/BMejvgxO0/BrvZqXy/que4YZBwM+pIU8y8jw+Lhic4pd9g8="
