@@ -1,29 +1,53 @@
 sudo: false # use Travis's container-based infrastructure
 language: python
 
-python: "3.5"
-env:
-  - TOXENV=py26-without_coverage
-  - TOXENV=py27-without_coverage
-  - TOXENV=py32-without_coverage
-  - TOXENV=py33-without_coverage
-  - TOXENV=py34-without_coverage
-  - TOXENV=py35-without_coverage
-  - TOXENV=py26-with_coverage
-  - TOXENV=py27-with_coverage
-  - TOXENV=py32-with_coverage
-  - TOXENV=py33-with_coverage
-  - TOXENV=py34-with_coverage
-  - TOXENV=py35-with_coverage
+os:
+  - linux
+  - osx
 
 matrix:
-  include:
-    - python: "3.6"
-      env:
-        - TOXENV=py36-without_coverage
-    - python: "3.6"
-      env:
-        - TOXENV=py36-with_coverage
+  - python: "2.6"
+    env:
+      - TOXENV=py26-without_coverage
+  - python: "2.6"
+    env:
+      - TOXENV=py26-with_coverage
+  - python: "2.7"
+    env:
+      - TOXENV=py27-without_coverage
+  - python: "2.7"
+    env:
+      - TOXENV=py27-with_coverage
+  - python: "3.6"
+    env:
+      - TOXENV=py32-without_coverage
+  - python: "3.2"
+    env:
+      - TOXENV=py32-with_coverage
+  - python: "3.2"
+    env:
+      - TOXENV=py33-without_coverage
+  - python: "3.3"
+    env:
+      - TOXENV=py33-with_coverage
+  - python: "3.3"
+    env:
+      - TOXENV=py34-without_coverage
+  - python: "3.4"
+    env:
+      - TOXENV=py34-with_coverage
+  - python: "3.4"
+    env:
+      - TOXENV=py35-without_coverage
+  - python: "3.5"
+    env:
+      - TOXENV=py35-with_coverage
+  - python: "3.5"
+    env:
+      - TOXENV=py36-without_coverage
+  - python: "3.6"
+    env:
+      - TOXENV=py36-with_coverage
 
 install:
   - pip install coveralls
@@ -40,3 +64,19 @@ after_success:
       coveralls
       ;;
   esac
+
+deploy:
+  distributions: "bdist_wheel"
+  on:
+    all_branches: true # TODO: REMOVE!!!
+    #tags: true
+    os: osx
+    repo: taleinat/fuzzysearch
+  - provider: pypi
+    user: taleinat
+    secure:
+      password: "FjE1JyQWuFkhwIwgmqkWqXC23qw+F4B6qpopFi6Ry53CbzA1RtJkET73WUhkJqxlQVQZ0yrPwOevs/bJlk19vzu3tHHJ5AXzIF8DLb1D1Qvc11Kso0RQXkdW2nanHSI/nuy54jgij0PF7JivMwavZybKUxy8K9ZZmueM3OT+2XA="
+  - provider: github
+    user: taleinat
+    secure:
+      api_key: "Qb9+9bcMJZpBOvkrPiTElyosk7VUtOxRpQGUFF8SAkjDidWrdtKU4tscS4eJXpquFyKeP6UkFrHcCRg0LetsSK2WJokk1pa2IIaYIP/XaAhOfAMbGxCYs2hIs/g/BMejvgxO0/BrvZqXy/que4YZBwM+pIU8y8jw+Lhic4pd9g8="
