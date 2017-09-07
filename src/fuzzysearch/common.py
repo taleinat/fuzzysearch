@@ -53,6 +53,11 @@ class LevenshteinSearchParams(object):
     def check_params_valid(cls,
                      max_substitutions, max_insertions,
                      max_deletions, max_l_dist):
+        if not all(x is None or isinstance(x, int)
+                   for x in
+                   [max_substitutions, max_insertions, max_deletions, max_l_dist]):
+            raise TypeError("All limits must be integers or None")
+
         if max_l_dist is None:
             n_limits = (
                 (1 if max_substitutions is not None else 0) +
