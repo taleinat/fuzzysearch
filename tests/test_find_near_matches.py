@@ -90,15 +90,14 @@ class TestFindNearMatches(unittest.TestCase):
             (0, 1, 1),
             (1, 1, 1),
         ]:
-            self.assertEqual(
-                find_near_matches('a', 'a', max_subs, max_ins, max_dels, 0),
-                [Match(42, 43, 0)],
-            )
-            call_count += 1
-            msg = 'failed with max_subs={0}, max_ins={1}, max_dels={2}'.format(
-                max_subs, max_ins, max_dels,
-            )
-            self.assertEqual(self.mock_search_exact.call_count, call_count, msg)
+            with self.subTest('max_l_dist=0, max_subs={0}, max_ins={1}, max_dels={2}'.format(
+                    max_subs, max_ins, max_dels)):
+                self.assertEqual(
+                    find_near_matches('a', 'a', max_subs, max_ins, max_dels, 0),
+                    [Match(42, 43, 0)],
+                )
+                call_count += 1
+                self.assertEqual(self.mock_search_exact.call_count, call_count)
 
     def test_all_zero_except_max_l_dist(self):
         self.patch_concrete_search_methods()
