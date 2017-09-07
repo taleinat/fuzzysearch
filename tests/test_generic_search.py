@@ -2,7 +2,7 @@ from tests.compat import unittest
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches, LevenshteinSearchParams
 from tests.test_substitutions_only import TestSubstitionsOnlyBase, \
-    TestHasNearMatchSubstitionsOnly
+    TestHasNearMatchSubstitionsOnlyBase
 from fuzzysearch.generic_search import \
     _find_near_matches_generic_linear_programming as fnm_generic_lp, \
     find_near_matches_generic_ngrams as fnm_generic_ngrams, \
@@ -365,7 +365,7 @@ class TestGenericSearchNgrams(TestGenericSearchBase,
 
 
 class TestHasNearMatchGenericNgramsAsSubstitutionsOnly(
-    TestHasNearMatchSubstitionsOnly,
+    TestHasNearMatchSubstitionsOnlyBase,
 ):
     def search(self, subsequence, sequence, max_subs):
         return hnm_generic_ngrams(subsequence, sequence,
@@ -391,6 +391,3 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase,
 
     def test_missing_second_item_complex(self):
         self.assertTrue(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1))
-
-
-del TestHasNearMatchSubstitionsOnly
