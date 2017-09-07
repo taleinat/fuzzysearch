@@ -1,7 +1,7 @@
 import sys
-from collections import namedtuple
+from collections import namedtuple, Sequence
 from functools import wraps
-from six.moves import zip
+from six.moves import range, zip
 
 __all__ = [
     'Match', 'Ngram',
@@ -10,6 +10,7 @@ __all__ = [
 ]
 
 
+CLASSES_WITH_INDEX = (Sequence,)
 if sys.version_info >= (3,):
     CLASSES_WITH_FIND = (bytes, str)
 else:
@@ -86,18 +87,37 @@ class LevenshteinSearchParams(object):
 
 
 def search_exact(subsequence, sequence, start_index=0, end_index=None):
-    if isinstance(sequence, CLASSES_WITH_FIND):
-        find = sequence.find
-    else:
-        raise TypeError('unsupported sequence type: %s' % type(sequence))
-
     if not subsequence:
         raise ValueError('subsequence must not be empty')
 
-    index = find(subsequence, start_index, end_index)
+    if end_index is None:
+        end_index = len(sequence)
+
+    if isinstance(sequence, CLASSES_WITH_FIND):
+        def find_in_index_range(start_index):
+            return sequence.find(subsequence, start_index, end_index)
+    elif isinstance(sequence, CLASSES_WITH_INDEX):
+        first_item = subsequence[0]
+        first_item_last_index = end_index - (len(subsequence) - 1)
+        def find_in_index_range(start_index):
+            while True:
+                try:
+                    first_index = sequence.index(first_item, start_index, first_item_last_index)
+                    start_index = first_index + 1
+                except ValueError:
+                    return -1
+                for subseq_index in range(1, len(subsequence)):
+                    if sequence[first_index + subseq_index] != subsequence[subseq_index]:
+                        break
+                else:
+                    return first_index
+    else:
+        raise TypeError('unsupported sequence type: %s' % type(sequence))
+
+    index = find_in_index_range(start_index)
     while index >= 0:
         yield index
-        index = find(subsequence, index + 1, end_index)
+        index = find_in_index_range(index + 1)
 
 
 def count_differences_with_maximum(sequence1, sequence2, max_differences):
