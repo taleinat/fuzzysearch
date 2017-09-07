@@ -344,11 +344,3 @@ class TestFindNearMatchesLevenshtein(TestFindNearMatchesLevenshteinBase,
                                      unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
         return find_near_matches_levenshtein(subsequence, sequence, max_l_dist)
-
-    def test_fallback_to_search_exact(self):
-        with mock.patch('fuzzysearch.levenshtein.search_exact') \
-                as mock_search_exact:
-            mock_search_exact.return_value = [7]
-            matches = find_near_matches_levenshtein('a', 'b' * 10, 0)
-            self.assertGreater(mock_search_exact.call_count, 0)
-            self.assertEqual(matches, [Match(7, 8, 0)])
