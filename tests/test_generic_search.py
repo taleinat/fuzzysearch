@@ -275,6 +275,22 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.search(b('a'), b('b'), max_subs, max_ins, max_dels, None)
 
+    def test_non_string_sequences(self):
+        supported_types = [list, tuple]
+        for klass in supported_types:
+            with self.subTest(klass.__name__):
+                self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 3]), 0, 0, 0, 0),
+                                      [Match(start=0, end=3, dist=0)])
+                self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 3]), 1, 1, 1, 1),
+                                      [Match(start=0, end=3, dist=0)])
+                self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 0, 0, 0, 0),
+                                      [])
+                self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 1, 1, 1, 1),
+                                      [Match(start=0, end=3, dist=1)])
+                self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 0, 0, 1, 1),
+                                      [Match(start=0, end=3, dist=1)])
+
+
 class TestNgramsBase(object):
     def test_subseq_length_less_than_max_l_dist(self):
         with self.assertRaises(ValueError):

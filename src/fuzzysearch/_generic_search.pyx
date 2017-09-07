@@ -19,12 +19,6 @@ cdef struct GenericSearchCandidate:
 
 
 ALLOWED_TYPES = (six.binary_type, bytearray)
-try:
-    from Bio.Seq import Seq
-except ImportError:
-    pass
-else:
-    ALLOWED_TYPES += (Seq,)
 
 
 def c_find_near_matches_generic_linear_programming(subsequence, sequence, search_params):
@@ -320,6 +314,6 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):
             match_ptr = <char *>simple_memmem_with_needle_sum(
                 <char *>match_ptr + 1, _seq_len - (match_ptr - c_sequence) - 1,
                 <char *>c_subsequence + ngram_start, ngram_len,
-                subseq_sum);
+                subseq_sum)
 
     return matches
