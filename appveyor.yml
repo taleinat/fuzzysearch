@@ -34,6 +34,7 @@ environment:
 
 install:
   # We need wheel installed to build wheels
+  - "%PYTHON%\\Scripts\\pip.exe install -U pip"
   - "%PYTHON%\\Scripts\\pip.exe install wheel"
   - "%PYTHON%\\Scripts\\pip.exe install coveralls"
   - "%PYTHON%\\Scripts\\pip.exe install \"virtualenv<14\""
