@@ -18,7 +18,7 @@ class TestSubstitionsOnlyBase(object):
     def search(self, subsequence, sequence, max_subs):
         raise NotImplementedError
 
-    def expectedOutcomes(self, search_result, expected_outcomes):
+    def expectedOutcomes(self, search_result, expected_outcomes, *args, **kwargs):
         raise NotImplementedError
 
     def test_empty_sequence(self):
@@ -245,7 +245,7 @@ class TestFindNearMatchesSubstitions(TestSubstitionsOnlyBase,
     def search(self, subsequence, sequence, max_subs):
         return fnm_subs(subsequence, sequence, max_subs)
 
-    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
         best_from_grouped_results = [
             get_best_match_in_group(group)
             for group in group_matches(search_results)
@@ -256,7 +256,7 @@ class TestFindNearMatchesSubstitions(TestSubstitionsOnlyBase,
         ]
         return self.assertEqual(best_from_grouped_results,
                                 best_from_grouped_exepected_outcomes,
-                                *args, **kw)
+                                *args, **kwargs)
 
 
 class TestFindNearMatchesSubstitionsLinearProgramming(TestSubstitionsOnlyBase,
@@ -264,8 +264,8 @@ class TestFindNearMatchesSubstitionsLinearProgramming(TestSubstitionsOnlyBase,
     def search(self, subsequence, sequence, max_subs):
         return list(fnm_subs_lp(subsequence, sequence, max_subs))
 
-    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
-        return self.assertEqual(search_results, expected_outcomes, *args, **kw)
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
+        return self.assertEqual(search_results, expected_outcomes, *args, **kwargs)
 
 
 class TestFindNearMatchesSubstitionsNgrams(TestSubstitionsOnlyBase,
@@ -274,7 +274,7 @@ class TestFindNearMatchesSubstitionsNgrams(TestSubstitionsOnlyBase,
     def search(self, subsequence, sequence, max_subs):
         return fnm_subs_ngrams(subsequence, sequence, max_subs)
 
-    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
         best_from_grouped_results = [
             get_best_match_in_group(group)
             for group in group_matches(search_results)
@@ -285,17 +285,17 @@ class TestFindNearMatchesSubstitionsNgrams(TestSubstitionsOnlyBase,
         ]
         return self.assertEqual(best_from_grouped_results,
                                 best_from_grouped_exepected_outcomes,
-                                *args, **kw)
+                                *args, **kwargs)
 
 
 class TestHasNearMatchSubstitionsOnlyBase(TestSubstitionsOnlyBase):
     def search(self, subsequence, sequence, max_subs):
         raise NotImplementedError
 
-    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kw):
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
         return self.assertEqual(bool(search_results),
                                 bool(expected_outcomes),
-                                *args, **kw)
+                                *args, **kwargs)
 
 
 class TestHasNearMatchSubstitionsOnly(TestHasNearMatchSubstitionsOnlyBase,
