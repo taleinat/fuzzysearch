@@ -290,6 +290,55 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
                 self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 0, 0, 1, 1),
                                       [Match(start=0, end=3, dist=1)])
 
+    def test_list_of_words_one_missing(self):
+        subsequence = "jumped over the a lazy dog".split()
+        sequence = "the big brown fox jumped over the lazy dog".split()
+        for params, expected_outcomes in [
+            ((0, 0, 0, 0), []),
+            ((1, 0, 0, 1), []),
+            ((0, 1, 0, 1), []),
+            ((0, 0, 1, 1), [Match(start=4, end=9, dist=1)]),
+            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1)]),
+            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1)]),
+        ]:
+            self.expectedOutcomes(
+                self.search(subsequence, sequence, *params),
+                expected_outcomes,
+            )
+
+    def test_list_of_words_one_extra(self):
+        subsequence = "jumped over lazy dog".split()
+        sequence = "the big brown fox jumped over the lazy dog".split()
+        for params, expected_outcomes in [
+            ((0, 0, 0, 0), []),
+            ((1, 0, 0, 1), []),
+            ((0, 1, 0, 1), [Match(start=4, end=9, dist=1)]),
+            ((0, 0, 1, 1), []),
+            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1)]),
+            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1)]),
+        ]:
+            self.expectedOutcomes(
+                self.search(subsequence, sequence, *params),
+                expected_outcomes,
+            )
+
+    def test_list_of_words_one_substituted(self):
+        subsequence = "jumped over my lazy dog".split()
+        sequence = "the big brown fox jumped over the lazy dog".split()
+        for params, expected_outcomes in [
+            ((0, 0, 0, 0), []),
+            ((1, 0, 0, 1), [Match(start=4, end=9, dist=1)]),
+            ((0, 1, 0, 1), []),
+            ((0, 0, 1, 1), []),
+            ((0, 1, 1, 1), [Match(start=4, end=9, dist=1)]), # substitution = insertion + deletion; dist = 1 !!
+            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1)]),
+            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1)]),
+        ]:
+            self.expectedOutcomes(
+                self.search(subsequence, sequence, *params),
+                expected_outcomes,
+            )
+
 
 class TestNgramsBase(object):
     def test_subseq_length_less_than_max_l_dist(self):

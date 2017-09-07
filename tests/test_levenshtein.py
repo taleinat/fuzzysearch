@@ -322,6 +322,19 @@ class TestFindNearMatchesLevenshteinBase(object):
              Match(start=99, end=109, dist=0)],
         )
 
+    def test_list_of_words(self):
+        subsequence = "over a lazy dog".split()
+        sequence = "the big brown fox jumped over the lazy dog".split()
+        for max_l_dist, expected_outcomes in [
+            (0, []),
+            (1, [Match(start=5, end=9, dist=1)]),
+            (2, [Match(start=5, end=9, dist=1)]),
+        ]:
+            self.assertEqual(
+                self.search(subsequence, sequence, max_l_dist),
+                expected_outcomes,
+            )
+
 
 class TestFindNearMatchesLevenshteinNgrams(TestFindNearMatchesLevenshteinBase,
                                            unittest.TestCase):
