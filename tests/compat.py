@@ -10,7 +10,9 @@ __all__ = [
 
 # The `unittest2` module is a backport of the new unittest features introduced
 # in Python versions 3.2 and 2.7. Use it in older versions of Python.
-if sys.version_info < (2, 7) or (3, 0) <= sys.version_info < (3, 2):
+# It is also used here in versions 2.7, 3.2 and 3.3 to make features added
+# in version 3.4 available (specifically, TestCase.subTest).
+if sys.version_info < (3, 4):
     import unittest2 as unittest
 else:
     import unittest
