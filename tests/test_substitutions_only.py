@@ -9,7 +9,7 @@ from fuzzysearch.substitutions_only import \
     has_near_match_substitutions_ngrams as hnm_subs_ngrams
 
 from tests.compat import unittest
-from tests.utils import skip_if_arguments_are_unicode
+from tests.utils import skip_if_arguments_arent_byteslike
 
 from six import b, u
 
@@ -334,7 +334,7 @@ else:
             TestHasNearMatchSubstitionsOnlyBase,
             unittest.TestCase
     ):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_subs):
             return hnm_subs_lp_byteslike(subsequence, sequence,
                                          max_subs)
@@ -344,7 +344,7 @@ else:
             TestNgramsBase,
             unittest.TestCase
     ):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_subs):
             return hnm_subs_ngrams_byteslike(subsequence, sequence,
                                              max_subs)
@@ -353,7 +353,7 @@ else:
             TestSubstitionsOnlyBase,
             unittest.TestCase
     ):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_subs):
             results = fnm_subs_lp_byteslike(subsequence, sequence,
                                             max_subs)
@@ -381,7 +381,7 @@ else:
             TestNgramsBase,
             unittest.TestCase
     ):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_subs):
             results = fnm_subs_ngrams_byteslike(subsequence, sequence,
                                                 max_subs)

@@ -1,5 +1,5 @@
 import sys
-from collections import namedtuple, Sequence
+from collections import namedtuple
 from functools import wraps
 from six.moves import range, zip
 
@@ -10,7 +10,7 @@ __all__ = [
 ]
 
 
-CLASSES_WITH_INDEX = (Sequence,)
+CLASSES_WITH_INDEX = (list, tuple)
 if sys.version_info >= (3,):
     CLASSES_WITH_FIND = (bytes, str)
 else:

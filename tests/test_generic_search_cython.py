@@ -1,5 +1,5 @@
 from tests.compat import unittest
-from tests.utils import skip_if_arguments_are_unicode
+from tests.utils import skip_if_arguments_arent_byteslike
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches, LevenshteinSearchParams
 from tests.test_substitutions_only import TestSubstitionsOnlyBase
@@ -17,7 +17,7 @@ except ImportError:
 else:
     class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
                                            unittest.TestCase):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_l_dist):
             return [
                 get_best_match_in_group(group)
@@ -30,7 +30,7 @@ else:
 
     class TestGenericSearchNgramsAsLevenshtein(
         TestFindNearMatchesLevenshteinBase, unittest.TestCase):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_l_dist):
             return [
                 get_best_match_in_group(group)
@@ -44,7 +44,7 @@ else:
 
     class TestGenericSearchLpAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                                  unittest.TestCase):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_subs):
             return list(
                 c_fnm_generic_lp(subsequence,
@@ -60,7 +60,7 @@ else:
 
     class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                                      unittest.TestCase):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_subs):
             return [
                 get_best_match_in_group(group)
@@ -87,7 +87,7 @@ else:
 
 
     class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                    max_l_dist=None):
             return list(c_fnm_generic_lp(pattern,
@@ -127,7 +127,7 @@ else:
             )
 
     class TestGenericSearchNgrams(TestGenericSearchBase, unittest.TestCase):
-        @skip_if_arguments_are_unicode
+        @skip_if_arguments_arent_byteslike
         def search(self, pattern, sequence, max_subs, max_ins, max_dels,
                    max_l_dist=None):
             return [
