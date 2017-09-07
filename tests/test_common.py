@@ -38,7 +38,7 @@ class TestGroupMatches(unittest.TestCase):
 
 
 class TestSearchExactBase(object):
-    def search(self, sequence, subsequence, start_index=0, end_index=None):
+    def search(self, subsequence, sequence, start_index=0, end_index=None):
         raise NotImplementedError
 
     def test_empty_sequence(self):
@@ -130,8 +130,8 @@ class TestSearchExactBase(object):
                 self.assertEqual(self.search(pattern, sequence, 3, 7), [])
 
 class TestSearchExact(TestSearchExactBase, unittest.TestCase):
-    def search(self, sequence, subsequence, start_index=0, end_index=None):
-        return list(search_exact(sequence, subsequence, start_index, end_index))
+    def search(self, subsequence, sequence, start_index=0, end_index=None):
+        return list(search_exact(subsequence, sequence, start_index, end_index))
 
     def get_supported_sequence_types(self):
         types_to_test = [b, u, list, tuple]
@@ -222,11 +222,11 @@ else:
                                                             max_diffs)
 
     class TestSearchExactByteslike(TestSearchExactBase, unittest.TestCase):
-        def search(self, sequence, subsequence, start_index=0, end_index=None):
+        def search(self, subsequence, sequence, start_index=0, end_index=None):
             if end_index is not None:
-                return search_exact_byteslike(b(sequence), b(subsequence), start_index, end_index)
+                return search_exact_byteslike(b(subsequence), b(sequence), start_index, end_index)
             else:
-                return search_exact_byteslike(b(sequence), b(subsequence), start_index)
+                return search_exact_byteslike(b(subsequence), b(sequence), start_index)
 
         def get_supported_sequence_types(self):
             types_to_test = [b]

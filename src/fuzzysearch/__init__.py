@@ -57,9 +57,9 @@ def choose_search_func(search_params):
     # if the limitations are so strict that only exact matches are allowed,
     # use search_exact()
     if search_params.max_l_dist == 0:
-        return lambda sequence, subsequence, search_params: [
+        return lambda subsequence, sequence, search_params: [
             Match(index, index + len(subsequence), 0)
-            for index in search_exact(sequence, subsequence)
+            for index in search_exact(subsequence, sequence)
         ]
         # return [
         #     Match(start_index, start_index + len(subsequence), 0)
@@ -70,9 +70,9 @@ def choose_search_func(search_params):
     elif max_insertions == 0 and max_deletions == 0:
         # max_subs = \
         #     min([x for x in [max_l_dist, max_substitutions] if x is not None])
-        return lambda sequence, subsequence, search_params:\
+        return lambda subsequence, sequence, search_params:\
             find_near_matches_substitutions(
-                sequence, subsequence,
+                subsequence, sequence,
                 min([x for x in [search_params.max_l_dist, search_params.max_substitutions] if x is not None])
             )
 
@@ -83,8 +83,8 @@ def choose_search_func(search_params):
         (max_insertions if max_insertions is not None else (1 << 29)),
         (max_deletions if max_deletions is not None else (1 << 29)),
     ):
-        return lambda sequence, subsequence, search_params:\
-            find_near_matches_levenshtein(sequence, subsequence, search_params.max_l_dist)
+        return lambda subsequence, sequence, search_params:\
+            find_near_matches_levenshtein(subsequence, sequence, search_params.max_l_dist)
 
     # if none of the special cases above are met, use the most generic version
     else:
