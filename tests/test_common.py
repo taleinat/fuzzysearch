@@ -2,7 +2,7 @@ from fuzzysearch.common import Match, group_matches, GroupOfMatches, \
     search_exact, count_differences_with_maximum
 from tests.compat import unittest
 
-from six import b, u
+from six import b, u, text_type
 
 
 class TestGroupOfMatches(unittest.TestCase):
@@ -225,10 +225,21 @@ else:
 
     class TestSearchExactByteslike(TestSearchExactBase, unittest.TestCase):
         def search(self, subsequence, sequence, start_index=0, end_index=None):
+            if isinstance(subsequence, text_type):
+                try:
+                    subsequence = subsequence.encode('ascii')
+                except UnicodeEncodeError:
+                    raise self.skipTest("skipping test with non-ascii-encodable string for byteslike function")
+            if isinstance(sequence, text_type):
+                try:
+                    sequence = sequence.encode('ascii')
+                except UnicodeEncodeError:
+                    raise self.skipTest("skipping test with non-ascii-encodable string for byteslike function")
+
             if end_index is not None:
-                return search_exact_byteslike(b(subsequence), b(sequence), start_index, end_index)
+                return search_exact_byteslike(subsequence, sequence, start_index, end_index)
             else:
-                return search_exact_byteslike(b(subsequence), b(sequence), start_index)
+                return search_exact_byteslike(subsequence, sequence, start_index)
 
         @classmethod
         def get_supported_sequence_types(cls):
