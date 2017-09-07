@@ -22,7 +22,7 @@ class MockFunctionFailsUnlessDefined(object):
 
 
 class TestFindNearMatches(unittest.TestCase):
-    def setUp(self):
+    def patch_concrete_search_methods(self):
         self.mock_search_exact = MockFunctionFailsUnlessDefined()
         self.mock_find_near_matches_levenshtein = \
             MockFunctionFailsUnlessDefined()
@@ -68,6 +68,7 @@ class TestFindNearMatches(unittest.TestCase):
             find_near_matches('a', 'a', max_insertions=1, max_deletions=1)
 
     def test_all_zero(self):
+        self.patch_concrete_search_methods()
         self.mock_search_exact.return_value = [42]
         self.assertEqual(
             find_near_matches('a', 'a', 0, 0, 0, 0),
@@ -76,6 +77,7 @@ class TestFindNearMatches(unittest.TestCase):
         self.assertEqual(self.mock_search_exact.call_count, 1)
 
     def test_zero_max_l_dist(self):
+        self.patch_concrete_search_methods()
         self.mock_search_exact.return_value = [42]
 
         call_count = 0
@@ -99,6 +101,7 @@ class TestFindNearMatches(unittest.TestCase):
             self.assertEqual(self.mock_search_exact.call_count, call_count, msg)
 
     def test_all_zero_except_max_l_dist(self):
+        self.patch_concrete_search_methods()
         self.mock_search_exact.return_value = [42]
 
         self.assertEqual(
@@ -108,6 +111,7 @@ class TestFindNearMatches(unittest.TestCase):
         self.assertEqual(self.mock_search_exact.call_count, 1)
 
     def test_all_none_except_max_l_dist(self):
+        self.patch_concrete_search_methods()
         self.mock_find_near_matches_levenshtein.return_value = [42]
 
         self.assertEqual(
@@ -120,6 +124,7 @@ class TestFindNearMatches(unittest.TestCase):
         """test cases where 0 < max_l_dist <= max(others)"""
         # in these cases, find_near_matches should call
         # find_near_matches_levenshtein
+        self.patch_concrete_search_methods()
         self.mock_find_near_matches_levenshtein.return_value = \
             [mock.sentinel.SENTINEL]
 
@@ -142,6 +147,7 @@ class TestFindNearMatches(unittest.TestCase):
         self.assertEqual(self.mock_find_near_matches_levenshtein.call_count, 3)
 
     def test_only_substitutions(self):
+        self.patch_concrete_search_methods()
         self.mock_find_near_matches_substitutions.return_value = [42]
 
         self.assertEqual(
@@ -163,6 +169,7 @@ class TestFindNearMatches(unittest.TestCase):
         )
 
     def test_generic(self):
+        self.patch_concrete_search_methods()
         self.mock_find_near_matches_generic.return_value = [42]
 
         self.assertEqual(
