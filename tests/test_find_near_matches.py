@@ -84,7 +84,7 @@ class TestFindNearMatches(unittest.TestCase):
         for (max_subs, max_ins, max_dels) in [
             (1, 0, 0),
             (0, 1, 0),
-            (1, 0, 1),
+            (0, 0, 1),
             (1, 1, 0),
             (1, 0, 1),
             (0, 1, 1),
