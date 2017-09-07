@@ -20,47 +20,6 @@ GenericSearchCandidate = namedtuple(
 )
 
 
-def _check_arguments(subsequence, sequence,
-                     max_substitutions, max_insertions,
-                     max_deletions, max_l_dist=None):
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
-
-    if max_l_dist is None:
-        if (
-                max_substitutions is None or
-                max_insertions is None or
-                max_deletions is None
-        ):
-            if (
-                    max_substitutions is None and
-                    max_insertions is None and
-                    max_deletions is None
-            ):
-                raise ValueError('No limitations given!')
-
-            if max_substitutions is None:
-                raise ValueError('# substitutions must be limited!')
-            if max_insertions is None:
-                raise ValueError('# insertions must be limited!')
-            if max_deletions is None:
-                raise ValueError('# deletions must be limited!')
-
-
-def _get_max_l_dist(max_substitutions, max_insertions,
-                    max_deletions, max_l_dist):
-    maxes_sum = (
-        (max_substitutions if max_substitutions is not None else (1 << 29)) +
-        (max_insertions if max_insertions is not None else (1 << 29)) +
-        (max_deletions if max_deletions is not None else (1 << 29))
-    )
-    return (
-        max_l_dist
-        if max_l_dist is not None and max_l_dist <= maxes_sum
-        else maxes_sum
-    )
-
-
 def find_near_matches_generic(subsequence, sequence, search_params):
     """search for near-matches of subsequence in sequence
 
