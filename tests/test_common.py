@@ -71,7 +71,8 @@ class TestSearchExactBase(object):
     def test_endswith(self):
         self.assertEqual(self.search('bcd', 'abcd'), [1])
 
-    def get_supported_sequence_types(self):
+    @classmethod
+    def get_supported_sequence_types(cls):
         raise NotImplementedError
 
     def test_identical(self):
@@ -133,7 +134,8 @@ class TestSearchExact(TestSearchExactBase, unittest.TestCase):
     def search(self, subsequence, sequence, start_index=0, end_index=None):
         return list(search_exact(subsequence, sequence, start_index, end_index))
 
-    def get_supported_sequence_types(self):
+    @classmethod
+    def get_supported_sequence_types(cls):
         types_to_test = [b, u, list, tuple]
 
         try:
@@ -228,7 +230,8 @@ else:
             else:
                 return search_exact_byteslike(b(subsequence), b(sequence), start_index)
 
-        def get_supported_sequence_types(self):
+        @classmethod
+        def get_supported_sequence_types(cls):
             types_to_test = [b]
             return types_to_test
 
