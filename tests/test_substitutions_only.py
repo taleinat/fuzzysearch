@@ -372,9 +372,9 @@ else:
             return matches
 
         def expectedOutcomes(self, search_results, expected_outcomes,
-                             *args, **kw):
+                             *args, **kwargs):
             return self.assertEqual(search_results, expected_outcomes,
-                                    *args, **kw)
+                                    *args, **kwargs)
 
     class TestFindNearMatchesSubstitionsNgramsByteslike(
             TestSubstitionsOnlyBase,

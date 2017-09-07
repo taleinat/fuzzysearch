@@ -53,9 +53,9 @@ else:
             )
 
         def expectedOutcomes(self, search_results, expected_outcomes,
-                             *args, **kw):
+                             *args, **kwargs):
             return self.assertEqual(search_results, expected_outcomes,
-                                    *args, **kw)
+                                    *args, **kwargs)
 
 
     class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
@@ -72,7 +72,7 @@ else:
         ]
 
         def expectedOutcomes(self, search_results, expected_outcomes,
-                             *args, **kw):
+                             *args, **kwargs):
             best_from_grouped_results = [
                 get_best_match_in_group(group)
                 for group in group_matches(search_results)
@@ -83,7 +83,7 @@ else:
             ]
             return self.assertEqual(best_from_grouped_results,
                                     best_from_grouped_exepected_outcomes,
-                                    *args, **kw)
+                                    *args, **kwargs)
 
 
     class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
@@ -98,8 +98,8 @@ else:
                                          )))
 
         def expectedOutcomes(self, search_result, expected_outcomes,
-                             *args, **kw):
-            self.assertEqual(search_result, expected_outcomes, *args, **kw)
+                             *args, **kwargs):
+            self.assertEqual(search_result, expected_outcomes, *args, **kwargs)
 
         def test_double_first_item_two_results(self):
             self.assertEqual(
@@ -143,12 +143,12 @@ else:
             ]
 
         def expectedOutcomes(self, search_result, expected_outcomes,
-                             *args, **kw):
+                             *args, **kwargs):
             best_from_groups = [
                 get_best_match_in_group(group)
                 for group in group_matches(search_result)
             ]
-            self.assertEqual(search_result, best_from_groups, *args, **kw)
+            self.assertEqual(search_result, best_from_groups, *args, **kwargs)
 
         def test_missing_second_item_complex(self):
             self.assertTrue(
