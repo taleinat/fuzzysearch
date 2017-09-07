@@ -225,3 +225,13 @@ class TestFindNearMatchesAsSubstitutionsOnly(TestSubstitionsOnlyBase,
 
     def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
         return self.assertEqual(search_results, expected_outcomes, *args, **kwargs)
+
+
+from tests.test_generic_search import TestGenericSearch
+class TestFindNearMatchesAsGeneric(TestGenericSearch,
+                                   unittest.TestCase):
+    def search(self, pattern, sequence, max_subs, max_ins, max_dels,
+               max_l_dist=None):
+        return find_near_matches(pattern, sequence,
+                                 max_subs, max_ins, max_dels, max_l_dist)
+del TestGenericSearch
