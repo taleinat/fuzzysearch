@@ -25,7 +25,7 @@ class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
 
 
 class TestGenericSearchNgramsAsLevenshtein(TestFindNearMatchesLevenshteinBase,
-                                       unittest.TestCase):
+                                           unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
         return fnm_generic_ngrams(subsequence, sequence,
                                   LevenshteinSearchParams(max_l_dist, max_l_dist, max_l_dist, max_l_dist))
@@ -43,7 +43,7 @@ class TestGenericSearchLpAsSubstitutionsOnly(TestSubstitionsOnlyBase,
 
 
 class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
-                                             unittest.TestCase):
+                                                 unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
         return fnm_generic_ngrams(subsequence, sequence,
                                   LevenshteinSearchParams(max_subs, 0, 0, max_subs))
@@ -230,43 +230,28 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
         return self.assertEqual(search_results,
                                 best_from_grouped_exepected_outcomes)
 
-    def test_valid_none_arguments(self):
-        # check that no exception is raised when some values are None
-        self.assertEqual(
-            self.search(b('a'), b('b'), 0, None, None, 0),
-            [],
-        )
+    def test_valid_none_arguments_with_defined_max_l_dist(self):
+        # expect no exception when max_l_dist is not None and some or all other
+        # values are None
+        N = None
+        for (max_subs, max_ins, max_dels) in [
+            (N, 0, 0),
+            (0, N, 0),
+            (0, 0, N),
+            (0, N, N),
+            (N, 0, N),
+            (N, N, 0),
+            (N, N, N),
+        ]:
+            with self.subTest('max_subs={0}, max_ins={1}, max_dels={2}, max_l_dist=0'.format(
+                    max_subs, max_ins, max_dels)):
+                self.assertEqual(
+                    self.search(b('a'), b('b'), max_subs, max_ins, max_dels, 0),
+                    [],
+                )
 
-        self.assertEqual(
-            self.search(b('a'), b('b'), None, 0, None, 0),
-            [],
-        )
-
-        self.assertEqual(
-            self.search(b('a'), b('b'), None, None, 0, 0),
-            [],
-        )
-
-        self.assertEqual(
-            self.search(b('a'), b('b'), 0, 0, None, 0),
-            [],
-        )
-
-        self.assertEqual(
-            self.search(b('a'), b('b'), 0, None, 0, 0),
-            [],
-        )
-
-        self.assertEqual(
-            self.search(b('a'), b('b'), None, 0, 0, 0),
-            [],
-        )
-
-        self.assertEqual(
-            self.search(b('a'), b('b'), None, None, None, 0),
-            [],
-        )
-
+    def test_only_max_l_dist_none(self):
+        # expect no exception when only max_l_dist is None
         self.assertEqual(
             self.search(b('a'), b('b'), 0, 0, 0, None),
             [],
@@ -275,9 +260,20 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
     def test_invalid_none_arguments(self):
         # check that an exception is raised when max_l_dist is None as well as
         # at least one other limitation
-        with self.assertRaises(ValueError):
-            self.search(b('a'), b('b'), None, None, None, None)
-
+        N = None
+        for (max_subs, max_ins, max_dels) in [
+            (N, 0, 0),
+            (0, N, 0),
+            (0, 0, N),
+            (0, N, N),
+            (N, 0, N),
+            (N, N, 0),
+            (N, N, N),
+        ]:
+            with self.subTest('max_subs={0}, max_ins={1}, max_dels={2}, max_l_dist=None'.format(
+                    max_subs, max_ins, max_dels)):
+                with self.assertRaises(ValueError):
+                    self.search(b('a'), b('b'), max_subs, max_ins, max_dels, None)
 
 class TestNgramsBase(object):
     def test_subseq_length_less_than_max_l_dist(self):
@@ -395,3 +391,6 @@ class TestHasNearMatchGenericNgrams(TestGenericSearchBase,
 
     def test_missing_second_item_complex(self):
         self.assertTrue(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1))
+
+
+del TestHasNearMatchSubstitionsOnly
