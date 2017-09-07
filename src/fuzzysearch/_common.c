@@ -21,20 +21,23 @@
 
 
 #ifdef IS_PY3K
-    #define ARG_TYPES_DEF "y#y#"
+    #define ARG_TYPES_DEF "y#y#|ll:search_exact_byteslike"
 #else
     #if PY_HEX_VERSION >= 0x02070000
-        #define ARG_TYPES_DEF "t#t#"
+        #define ARG_TYPES_DEF "t#t#|ll:search_exact_byteslike"
     #else
-        #define ARG_TYPES_DEF "s#s#"
+        #define ARG_TYPES_DEF "s#s#|ll:search_exact_byteslike"
     #endif
 #endif
 
 static PyObject *
-search_exact_byteslike(PyObject *self, PyObject *args) {
+search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
     /* input params */
     const char *subseq, *seq;
     int subseq_len, seq_len;
+    long int start_index=0, end_index=-1;
+
+    static char *kwlist[] = {"subsequence", "sequence", "start_index", "end_index", NULL};
 
     PyObject *results;
     PyObject *next_result;
@@ -42,11 +45,12 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
     int subseq_sum;
     char *next_match_ptr;
 
-    if (unlikely(!PyArg_ParseTuple(
-        args,
-        ARG_TYPES_DEF,
+    if (unlikely(!PyArg_ParseTupleAndKeywords(
+        args, kwdict, ARG_TYPES_DEF, kwlist,
         &subseq, &subseq_len,
-        &seq, &seq_len
+        &seq, &seq_len,
+        &start_index,
+        &end_index
     ))) {
         return NULL;
     }
@@ -58,10 +62,25 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
         return NULL;
     }
 
+    if (unlikely(start_index < 0)) {
+        PyErr_SetString(PyExc_ValueError, "start_index must be non-negative");
+        return NULL;
+    }
+
+    if (end_index == -1) end_index = seq_len;
+    if (unlikely(end_index < 0)) {
+        PyErr_SetString(PyExc_ValueError, "end_index must be non-negative");
+        return NULL;
+    }
+
     results = PyList_New(0);
     if (unlikely(!results)) {
         return NULL;
     }
+
+    seq_len = (end_index < seq_len ? end_index : seq_len);
+    seq += (start_index < seq_len ? start_index : seq_len);
+    seq_len -= (start_index <= seq_len ? start_index : seq_len);
 
     if (unlikely(seq_len < subseq_len)) {
         return results;
@@ -74,9 +93,9 @@ search_exact_byteslike(PyObject *self, PyObject *args) {
     while (next_match_ptr != NULL) {
         next_match_index = (const char *)next_match_ptr - seq;
 #ifdef IS_PY3K
-        next_result = PyLong_FromLong(next_match_index);
+        next_result = PyLong_FromLong(next_match_index + start_index);
 #else
-        next_result = PyInt_FromLong(next_match_index);
+        next_result = PyInt_FromLong(next_match_index + start_index);
 #endif
         if (unlikely(next_result == NULL)) {
             goto error;
@@ -136,7 +155,7 @@ count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
 
     n_differences = max_differences;
     for (i=seq1_len; i && n_differences; --i) {
-        n_differences -= (*seq1) != (*seq2);
+        if ((*seq1) != (*seq2)) --n_differences;
         ++seq1;
         ++seq2;
     }
@@ -149,7 +168,7 @@ static PyMethodDef _common_methods[] = {
      count_differences_with_maximum_byteslike,
      METH_VARARGS, "DOCSTRING."},
     {"search_exact_byteslike", search_exact_byteslike,
-     METH_VARARGS, "DOCSTRING"},
+     METH_VARARGS | METH_KEYWORDS, "DOCSTRING"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 

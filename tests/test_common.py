@@ -38,7 +38,7 @@ class TestGroupMatches(unittest.TestCase):
 
 
 class TestSearchExactBase(object):
-    def search(self, sequence, subsequence):
+    def search(self, sequence, subsequence, start_index=0, end_index=None):
         raise NotImplementedError
 
     def test_empty_sequence(self):
@@ -167,9 +167,31 @@ else:
                                                             max_diffs)
 
     class TestSearchExactByteslike(TestSearchExactBase, unittest.TestCase):
-        def search(self, sequence, subsequence):
-            return search_exact_byteslike(b(sequence), b(subsequence))
+        def search(self, sequence, subsequence, start_index=0, end_index=None):
+            if end_index is not None:
+                return search_exact_byteslike(b(sequence), b(subsequence), start_index, end_index)
+            else:
+                return search_exact_byteslike(b(sequence), b(subsequence), start_index)
 
         def test_bytes(self):
             text = b('abc')
             self.assertEqual(search_exact_byteslike(text, text), [0])
+        def test_input_argument_handling(self):
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc'), [0])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 0), [0])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 1), [])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 0, 3), [0])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 0, end_index=3), [0])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', end_index=3, start_index=0), [0])
+            self.assertEqual(search_exact_byteslike(subsequence=b'abc', sequence=b'abc',
+                                                    start_index=0, end_index=3), [0])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 0, 4), [0])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 0, -1), [0])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 0, 2), [])
+            self.assertEqual(search_exact_byteslike(b'abc', b'abc', 2, 1), [])
+
+            with self.assertRaises(Exception):
+                search_exact_byteslike(b'abc', subsequence=b'abc')
+
+            with self.assertRaises(Exception):
+                search_exact_byteslike(b'abc', b'abc', 0, start_index=0)

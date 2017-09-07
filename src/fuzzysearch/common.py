@@ -131,8 +131,8 @@ else:
     def search_exact(subsequence, sequence, start_index=0, end_index=None):
         try:
             return search_exact_byteslike(subsequence, sequence,
-                                          start_index, end_index)
-        except TypeError:
+                                          start_index, end_index if end_index is not None else -1)
+        except (TypeError, UnicodeEncodeError):
             return _search_exact(subsequence, sequence, start_index, end_index)
 
 
