@@ -1,34 +1,16 @@
 sudo: false # use Travis's container-based infrastructure
 language: python
 
-python: "3.6"
+python: "3.7"
 
 matrix:
   include:
-    - python: "2.6"
-      env:
-        - TOXENV=py26-without_coverage
-    - python: "2.6"
-      env:
-        - TOXENV=py26-with_coverage
     - python: "2.7"
       env:
         - TOXENV=py27-without_coverage
     - python: "2.7"
       env:
         - TOXENV=py27-with_coverage
-    - python: "3.2"
-      env:
-        - TOXENV=py32-without_coverage
-    - python: "3.2"
-      env:
-        - TOXENV=py32-with_coverage
-    - python: "3.3"
-      env:
-        - TOXENV=py33-without_coverage
-    - python: "3.3"
-      env:
-        - TOXENV=py33-with_coverage
     - python: "3.4"
       env:
         - TOXENV=py34-without_coverage
@@ -47,11 +29,22 @@ matrix:
     - python: "3.6"
       env:
         - TOXENV=py36-with_coverage
+    - python: "3.7"
+      env:
+        - TOXENV=py37-without_coverage
+      # temporary workaround, see https://github.com/travis-ci/travis-ci/issues/9815
+      dist: xenial
+      sudo: yes
+    - python: "3.7"
+      env:
+        - TOXENV=py37-with_coverage
+      # temporary workaround, see https://github.com/travis-ci/travis-ci/issues/9815
+      dist: xenial
+      sudo: yes
 
 install:
   - pip install coveralls
-  # virtualenv < 14 is required to keep the Python 3.2 builds running
-  - pip install "virtualenv<14"
+  - pip install virtualenv
   - pip install "tox<3"
 
 script:

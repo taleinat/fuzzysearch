@@ -1,6 +1,5 @@
 bumpversion
 cython
 sphinx
-# virtualenv < 14 is required to keep the Python 3.2 builds running
-virtualenv<14
+virtualenv
 tox<3

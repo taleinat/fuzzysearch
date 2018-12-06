@@ -1038,21 +1038,11 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value)
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
-/* Print.proto */
-static int __Pyx_Print(PyObject*, PyObject *, int);
-#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
-static PyObject* __pyx_print = 0;
-static PyObject* __pyx_print_kwargs = 0;
-#endif
-
 /* CIntFromPy.proto */
 static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
-
-/* PrintOne.proto */
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
@@ -1097,12 +1087,9 @@ static const char __pyx_k_a[] = "a";
 static const char __pyx_k_b[] = "b";
 static const char __pyx_k_c[] = "c";
 static const char __pyx_k_all[] = "__all__";
-static const char __pyx_k_end[] = "end";
-static const char __pyx_k_file[] = "file";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_scores[] = "scores";
 static const char __pyx_k_xrange[] = "xrange";
@@ -1131,9 +1118,7 @@ static PyObject *__pyx_n_s_b;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_s_c_expand_short;
 static PyObject *__pyx_n_s_cline_in_traceback;
-static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_enumerate;
-static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_fuzzysearch__levenshtein_ngrams;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_max_l_dist;
@@ -1141,7 +1126,6 @@ static PyObject *__pyx_n_s_min_intermediate_score;
 static PyObject *__pyx_n_s_min_score;
 static PyObject *__pyx_n_s_min_score_idx;
 static PyObject *__pyx_n_s_name;
-static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_scores;
 static PyObject *__pyx_n_s_seq_char;
@@ -1662,28 +1646,6 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       /* "fuzzysearch/_levenshtein_ngrams.pyx":62
  * 
  *             # bail early when it is impossible to find a better expansion
- *             print(min_intermediate_score, min_score)             # <<<<<<<<<<<<<<
- *             if min_intermediate_score >= min_score:
- *                 break
- */
-      __pyx_t_14 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_intermediate_score); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 62, __pyx_L8_error)
-      __Pyx_GOTREF(__pyx_t_14);
-      __pyx_t_13 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 62, __pyx_L8_error)
-      __Pyx_GOTREF(__pyx_t_13);
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 62, __pyx_L8_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_GIVEREF(__pyx_t_14);
-      PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_14);
-      __Pyx_GIVEREF(__pyx_t_13);
-      PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_t_13);
-      __pyx_t_14 = 0;
-      __pyx_t_13 = 0;
-      if (__Pyx_PrintOne(0, __pyx_t_9) < 0) __PYX_ERR(0, 62, __pyx_L8_error)
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":63
- *             # bail early when it is impossible to find a better expansion
- *             print(min_intermediate_score, min_score)
  *             if min_intermediate_score >= min_score:             # <<<<<<<<<<<<<<
  *                 break
  * 
@@ -1691,8 +1653,8 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       __pyx_t_2 = ((__pyx_v_min_intermediate_score >= __pyx_v_min_score) != 0);
       if (__pyx_t_2) {
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":64
- *             print(min_intermediate_score, min_score)
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":63
+ *             # bail early when it is impossible to find a better expansion
  *             if min_intermediate_score >= min_score:
  *                 break             # <<<<<<<<<<<<<<
  * 
@@ -1700,16 +1662,16 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         goto __pyx_L11_break;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":63
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":62
+ * 
  *             # bail early when it is impossible to find a better expansion
- *             print(min_intermediate_score, min_score)
  *             if min_intermediate_score >= min_score:             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
       }
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":67
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":66
  * 
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             elif c <= min_score:             # <<<<<<<<<<<<<<
@@ -1719,7 +1681,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       __pyx_t_2 = ((__pyx_v_c <= __pyx_v_min_score) != 0);
       if (__pyx_t_2) {
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":68
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":67
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             elif c <= min_score:
  *                 min_score = c             # <<<<<<<<<<<<<<
@@ -1728,17 +1690,17 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         __pyx_v_min_score = __pyx_v_c;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":69
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":68
  *             elif c <= min_score:
  *                 min_score = c
  *                 min_score_idx = seq_index             # <<<<<<<<<<<<<<
  * 
  *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
  */
-        __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_seq_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 69, __pyx_L8_error)
+        __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_seq_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L8_error)
         __pyx_v_min_score_idx = __pyx_t_5;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":67
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":66
  * 
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             elif c <= min_score:             # <<<<<<<<<<<<<<
@@ -1759,7 +1721,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":71
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":70
  *                 min_score_idx = seq_index
  * 
  *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
@@ -1767,24 +1729,24 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  *     finally:
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 71, __pyx_L8_error)
+    __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 70, __pyx_L8_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_9 = PyObject_RichCompare(__pyx_t_7, __pyx_v_max_l_dist, Py_LE); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 71, __pyx_L8_error)
+    __pyx_t_14 = PyObject_RichCompare(__pyx_t_7, __pyx_v_max_l_dist, Py_LE); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 70, __pyx_L8_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 71, __pyx_L8_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_14); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 70, __pyx_L8_error)
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     if (__pyx_t_2) {
-      __pyx_t_9 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 71, __pyx_L8_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_7 = __Pyx_PyInt_FromSize_t((__pyx_v_min_score_idx + 1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 71, __pyx_L8_error)
+      __pyx_t_14 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 70, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_14);
+      __pyx_t_7 = __Pyx_PyInt_FromSize_t((__pyx_v_min_score_idx + 1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 70, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 71, __pyx_L8_error)
+      __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 70, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_13);
-      __Pyx_GIVEREF(__pyx_t_9);
-      PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_9);
+      __Pyx_GIVEREF(__pyx_t_14);
+      PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_14);
       __Pyx_GIVEREF(__pyx_t_7);
       PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_7);
-      __pyx_t_9 = 0;
+      __pyx_t_14 = 0;
       __pyx_t_7 = 0;
       __pyx_t_6 = __pyx_t_13;
       __pyx_t_13 = 0;
@@ -1797,7 +1759,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     goto __pyx_L7_return;
   }
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":74
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":73
  * 
  *     finally:
  *         free(scores)             # <<<<<<<<<<<<<<
@@ -1809,8 +1771,8 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       __Pyx_PyThreadState_assign
       __pyx_t_20 = 0; __pyx_t_21 = 0; __pyx_t_22 = 0; __pyx_t_23 = 0; __pyx_t_24 = 0; __pyx_t_25 = 0;
       __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
-      __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -1929,9 +1891,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_s_c_expand_short, __pyx_k_c_expand_short, sizeof(__pyx_k_c_expand_short), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
-  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
-  {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_n_s_fuzzysearch__levenshtein_ngrams, __pyx_k_fuzzysearch__levenshtein_ngrams, sizeof(__pyx_k_fuzzysearch__levenshtein_ngrams), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_max_l_dist, __pyx_k_max_l_dist, sizeof(__pyx_k_max_l_dist), 0, 0, 1, 1},
@@ -1939,7 +1899,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_min_score, __pyx_k_min_score, sizeof(__pyx_k_min_score), 0, 0, 1, 1},
   {&__pyx_n_s_min_score_idx, __pyx_k_min_score_idx, sizeof(__pyx_k_min_score_idx), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
-  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_scores, __pyx_k_scores, sizeof(__pyx_k_scores), 0, 0, 1, 1},
   {&__pyx_n_s_seq_char, __pyx_k_seq_char, sizeof(__pyx_k_seq_char), 0, 0, 1, 1},
@@ -1983,14 +1942,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":71
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":70
  *                 min_score_idx = seq_index
  * 
  *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */
-  __pyx_tuple__2 = PyTuple_Pack(2, Py_None, Py_None); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(2, Py_None, Py_None); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
@@ -3221,112 +3180,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     }
 }
 
-/* Print */
-#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static PyObject *__Pyx_GetStdout(void) {
-    PyObject *f = PySys_GetObject((char *)"stdout");
-    if (!f) {
-        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
-    }
-    return f;
-}
-static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
-    int i;
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
-        PyObject* v;
-        if (PyFile_SoftSpace(f, 1)) {
-            if (PyFile_WriteString(" ", f) < 0)
-                goto error;
-        }
-        v = PyTuple_GET_ITEM(arg_tuple, i);
-        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
-            goto error;
-        if (PyString_Check(v)) {
-            char *s = PyString_AsString(v);
-            Py_ssize_t len = PyString_Size(v);
-            if (len > 0) {
-                switch (s[len-1]) {
-                    case ' ': break;
-                    case '\f': case '\r': case '\n': case '\t': case '\v':
-                        PyFile_SoftSpace(f, 0);
-                        break;
-                    default:  break;
-                }
-            }
-        }
-    }
-    if (newline) {
-        if (PyFile_WriteString("\n", f) < 0)
-            goto error;
-        PyFile_SoftSpace(f, 0);
-    }
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-}
-#else
-static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
-    PyObject* kwargs = 0;
-    PyObject* result = 0;
-    PyObject* end_string;
-    if (unlikely(!__pyx_print)) {
-        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
-        if (!__pyx_print)
-            return -1;
-    }
-    if (stream) {
-        kwargs = PyDict_New();
-        if (unlikely(!kwargs))
-            return -1;
-        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
-            goto bad;
-        if (!newline) {
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                goto bad;
-            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                goto bad;
-            }
-            Py_DECREF(end_string);
-        }
-    } else if (!newline) {
-        if (unlikely(!__pyx_print_kwargs)) {
-            __pyx_print_kwargs = PyDict_New();
-            if (unlikely(!__pyx_print_kwargs))
-                return -1;
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                return -1;
-            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                return -1;
-            }
-            Py_DECREF(end_string);
-        }
-        kwargs = __pyx_print_kwargs;
-    }
-    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
-    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
-        Py_DECREF(kwargs);
-    if (!result)
-        return -1;
-    Py_DECREF(result);
-    return 0;
-bad:
-    if (kwargs != __pyx_print_kwargs)
-        Py_XDECREF(kwargs);
-    return -1;
-}
-#endif
-
 /* CIntFromPy */
 static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *x) {
     const size_t neg_one = (size_t) ((size_t) 0 - (size_t) 1), const_zero = (size_t) 0;
@@ -3704,43 +3557,6 @@ raise_neg_overflow:
         "can't convert negative value to unsigned int");
     return (unsigned int) -1;
 }
-
-/* PrintOne */
-#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static int __Pyx_PrintOne(PyObject* f, PyObject *o) {
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    if (PyFile_SoftSpace(f, 0)) {
-        if (PyFile_WriteString(" ", f) < 0)
-            goto error;
-    }
-    if (PyFile_WriteObject(o, f, Py_PRINT_RAW) < 0)
-        goto error;
-    if (PyFile_WriteString("\n", f) < 0)
-        goto error;
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-    /* the line below is just to avoid C compiler
-     * warnings about unused functions */
-    return __Pyx_Print(f, NULL, 0);
-}
-#else
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
-    int res;
-    PyObject* arg_tuple = PyTuple_Pack(1, o);
-    if (unlikely(!arg_tuple))
-        return -1;
-    res = __Pyx_Print(stream, arg_tuple, 1);
-    Py_DECREF(arg_tuple);
-    return res;
-}
-#endif
 
 /* CIntFromPy */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
