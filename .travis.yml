@@ -1,7 +1,7 @@
 sudo: false # use Travis's container-based infrastructure
 language: python
 
-python: "3.7"
+python: "3.6"
 
 matrix:
   include:
