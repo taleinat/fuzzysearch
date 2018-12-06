@@ -8,10 +8,16 @@ __all__ = ['find_near_matches_levenshtein_ngrams']
 
 
 def _expand(subsequence, sequence, max_l_dist):
+    """Expand a partial match of a Levenstein search.
+
+    An expansion must begin at the beginning of the sequence, which makes
+    this much simpler than a full search, and allows for greater optimization.
+    """
     if not subsequence:
         return (0, 0)
 
-    # TODO: review the criterion used
+    # If given a long sub-sequence and relatively small max distance,
+    # use a more complex algorithm better optimized for such cases.
     if len(subsequence) > max(max_l_dist * 2, 10):
         return _expand_long(subsequence, sequence, max_l_dist)
     else:
@@ -19,11 +25,6 @@ def _expand(subsequence, sequence, max_l_dist):
 
 
 def _expand_short(subsequence, sequence, max_l_dist):
-    """Expand a partial match of a Levenstein search.
-
-    An expansion must begin at the beginning of the sequence, which makes
-    this much simpler than a full search, and allows for greater optimization.
-    """
     subseq_len = len(subsequence)
 
     scores = list(range(subseq_len + 1))

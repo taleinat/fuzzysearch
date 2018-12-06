@@ -1,10 +1,17 @@
+import re
+
 from tests.compat import unittest, mock
 
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from fuzzysearch.levenshtein import find_near_matches_levenshtein, \
     find_near_matches_levenshtein_linear_programming as fnm_levenshtein_lp
-from fuzzysearch.levenshtein_ngram import _expand, \
+from fuzzysearch.levenshtein_ngram import \
+    _expand, _expand_short, _expand_long, \
     find_near_matches_levenshtein_ngrams as fnm_levenshtein_ngrams
+
+
+def longstr(string):
+    return re.sub(r'\s+', '', string)
 
 
 class TestFuzzySearch(unittest.TestCase):
@@ -55,53 +62,227 @@ class TestFuzzySearch(unittest.TestCase):
         self.assertIn(Match(start=3, end=24, dist=1), matches)
 
 
-class TestExpand(unittest.TestCase):
+class TestExpandBase(object):
+    expand = None  # override in sub-classes!
+
     def test_both_empty(self):
-        self.assertEqual(_expand('', '', 0), (0, 0))
+        self.assertEqual(self.expand('', '', 0), (0, 0))
 
     def test_empty_subsequence(self):
-        self.assertEqual(_expand('', 'TEXT', 0), (0, 0))
+        self.assertEqual(self.expand('', 'TEXT', 0), (0, 0))
 
     def test_empty_sequence(self):
-        self.assertEqual(_expand('PATTERN', '', 0), (None, None))
+        self.assertEqual(self.expand('PATTERN', '', 0), (None, None))
 
     def test_identical(self):
-        self.assertEqual(_expand('abc', 'abc', 0), (0, 3))
-        self.assertEqual(_expand('abc', 'abc', 1), (0, 3))
-        self.assertEqual(_expand('abc', 'abc', 2), (0, 3))
+        self.assertEqual(self.expand('abc', 'abc', 0), (0, 3))
+        self.assertEqual(self.expand('abc', 'abc', 1), (0, 3))
+        self.assertEqual(self.expand('abc', 'abc', 2), (0, 3))
 
     def test_first_item_missing(self):
-        self.assertEqual(_expand('abcd', 'bcd', 0), (None, None))
-        self.assertEqual(_expand('abcd', 'bcd', 1), (1, 3))
-        self.assertEqual(_expand('abcd', 'bcd', 2), (1, 3))
+        self.assertEqual(self.expand('abcd', 'bcd', 0), (None, None))
+        self.assertEqual(self.expand('abcd', 'bcd', 1), (1, 3))
+        self.assertEqual(self.expand('abcd', 'bcd', 2), (1, 3))
 
     def test_second_item_missing(self):
-        self.assertEqual(_expand('abcd', 'acd', 0), (None, None))
-        self.assertEqual(_expand('abcd', 'acd', 1), (1, 3))
-        self.assertEqual(_expand('abcd', 'acd', 2), (1, 3))
+        self.assertEqual(self.expand('abcd', 'acd', 0), (None, None))
+        self.assertEqual(self.expand('abcd', 'acd', 1), (1, 3))
+        self.assertEqual(self.expand('abcd', 'acd', 2), (1, 3))
 
     def test_second_before_last_item_missing(self):
-        self.assertEqual(_expand('abcd', 'abd', 0), (None, None))
-        self.assertEqual(_expand('abcd', 'abd', 1), (1, 3))
-        self.assertEqual(_expand('abcd', 'abd', 2), (1, 3))
+        self.assertEqual(self.expand('abcd', 'abd', 0), (None, None))
+        self.assertEqual(self.expand('abcd', 'abd', 1), (1, 3))
+        self.assertEqual(self.expand('abcd', 'abd', 2), (1, 3))
 
     def test_last_item_missing(self):
-        self.assertEqual(_expand('abcd', 'abc', 0), (None, None))
-        self.assertEqual(_expand('abcd', 'abc', 1), (1, 3))
-        self.assertEqual(_expand('abcd', 'abc', 2), (1, 3))
+        self.assertEqual(self.expand('abcd', 'abc', 0), (None, None))
+        self.assertEqual(self.expand('abcd', 'abc', 1), (1, 3))
+        self.assertEqual(self.expand('abcd', 'abc', 2), (1, 3))
 
     def test_completely_different(self):
-        self.assertEqual(_expand('abc', 'def', 0), (None, None))
+        self.assertEqual(self.expand('abc', 'def', 0), (None, None))
 
     def test_startswith(self):
-        self.assertEqual(_expand('abc', 'abcd', 0), (0, 3))
-        self.assertEqual(_expand('abc', 'abcd', 1), (0, 3))
-        self.assertEqual(_expand('abc', 'abcd', 2), (0, 3))
+        self.assertEqual(self.expand('abc', 'abcd', 0), (0, 3))
+        self.assertEqual(self.expand('abc', 'abcd', 1), (0, 3))
+        self.assertEqual(self.expand('abc', 'abcd', 2), (0, 3))
+
+    def test_missing_at_start_middle_and_end(self):
+        self.assertEqual(self.expand('abcd', '-ab-cd-', 0), (None, None))
+        self.assertEqual(self.expand('abcd', '-ab-cd-', 1), (None, None))
+        self.assertEqual(self.expand('abcd', '-ab-cd-', 2), (2, 6))
+        self.assertEqual(self.expand('abcd', '-ab-cd-', 3), (2, 6))
+
+    def test_long_needle(self):
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', 'abcdefg-hijk-mnopqrst', 0),
+            (None, None),
+        )
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', 'abcdefg-hijk-mnopqrst', 1),
+            (None, None),
+        )
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', 'abcdefg-hijk-mnopqrst', 2),
+            (2, 17),
+        )
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', 'abcdefg-hijk-mnopqrst', 3),
+            (2, 17),
+        )
+
+
+class TestExpand(TestExpandBase, unittest.TestCase):
+    @staticmethod
+    def expand(subsequence, sequence, max_l_dist):
+        return _expand(subsequence, sequence, max_l_dist)
+
+
+class TestExpandShort(TestExpandBase, unittest.TestCase):
+    @staticmethod
+    def expand(subsequence, sequence, max_l_dist):
+        # _expand_short() assumes that the sub-sequences is not empty
+        if not subsequence:
+            return 0, 0
+        return _expand_short(subsequence, sequence, max_l_dist)
+
+
+class TestExpandLong(TestExpandBase, unittest.TestCase):
+    @staticmethod
+    def expand(subsequence, sequence, max_l_dist):
+        # _expand_long() assumes that the sub-sequences is not empty
+        if not subsequence:
+            return 0, 0
+        return _expand_long(subsequence, sequence, max_l_dist)
 
 
 class TestFindNearMatchesLevenshteinBase(object):
     def search(self, subsequence, sequence, max_l_dist):
         raise NotImplementedError
+    
+    test_cases_data = {
+        # name: (needle, haystack, [
+        #   (max_l_dist, [(start, end, dist), ...]),
+        # ])
+        'identical sequence': ('PATTERN', 'PATTERN', [
+            (0, [(0, 7, 0)]),
+        ]),
+        'substring': ('PATTERN', '----------PATTERN---------', [
+            (0, [(10, 17, 0)]),
+            (1, [(10, 17, 0)]),
+            (2, [(10, 17, 0)]),
+        ]),
+        'double first item': ('def', 'abcddefg', [
+            (1, [(4, 7, 0)]),
+        ]),
+        'double last item': ('def', 'abcdeffg', [
+            (1, [(3, 6, 0)]),
+        ]),
+        'double first items': ('defgh', 'abcdedefghi', [
+            (3, [(5, 10, 0)]),
+        ]),
+        'double last items': ('cdefgh', 'abcdefghghi', [
+            (3, [(2, 8, 0)]),
+        ]),
+        'missing second item': ('bde', 'abcdefg', [
+            (1, [(1, 5, 1)]),
+        ]),
+        'missing second to last item': ('bce', 'abcdefg', [
+            (1, [(1, 5, 1)]),
+            (2, [(1, 5, 1)]),
+        ]),
+        'one missing in middle': ('PATTERN', '----------PATERN---------', [
+            (0, []),
+            (1, [(10, 16, 1)]),
+            (2, [(10, 16, 1)]),
+        ]),
+        'one changed in middle': ('PATTERN', '----------PAT-ERN---------', [
+            (0, []),
+            (1, [(10, 17, 1)]),
+            (2, [(10, 17, 1)]),
+        ]),
+        'one extra in middle': ('PATTERN', '----------PATT-ERN---------', [
+            (0, []),
+            (1, [(10, 18, 1)]),
+            (2, [(10, 18, 1)]),
+        ]),
+        'one extra repeating in middle': ('PATTERN',
+                                          '----------PATTTERN---------',
+                                          [
+            (0, []),
+            (1, [(10, 18, 1)]),
+            (2, [(10, 18, 1)]),
+        ]),
+        'one extra repeating at end': ('PATTERN',
+                                          '----------PATTERNN---------',
+                                          [
+            (0, [(10, 17, 0)]),
+            (1, [(10, 17, 0)]),
+            (2, [(10, 17, 0)]),
+        ]),
+        'one missing at end': ('defg', 'abcdef', [
+            (1, [(3, 6, 1)]),
+        ]),
+        'DNA search': (
+            'TGCACTGTAGGGATAACAAT',
+            longstr('''
+                GACTAGCACTGTAGGGATAACAATTTCACACAGGTGGACAATTACATTGAAAATCACAGATTG
+                GTCACACACACATTGGACATACATAGAAACACACACACATACATTAGATACGAACATAGAAAC
+                ACACATTAGACGCGTACATAGACACAAACACATTGACAGGCAGTTCAGATGATGACGCCCGAC
+                TGATACTCGCGTAGTCGTGGGAGGCAAGGCACACAGGGGATAGG
+            '''),
+            [
+                (2, [(3, 24, 1)]),
+            ]
+        ),
+        # see:
+        # * BioPython archives from March 14th, 2014
+        #   http://lists.open-bio.org/pipermail/biopython/2014-March/009030.html
+        # * https://github.com/taleinat/fuzzysearch/issues/3
+        'protein search 1': (
+            'GGGTTLTTSS',
+            longstr('''
+                XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTLTTSSAAAAAAAAAAA
+                AAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
+            '''),
+            [
+                (0, [(42, 52, 0), (99, 109, 0)]),
+                (1, [(19, 29, 1), (42, 52, 0), (99, 109, 0)]),
+                (2, [(19, 29, 1), (42, 52, 0), (99, 109, 0)]),
+            ]
+        ),
+        'protein search 2': (
+            'GGGTTLTTSS',
+            longstr('''
+                XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTVTTSSAAAAAAAAAAA
+                AAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
+            '''),
+            [
+                (0, [(99, 109, 0)]),
+                (1, [(19, 29, 1), (42, 52, 1), (99, 109, 0)]),
+                (2, [(19, 29, 1), (42, 52, 1), (99, 109, 0)]),
+            ]
+        ),
+        'list of words': (
+            "over a lazy dog".split(),
+            "the big brown fox jumped over the lazy dog".split(),
+            [
+                (0, []),
+                (1, [(5, 9, 1)]),
+                (2, [(5, 9, 1)]),
+            ]
+        ),
+    }
+
+    def test_cases(self):
+        for name, data in self.test_cases_data.items():
+            substring, text, max_l_dist2expected_matches = data
+            with self.subTest(name=name):
+                for max_l_dist, expected_matches in max_l_dist2expected_matches:
+                    self.assertEqual(
+                        self.search(substring, text, max_l_dist=max_l_dist),
+                        expected_matches
+                    )
 
     def test_empty_sequence(self):
         self.assertEqual(self.search('PATTERN', '', max_l_dist=0), [])
@@ -109,231 +290,6 @@ class TestFindNearMatchesLevenshteinBase(object):
     def test_empty_subsequence_exeption(self):
         with self.assertRaises(ValueError):
             self.search('', 'TEXT', max_l_dist=0)
-
-    def test_match_identical_sequence(self):
-        self.assertEqual(
-            self.search('PATTERN', 'PATTERN', max_l_dist=0),
-            [Match(start=0, end=len('PATTERN'), dist=0)],
-        )
-
-    def test_substring(self):
-        substring = 'PATTERN'
-        text = 'aaaaaaaaaaPATTERNaaaaaaaaa'
-        expected_match = Match(start=10, end=17, dist=0)
-
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=1),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=0),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=2),
-            [expected_match],
-        )
-
-    def test_double_first_item(self):
-        self.assertEqual(
-            self.search('def', 'abcddefg', max_l_dist=1),
-            [Match(start=4, end=7, dist=0)],
-        )
-
-    def test_double_last_item(self):
-        self.assertEqual(
-            self.search('def', 'abcdeffg', max_l_dist=1),
-            [Match(start=3, end=6, dist=0)],
-        )
-
-    def test_double_first_items(self):
-        self.assertEqual(
-            self.search('defgh', 'abcdedefghi', max_l_dist=3),
-            [Match(start=5, end=10, dist=0)],
-        )
-
-    def test_double_last_items(self):
-        self.assertEqual(
-            self.search('cdefgh', 'abcdefghghi', max_l_dist=3),
-            [Match(start=2, end=8, dist=0)],
-        )
-
-    def test_missing_second_item(self):
-        self.assertEqual(
-            self.search('bde', 'abcdefg', max_l_dist=1),
-            [Match(start=1, end=5, dist=1)],
-        )
-
-    def test_missing_second_to_last_item(self):
-        self.assertEqual(
-            self.search('bce', 'abcdefg', max_l_dist=1),
-            [Match(start=1, end=5, dist=1)],
-        )
-
-        self.assertEqual(
-            self.search('bce', 'abcdefg', max_l_dist=2),
-            [Match(start=1, end=5, dist=1)],
-        )
-
-    def test_one_missing_in_middle(self):
-        substring = 'PATTERN'
-        text = 'aaaaaaaaaaPATERNaaaaaaaaa'
-        expected_match = Match(start=10, end=16, dist=1)
-
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=0),
-            [],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=1),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=2),
-            [expected_match],
-        )
-
-    def test_one_changed_in_middle(self):
-        substring = 'PATTERN'
-        text = 'aaaaaaaaaaPATtERNaaaaaaaaa'
-        expected_match = Match(start=10, end=17, dist=1)
-
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=0),
-            [],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=1),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=2),
-            [expected_match],
-        )
-
-    def test_one_extra_in_middle(self):
-        substring = 'PATTERN'
-        text = 'aaaaaaaaaaPATTXERNaaaaaaaaa'
-        expected_match = Match(start=10, end=18, dist=1)
-
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=0),
-            [],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=1),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=2),
-            [expected_match],
-        )
-
-    def test_one_extra_repeating_in_middle(self):
-        substring = 'PATTERN'
-        text = 'aaaaaaaaaaPATTTERNaaaaaaaaa'
-        expected_match = Match(start=10, end=18, dist=1)
-
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=0),
-            [],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=1),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=2),
-            [expected_match],
-        )
-
-    def test_one_extra_repeating_at_end(self):
-        substring = 'PATTERN'
-        text = 'aaaaaaaaaaPATTERNNaaaaaaaaa'
-        expected_match = Match(start=10, end=17, dist=0)
-
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=0),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=1),
-            [expected_match],
-        )
-        self.assertEqual(
-            self.search(substring, text, max_l_dist=2),
-            [expected_match],
-        )
-
-    def test_one_missing_at_end_of_sequence(self):
-        self.assertEqual(
-            self.search('defg', 'abcdef', max_l_dist=1),
-            [Match(3, 6, 1)],
-        )
-
-    def test_dna_search(self):
-        # see: http://stackoverflow.com/questions/19725127/
-        text = ''.join('''\
-            GACTAGCACTGTAGGGATAACAATTTCACACAGGTGGACAATTACATTGAAAATCACAGATTGGT
-            CACACACACATTGGACATACATAGAAACACACACACATACATTAGATACGAACATAGAAACACAC
-            ATTAGACGCGTACATAGACACAAACACATTGACAGGCAGTTCAGATGATGACGCCCGACTGATAC
-            TCGCGTAGTCGTGGGAGGCAAGGCACACAGGGGATAGG
-            '''.split())
-        pattern = 'TGCACTGTAGGGATAACAAT'
-
-        self.assertEqual(
-            self.search(pattern, text, max_l_dist=2),
-            [Match(start=3, end=24, dist=1)],
-        )
-
-    def test_protein_search1(self):
-        # see:
-        # * BioPython archives from March 14th, 2014
-        #   http://lists.open-bio.org/pipermail/biopython/2014-March/009030.html
-        # * https://github.com/taleinat/fuzzysearch/issues/3
-        text = ''.join('''\
-            XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTLTTSSAAAAAAAAAAAA
-            AAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
-        '''.split())
-        pattern = "GGGTTLTTSS"
-
-        self.assertEqual(
-            self.search(pattern, text, max_l_dist=2),
-            [Match(start=19, end=29, dist=1),
-             Match(start=42, end=52, dist=0),
-             Match(start=99, end=109, dist=0)],
-        )
-
-    def test_protein_search2(self):
-        # see:
-        # * BioPython archives from March 14th, 2014
-        #   http://lists.open-bio.org/pipermail/biopython/2014-March/009030.html
-        # * https://github.com/taleinat/fuzzysearch/issues/3
-        text = ''.join('''\
-            XXXXXXXXXXXXXXXXXXXGGGTTVTTSSAAAAAAAAAAAAAGGGTTVTTSSAAAAAAAAAAA
-            AAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBGGGTTLTTSS
-        '''.split())
-        pattern = "GGGTTLTTSS"
-
-        self.assertEqual(
-            self.search(pattern, text, max_l_dist=2),
-            [Match(start=19, end=29, dist=1),
-             Match(start=42, end=52, dist=1),
-             Match(start=99, end=109, dist=0)],
-        )
-
-    def test_list_of_words(self):
-        subsequence = "over a lazy dog".split()
-        sequence = "the big brown fox jumped over the lazy dog".split()
-        for max_l_dist, expected_outcomes in [
-            (0, []),
-            (1, [Match(start=5, end=9, dist=1)]),
-            (2, [Match(start=5, end=9, dist=1)]),
-        ]:
-            self.assertEqual(
-                self.search(subsequence, sequence, max_l_dist),
-                expected_outcomes,
-            )
 
 
 class TestFindNearMatchesLevenshteinNgrams(TestFindNearMatchesLevenshteinBase,
