@@ -84,6 +84,11 @@ _generic_search_module = Extension(
              'src/fuzzysearch/memmem.c'],
     include_dirs=['.'],
 )
+_levenshtein_ngrams_module = Extension(
+    'fuzzysearch._levenshtein_ngrams',
+    sources=['src/fuzzysearch/_levenshtein_ngrams.c'],
+    include_dirs=['.'],
+)
 # pymemmem_module = Extension(
 #     'fuzzysearch._pymemmem',
 #     sources=['src/fuzzysearch/_pymemmem.c',
@@ -98,6 +103,7 @@ def run_setup(with_binary=True):
         _substitutions_only_module,
         _common_module,
         _generic_search_module,
+        _levenshtein_ngrams_module,
         # pymemmem_module,
     ]
     if not with_binary:

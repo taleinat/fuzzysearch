@@ -21,7 +21,7 @@ def _expand(subsequence, sequence, max_l_dist):
         return _expand_short(subsequence, sequence, max_l_dist)
 
 
-def _expand_short(subsequence, sequence, max_l_dist):
+def _py_expand_short(subsequence, sequence, max_l_dist):
     """Straightforward implementation of partial match expansion."""
     # The following diagram shows the score calculation step.
     #
@@ -74,6 +74,14 @@ def _expand_short(subsequence, sequence, max_l_dist):
             break
 
     return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
+
+
+try:
+    from fuzzysearch._levenshtein_ngrams import c_expand_short as _c_expand_short
+except ImportError:
+    _expand_short = _py_expand_short
+else:
+    _expand_short = _c_expand_short
 
 
 def _expand_long(subsequence, sequence, max_l_dist):

@@ -1,4 +1,4 @@
-.PHONY: clean clean-pyc clean-build clean-cython clean-build-ext-inplace lint test test-all coverage docs cython release sdist
+.PHONY: clean clean-pyc clean-build clean-cython clean-build-ext-inplace lint test coverage docs cython release sdist
 
 help:
 	@echo "clean-build - remove build artifacts"
@@ -38,13 +38,10 @@ lint:
 	flake8 fuzzysearch tests
 
 test:
-	nose2 --no-user-config tests
-
-test-all:
 	tox
 
 coverage:
-	test-all
+	test
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
@@ -60,9 +57,12 @@ docs:
 src/fuzzysearch/_generic_search.c: src/fuzzysearch/_generic_search.pyx
 	cython src/fuzzysearch/_generic_search.pyx
 
-cython: src/fuzzysearch/_generic_search.c
+src/fuzzysearch/_levenshtein_ngrams.c: src/fuzzysearch/_levenshtein_ngrams.pyx
+	cython src/fuzzysearch/_levenshtein_ngrams.pyx
 
-build-ext-inplace: src/fuzzysearch/_generic_search.c src/fuzzysearch/_common.c src/fuzzysearch/_substitutions_only.c src/fuzzysearch/wordlen_memmem.c src/fuzzysearch/_substitutions_only_lp_template.h src/fuzzysearch/_substitutions_only_ngrams_template.h
+cython: src/fuzzysearch/_generic_search.c src/fuzzysearch/_levenshtein_ngrams.c
+
+build-ext-inplace: src/fuzzysearch/_generic_search.c src/fuzzysearch/_levenshtein_ngrams.c src/fuzzysearch/_common.c src/fuzzysearch/_substitutions_only.c src/fuzzysearch/wordlen_memmem.c src/fuzzysearch/_substitutions_only_lp_template.h src/fuzzysearch/_substitutions_only_ngrams_template.h
 	python setup.py --quiet build_ext --inplace
 
 release: clean

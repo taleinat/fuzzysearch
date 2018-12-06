@@ -6,7 +6,7 @@ from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from fuzzysearch.levenshtein import find_near_matches_levenshtein, \
     find_near_matches_levenshtein_linear_programming as fnm_levenshtein_lp
 from fuzzysearch.levenshtein_ngram import \
-    _expand, _expand_short, _expand_long, \
+    _expand, _py_expand_short, _expand_long, \
     find_near_matches_levenshtein_ngrams as fnm_levenshtein_ngrams
 
 
@@ -163,8 +163,17 @@ class TestExpand(TestExpandBase, unittest.TestCase):
     expand = staticmethod(_expand)
 
 
-class TestExpandShort(TestExpandBase, unittest.TestCase):
-    expand = staticmethod(_expand_short)
+class TestPyExpandShort(TestExpandBase, unittest.TestCase):
+    expand = staticmethod(_py_expand_short)
+
+
+try:
+    from fuzzysearch._levenshtein_ngrams import c_expand_short
+except ImportError:
+    pass
+else:
+    class TestCExpandShort(TestExpandBase, unittest.TestCase):
+        expand = staticmethod(c_expand_short)
 
 
 class TestExpandLong(TestExpandBase, unittest.TestCase):
