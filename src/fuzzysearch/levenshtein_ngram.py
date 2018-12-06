@@ -11,27 +11,106 @@ def _expand(subsequence, sequence, max_l_dist):
     if not subsequence:
         return (0, 0)
 
-    scores = list(range(max_l_dist + 1)) + [None] * (len(subsequence) + 1 - (max_l_dist + 1))
-    new_scores = [None] * (len(subsequence) + 1)
+    # TODO: review the criterion used
+    if len(subsequence) > max(max_l_dist * 2, 10):
+        return _expand_long(subsequence, sequence, max_l_dist)
+    else:
+        return _expand_short(subsequence, sequence, max_l_dist)
+
+
+def _expand_short(subsequence, sequence, max_l_dist):
+    """Expand a partial match of a Levenstein search.
+
+    An expansion must begin at the beginning of the sequence, which makes
+    this much simpler than a full search, and allows for greater optimization.
+    """
+    subseq_len = len(subsequence)
+
+    scores = list(range(subseq_len + 1))
+    new_scores = [None] * (subseq_len + 1)
     min_score = None
     min_score_idx = None
 
     for seq_index, char in enumerate(sequence):
         new_scores[0] = scores[0] + 1
-        for subseq_index in range(0, min(seq_index + max_l_dist, len(subsequence)-1)):
+        for subseq_index in range(0, min(seq_index + max_l_dist, subseq_len-1)):
             new_scores[subseq_index + 1] = min(
                 scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
                 scores[subseq_index + 1] + 1,
                 new_scores[subseq_index] + 1,
             )
-        subseq_index = min(seq_index + max_l_dist, len(subsequence) - 1)
+        subseq_index = min(seq_index + max_l_dist, subseq_len - 1)
         new_scores[subseq_index + 1] = last_score = min(
             scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
             new_scores[subseq_index] + 1,
         )
-        if subseq_index == len(subsequence) - 1 and (min_score is None or last_score <= min_score):
+        if subseq_index == subseq_len - 1 and (min_score is None or last_score <= min_score):
             min_score = last_score
             min_score_idx = seq_index
+
+        scores, new_scores = new_scores, scores
+
+    return (min_score, min_score_idx + 1) if min_score is not None and min_score <= max_l_dist else (None, None)
+
+
+def _expand_long(subsequence, sequence, max_l_dist):
+    subseq_len = len(subsequence)
+
+    scores = list(range(subseq_len + 1))
+    new_scores = [None] * (subseq_len + 1)
+
+    min_score = None
+    min_score_idx = None
+    max_good_score = max_l_dist
+    first_good_score_idx = 0
+    last_good_score_idx = subseq_len - 1
+
+    for seq_index, char in enumerate(sequence):
+        needle_idx_range = (
+            max(0, first_good_score_idx - 1),
+            min(subseq_len - 1, last_good_score_idx),
+        )
+
+        new_scores[0] = scores[0] + 1
+        if new_scores[0] <= max_good_score:
+            first_good_score_idx = 0
+            last_good_score_idx = 0
+        else:
+            first_good_score_idx = None
+            last_good_score_idx = -1
+
+        for subseq_index in range(*needle_idx_range):
+            score = new_scores[subseq_index + 1] = min(
+                scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
+                scores[subseq_index + 1] + 1,
+                new_scores[subseq_index] + 1,
+            )
+            if score <= max_good_score:
+                if first_good_score_idx is None:
+                    first_good_score_idx = subseq_index + 1
+                last_good_score_idx = max(
+                    last_good_score_idx,
+                    subseq_index + 1 + (max_good_score - score),
+                )
+
+        subseq_index = needle_idx_range[1]
+        new_scores[subseq_index + 1] = last_score = min(
+            scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
+            new_scores[subseq_index] + 1,
+        )
+        if last_score <= max_good_score:
+            if first_good_score_idx is None:
+                first_good_score_idx = subseq_index + 1
+            last_good_score_idx = subseq_index + 1
+
+        if first_good_score_idx is None:
+            break
+
+        if subseq_index == subseq_len - 1 and (min_score is None or last_score <= min_score):
+            min_score = last_score
+            min_score_idx = seq_index
+            if min_score < max_good_score:
+                max_good_score = min_score
 
         scores, new_scores = new_scores, scores
 
