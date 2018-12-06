@@ -13,9 +13,6 @@ def _expand(subsequence, sequence, max_l_dist):
     An expansion must begin at the beginning of the sequence, which makes
     this much simpler than a full search, and allows for greater optimization.
     """
-    if not subsequence:
-        return (0, 0)
-
     # If given a long sub-sequence and relatively small max distance,
     # use a more complex algorithm better optimized for such cases.
     if len(subsequence) > max(max_l_dist * 2, 10):
@@ -44,12 +41,18 @@ def _expand_short(subsequence, sequence, max_l_dist):
     # b -- +1 -> scores[subseq_index]
 
     subseq_len = len(subsequence)
+    if subseq_len == 0:
+        return (0, 0)
 
+    # Initialize the scores array with values for just skipping sub-sequence
+    # chars.
     scores = list(range(1, subseq_len + 1))
+
     min_score = subseq_len
-    min_score_idx = 0
+    min_score_idx = -1
 
     for seq_index, char in enumerate(sequence):
+        # calculate scores, one for each character in the sub-sequence
         a = seq_index
         c = a + 1
         for subseq_index in range(subseq_len):
@@ -60,113 +63,86 @@ def _expand_short(subsequence, sequence, max_l_dist):
                 c + 1,
             )
             a = b
+
+        # keep the minimum score found for matches of the entire sub-sequence
         if c <= min_score:
             min_score = c
             min_score_idx = seq_index
 
+        # bail early when it is impossible to find a better expansion
+        elif min(scores) >= min_score:
+            break
+
     return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
 
 
-# def _expand_long_sequence(subsequence, sequence, max_l_dist):
-#     """Partial match expansion optimized for long sub-sequences."""
-#     subseq_len = len(subsequence)
-#
-#     scores = list(range(subseq_len + 1))
-#     new_scores = [None] * (subseq_len + 1)
-#     min_score = None
-#     min_score_idx = None
-#
-#     for seq_index, char in enumerate(sequence):
-#         new_scores[0] = scores[0] + 1
-#         min_intermediate_score = new_scores[0]
-#         for subseq_index in range(0, min(seq_index + max_l_dist, subseq_len-1)):
-#             new_scores[subseq_index + 1] = min(
-#                 scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
-#                 scores[subseq_index + 1] + 1,
-#                 new_scores[subseq_index] + 1,
-#             )
-#         subseq_index = min(seq_index + max_l_dist, subseq_len - 1)
-#         new_scores[subseq_index + 1] = last_score = min(
-#             scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
-#             new_scores[subseq_index] + 1,
-#         )
-#         if subseq_index == subseq_len - 1 and (min_score is None or last_score <= min_score):
-#             min_score = last_score
-#             min_score_idx = seq_index
-#
-#         scores, new_scores = new_scores, scores
-#
-#     return (min_score, min_score_idx + 1) if min_score is not None and min_score <= max_l_dist else (None, None)
-
-
-# def _expand_long_subsequence(subsequence, sequence, max_l_dist):
 def _expand_long(subsequence, sequence, max_l_dist):
-    """Partial match expansion optimized for long sub-sequences."""
+    """Partial match expansion, optimized for long sub-sequences."""
     # The additional optimization in this version is to limit the part of
     # the sub-sequence inspected for each sequence character.  The start and
     # end of the iteration are limited to the range where the scores are
-    # smaller than the maximum distance.
+    # smaller than the maximum allowed distance.  Additionally, once a good
+    # expansion has been found, the range is further reduced to where the
+    # scores are smaller than the score of the best expansion found so far.
+
     subseq_len = len(subsequence)
+    if subseq_len == 0:
+        return (0, 0)
 
-    scores = list(range(subseq_len + 1))
-    new_scores = [None] * (subseq_len + 1)
+    # Initialize the scores array with values for just skipping sub-sequence
+    # chars.
+    scores = list(range(1, subseq_len + 1))
 
-    min_score = None
-    min_score_idx = None
+    min_score = subseq_len
+    min_score_idx = -1
     max_good_score = max_l_dist
-    first_good_score_idx = 0
-    last_good_score_idx = subseq_len - 1
+    new_needle_idx_range_start = 0
+    new_needle_idx_range_end = subseq_len - 1
 
     for seq_index, char in enumerate(sequence):
-        needle_idx_range = (
-            max(0, first_good_score_idx - 1),
-            min(subseq_len - 1, last_good_score_idx),
-        )
+        # calculate scores, one for each character in the sub-sequence
+        needle_idx_range_start = new_needle_idx_range_start
+        needle_idx_range_end = min(subseq_len, new_needle_idx_range_end + 1)
 
-        new_scores[0] = scores[0] + 1
-        if new_scores[0] <= max_good_score:
-            first_good_score_idx = 0
-            last_good_score_idx = 0
+        a = seq_index
+        c = a + 1
+
+        if c <= max_good_score:
+            new_needle_idx_range_start = 0
+            new_needle_idx_range_end = 0
         else:
-            first_good_score_idx = None
-            last_good_score_idx = -1
+            new_needle_idx_range_start = None
+            new_needle_idx_range_end = -1
 
-        for subseq_index in range(*needle_idx_range):
-            score = new_scores[subseq_index + 1] = min(
-                scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
-                scores[subseq_index + 1] + 1,
-                new_scores[subseq_index] + 1,
+        for subseq_index in range(needle_idx_range_start, needle_idx_range_end):
+            b = scores[subseq_index]
+            c = scores[subseq_index] = min(
+                a + (char != subsequence[subseq_index]),
+                b + 1,
+                c + 1,
             )
-            if score <= max_good_score:
-                if first_good_score_idx is None:
-                    first_good_score_idx = subseq_index + 1
-                last_good_score_idx = max(
-                    last_good_score_idx,
-                    subseq_index + 1 + (max_good_score - score),
+            a = b
+
+            if c <= max_good_score:
+                if new_needle_idx_range_start is None:
+                    new_needle_idx_range_start = subseq_index
+                new_needle_idx_range_end = max(
+                    new_needle_idx_range_end,
+                    subseq_index + 1 + (max_good_score - c),
                 )
 
-        subseq_index = needle_idx_range[1]
-        new_scores[subseq_index + 1] = last_score = min(
-            scores[subseq_index] + (0 if char == subsequence[subseq_index] else 1),
-            new_scores[subseq_index] + 1,
-        )
-        if last_score <= max_good_score:
-            if first_good_score_idx is None:
-                first_good_score_idx = subseq_index + 1
-            last_good_score_idx = subseq_index + 1
-
-        if first_good_score_idx is None:
+        # bail early when it is impossible to find a better expansion
+        if new_needle_idx_range_start is None:
             break
 
-        if subseq_index == subseq_len - 1 and (min_score is None or last_score <= min_score):
-            min_score = last_score
+        # keep the minimum score found for matches of the entire sub-sequence
+        if needle_idx_range_end == subseq_len and c <= min_score:
+            min_score = c
             min_score_idx = seq_index
             if min_score < max_good_score:
                 max_good_score = min_score
 
-        scores, new_scores = new_scores, scores
-
-    return (min_score, min_score_idx + 1) if min_score is not None and min_score <= max_l_dist else (None, None)
+    return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
 
 
 def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):

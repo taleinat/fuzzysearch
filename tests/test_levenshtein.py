@@ -1,6 +1,6 @@
 import re
 
-from tests.compat import unittest, mock
+from tests.compat import unittest
 
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches
 from fuzzysearch.levenshtein import find_near_matches_levenshtein, \
@@ -73,6 +73,9 @@ class TestExpandBase(object):
 
     def test_empty_sequence(self):
         self.assertEqual(self.expand('PATTERN', '', 0), (None, None))
+        self.assertEqual(self.expand('PATTERN', '', 6), (None, None))
+        self.assertEqual(self.expand('PATTERN', '', 7), (7, 0))
+        self.assertEqual(self.expand('PATTERN', '', 8), (7, 0))
 
     def test_identical(self):
         self.assertEqual(self.expand('abc', 'abc', 0), (0, 3))
@@ -113,6 +116,11 @@ class TestExpandBase(object):
         self.assertEqual(self.expand('abcd', '-ab-cd-', 2), (2, 6))
         self.assertEqual(self.expand('abcd', '-ab-cd-', 3), (2, 6))
 
+    def test_no_common_chars(self):
+        self.assertEqual(self.expand('abc', 'de', 2), (None, None))
+        self.assertEqual(self.expand('abc', 'de', 3)[0], 3)
+        self.assertEqual(self.expand('abc', 'de', 4)[0], 3)
+
     def test_long_needle(self):
         self.assertEqual(
             self.expand('abcdefghijklmnop', 'abcdefg-hijk-mnopqrst', 0),
@@ -131,29 +139,36 @@ class TestExpandBase(object):
             (2, 17),
         )
 
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', 'abcdefg-hijk-mnop', 3),
+            (2, 17),
+        )
+
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', '-bcdefg-hijk-mnop', 3),
+            (3, 17),
+        )
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', '-abcdefg-hijk-mnop', 3),
+            (3, 18),
+        )
+
+        self.assertEqual(
+            self.expand('abcdefghijklmnop', 'abc---defg-hijk-mnopqrst', 8),
+            (5, 20),
+        )
+
 
 class TestExpand(TestExpandBase, unittest.TestCase):
-    @staticmethod
-    def expand(subsequence, sequence, max_l_dist):
-        return _expand(subsequence, sequence, max_l_dist)
+    expand = staticmethod(_expand)
 
 
 class TestExpandShort(TestExpandBase, unittest.TestCase):
-    @staticmethod
-    def expand(subsequence, sequence, max_l_dist):
-        # _expand_short() assumes that the sub-sequences is not empty
-        if not subsequence:
-            return 0, 0
-        return _expand_short(subsequence, sequence, max_l_dist)
+    expand = staticmethod(_expand_short)
 
 
 class TestExpandLong(TestExpandBase, unittest.TestCase):
-    @staticmethod
-    def expand(subsequence, sequence, max_l_dist):
-        # _expand_long() assumes that the sub-sequences is not empty
-        if not subsequence:
-            return 0, 0
-        return _expand_long(subsequence, sequence, max_l_dist)
+    expand = staticmethod(_expand_long)
 
 
 class TestFindNearMatchesLevenshteinBase(object):
