@@ -1006,6 +1006,58 @@ static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject 
 #define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
 #endif
 
+/* PyCFunctionFastCall.proto */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
+#else
+#define __Pyx_PyCFunction_FastCall(func, args, nargs)  (assert(0), NULL)
+#endif
+
+/* PyFunctionFastCall.proto */
+#if CYTHON_FAST_PYCALL
+#define __Pyx_PyFunction_FastCall(func, args, nargs)\
+    __Pyx_PyFunction_FastCallDict((func), (args), (nargs), NULL)
+#if 1 || PY_VERSION_HEX < 0x030600B1
+static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, int nargs, PyObject *kwargs);
+#else
+#define __Pyx_PyFunction_FastCallDict(func, args, nargs, kwargs) _PyFunction_FastCallDict(func, args, nargs, kwargs)
+#endif
+#define __Pyx_BUILD_ASSERT_EXPR(cond)\
+    (sizeof(char [1 - 2*!(cond)]) - 1)
+#ifndef Py_MEMBER_SIZE
+#define Py_MEMBER_SIZE(type, member) sizeof(((type *)0)->member)
+#endif
+  static size_t __pyx_pyframe_localsplus_offset = 0;
+  #include "frameobject.h"
+  #define __Pxy_PyFrame_Initialize_Offsets()\
+    ((void)__Pyx_BUILD_ASSERT_EXPR(sizeof(PyFrameObject) == offsetof(PyFrameObject, f_localsplus) + Py_MEMBER_SIZE(PyFrameObject, f_localsplus)),\
+     (void)(__pyx_pyframe_localsplus_offset = ((size_t)PyFrame_Type.tp_basicsize) - Py_MEMBER_SIZE(PyFrameObject, f_localsplus)))
+  #define __Pyx_PyFrame_GetLocalsplus(frame)\
+    (assert(__pyx_pyframe_localsplus_offset), (PyObject **)(((char *)(frame)) + __pyx_pyframe_localsplus_offset))
+#endif
+
+/* PyObjectCall.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
+#else
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
+#endif
+
+/* PyObjectCallMethO.proto */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
+#endif
+
+/* PyObjectCallOneArg.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
+/* ObjectGetItem.proto */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key);
+#else
+#define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
+#endif
+
 /* CLineInTraceback.proto */
 #ifdef CYTHON_CLINE_IN_TRACEBACK
 #define __Pyx_CLineForTraceback(tstate, c_line)  (((CYTHON_CLINE_IN_TRACEBACK)) ? c_line : 0)
@@ -1105,10 +1157,16 @@ static const char __pyx_k_subseq_len[] = "subseq_len";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_subsequence[] = "subsequence";
 static const char __pyx_k_subseq_index[] = "subseq_index";
+static const char __pyx_k_c_expand_long[] = "c_expand_long";
 static const char __pyx_k_min_score_idx[] = "min_score_idx";
 static const char __pyx_k_c_expand_short[] = "c_expand_short";
+static const char __pyx_k_max_good_score[] = "max_good_score";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
+static const char __pyx_k_needle_idx_range_end[] = "needle_idx_range_end";
 static const char __pyx_k_min_intermediate_score[] = "min_intermediate_score";
+static const char __pyx_k_needle_idx_range_start[] = "needle_idx_range_start";
+static const char __pyx_k_new_needle_idx_range_end[] = "new_needle_idx_range_end";
+static const char __pyx_k_new_needle_idx_range_start[] = "new_needle_idx_range_start";
 static const char __pyx_k_fuzzysearch__levenshtein_ngrams[] = "fuzzysearch._levenshtein_ngrams";
 static const char __pyx_k_src_fuzzysearch__levenshtein_ngr[] = "src\\fuzzysearch\\_levenshtein_ngrams.pyx";
 static PyObject *__pyx_n_s_MemoryError;
@@ -1116,16 +1174,22 @@ static PyObject *__pyx_n_s_a;
 static PyObject *__pyx_n_s_all;
 static PyObject *__pyx_n_s_b;
 static PyObject *__pyx_n_s_c;
+static PyObject *__pyx_n_s_c_expand_long;
 static PyObject *__pyx_n_s_c_expand_short;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_fuzzysearch__levenshtein_ngrams;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_n_s_max_good_score;
 static PyObject *__pyx_n_s_max_l_dist;
 static PyObject *__pyx_n_s_min_intermediate_score;
 static PyObject *__pyx_n_s_min_score;
 static PyObject *__pyx_n_s_min_score_idx;
 static PyObject *__pyx_n_s_name;
+static PyObject *__pyx_n_s_needle_idx_range_end;
+static PyObject *__pyx_n_s_needle_idx_range_start;
+static PyObject *__pyx_n_s_new_needle_idx_range_end;
+static PyObject *__pyx_n_s_new_needle_idx_range_start;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_scores;
 static PyObject *__pyx_n_s_seq_char;
@@ -1140,16 +1204,19 @@ static PyObject *__pyx_n_s_subsequence;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_xrange;
 static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subsequence, PyObject *__pyx_v_sequence, PyObject *__pyx_v_max_l_dist); /* proto */
+static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subsequence, PyObject *__pyx_v_sequence, PyObject *__pyx_v_max_l_dist); /* proto */
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
+static PyObject *__pyx_tuple__5;
 static PyObject *__pyx_codeobj__4;
+static PyObject *__pyx_codeobj__6;
 /* Late includes */
 
-/* "fuzzysearch/_levenshtein_ngrams.pyx":8
- * ]
+/* "fuzzysearch/_levenshtein_ngrams.pyx":9
+ * 
  * 
  * def c_expand_short(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
  *     """Straightforward implementation of partial match expansion."""
@@ -1192,17 +1259,17 @@ static PyObject *__pyx_pw_11fuzzysearch_19_levenshtein_ngrams_1c_expand_short(Py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sequence)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("c_expand_short", 1, 3, 3, 1); __PYX_ERR(0, 8, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("c_expand_short", 1, 3, 3, 1); __PYX_ERR(0, 9, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_max_l_dist)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("c_expand_short", 1, 3, 3, 2); __PYX_ERR(0, 8, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("c_expand_short", 1, 3, 3, 2); __PYX_ERR(0, 9, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "c_expand_short") < 0)) __PYX_ERR(0, 8, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "c_expand_short") < 0)) __PYX_ERR(0, 9, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1217,7 +1284,7 @@ static PyObject *__pyx_pw_11fuzzysearch_19_levenshtein_ngrams_1c_expand_short(Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("c_expand_short", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 8, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("c_expand_short", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 9, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("fuzzysearch._levenshtein_ngrams.c_expand_short", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1272,18 +1339,18 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
   PyObject *__pyx_t_25 = NULL;
   __Pyx_RefNannySetupContext("c_expand_short", 0);
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":26
- *     #
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":28
  *     # b -- +1 -> scores[subseq_index]
+ * 
  *     cdef unsigned int subseq_len = len(subsequence)             # <<<<<<<<<<<<<<
  *     if subseq_len == 0:
  *         return (0, 0)
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_subsequence); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(__pyx_v_subsequence); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_v_subseq_len = __pyx_t_1;
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":27
- *     # b -- +1 -> scores[subseq_index]
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":29
+ * 
  *     cdef unsigned int subseq_len = len(subsequence)
  *     if subseq_len == 0:             # <<<<<<<<<<<<<<
  *         return (0, 0)
@@ -1292,7 +1359,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
   __pyx_t_2 = ((__pyx_v_subseq_len == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":28
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":30
  *     cdef unsigned int subseq_len = len(subsequence)
  *     if subseq_len == 0:
  *         return (0, 0)             # <<<<<<<<<<<<<<
@@ -1304,8 +1371,8 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     __pyx_r = __pyx_tuple_;
     goto __pyx_L0;
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":27
- *     # b -- +1 -> scores[subseq_index]
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":29
+ * 
  *     cdef unsigned int subseq_len = len(subsequence)
  *     if subseq_len == 0:             # <<<<<<<<<<<<<<
  *         return (0, 0)
@@ -1313,7 +1380,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
   }
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":31
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":33
  * 
  *     cdef size_t subseq_idx, seq_idx
  *     cdef unsigned int min_score = subseq_len             # <<<<<<<<<<<<<<
@@ -1322,7 +1389,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
   __pyx_v_min_score = __pyx_v_subseq_len;
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":32
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":34
  *     cdef size_t subseq_idx, seq_idx
  *     cdef unsigned int min_score = subseq_len
  *     cdef size_t min_score_idx = -1             # <<<<<<<<<<<<<<
@@ -1331,7 +1398,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
   __pyx_v_min_score_idx = -1L;
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":38
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":40
  *     # Initialize the scores array with values for just skipping sub-sequence
  *     # chars.
  *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));             # <<<<<<<<<<<<<<
@@ -1340,7 +1407,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
   __pyx_v_scores = ((unsigned int *)malloc((__pyx_v_subseq_len * (sizeof(unsigned int)))));
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":39
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":41
  *     # chars.
  *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));
  *     if scores is NULL:             # <<<<<<<<<<<<<<
@@ -1350,16 +1417,16 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
   __pyx_t_2 = ((__pyx_v_scores == NULL) != 0);
   if (unlikely(__pyx_t_2)) {
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":40
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":42
  *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));
  *     if scores is NULL:
  *         raise MemoryError()             # <<<<<<<<<<<<<<
  *     for subseq_idx in xrange(subseq_len):
  *         scores[subseq_idx] = (<unsigned int> subseq_idx) + 1
  */
-    PyErr_NoMemory(); __PYX_ERR(0, 40, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(0, 42, __pyx_L1_error)
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":39
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":41
  *     # chars.
  *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));
  *     if scores is NULL:             # <<<<<<<<<<<<<<
@@ -1368,7 +1435,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
   }
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":41
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":43
  *     if scores is NULL:
  *         raise MemoryError()
  *     for subseq_idx in xrange(subseq_len):             # <<<<<<<<<<<<<<
@@ -1380,7 +1447,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_subseq_idx = __pyx_t_5;
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":42
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":44
  *         raise MemoryError()
  *     for subseq_idx in xrange(subseq_len):
  *         scores[subseq_idx] = (<unsigned int> subseq_idx) + 1             # <<<<<<<<<<<<<<
@@ -1390,7 +1457,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     (__pyx_v_scores[__pyx_v_subseq_idx]) = (((unsigned int)__pyx_v_subseq_idx) + 1);
   }
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":44
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":46
  *         scores[subseq_idx] = (<unsigned int> subseq_idx) + 1
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -1399,7 +1466,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
   /*try:*/ {
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":45
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":47
  * 
  *     try:
  *         for seq_index, seq_char in enumerate(sequence):             # <<<<<<<<<<<<<<
@@ -1412,26 +1479,26 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       __pyx_t_7 = __pyx_v_sequence; __Pyx_INCREF(__pyx_t_7); __pyx_t_1 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_1 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_sequence); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L8_error)
+      __pyx_t_1 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_sequence); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 47, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 45, __pyx_L8_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 47, __pyx_L8_error)
     }
     for (;;) {
       if (likely(!__pyx_t_8)) {
         if (likely(PyList_CheckExact(__pyx_t_7))) {
           if (__pyx_t_1 >= PyList_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_9 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_1); __Pyx_INCREF(__pyx_t_9); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 45, __pyx_L8_error)
+          __pyx_t_9 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_1); __Pyx_INCREF(__pyx_t_9); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 47, __pyx_L8_error)
           #else
-          __pyx_t_9 = PySequence_ITEM(__pyx_t_7, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 45, __pyx_L8_error)
+          __pyx_t_9 = PySequence_ITEM(__pyx_t_7, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L8_error)
           __Pyx_GOTREF(__pyx_t_9);
           #endif
         } else {
           if (__pyx_t_1 >= PyTuple_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_9 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_1); __Pyx_INCREF(__pyx_t_9); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 45, __pyx_L8_error)
+          __pyx_t_9 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_1); __Pyx_INCREF(__pyx_t_9); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 47, __pyx_L8_error)
           #else
-          __pyx_t_9 = PySequence_ITEM(__pyx_t_7, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 45, __pyx_L8_error)
+          __pyx_t_9 = PySequence_ITEM(__pyx_t_7, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L8_error)
           __Pyx_GOTREF(__pyx_t_9);
           #endif
         }
@@ -1441,7 +1508,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 45, __pyx_L8_error)
+            else __PYX_ERR(0, 47, __pyx_L8_error)
           }
           break;
         }
@@ -1451,23 +1518,23 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       __pyx_t_9 = 0;
       __Pyx_INCREF(__pyx_t_6);
       __Pyx_XDECREF_SET(__pyx_v_seq_index, __pyx_t_6);
-      __pyx_t_9 = __Pyx_PyInt_AddObjC(__pyx_t_6, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 45, __pyx_L8_error)
+      __pyx_t_9 = __Pyx_PyInt_AddObjC(__pyx_t_6, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 47, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_6);
       __pyx_t_6 = __pyx_t_9;
       __pyx_t_9 = 0;
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":47
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":49
  *         for seq_index, seq_char in enumerate(sequence):
  *             # calculate scores, one for each character in the sub-sequence
  *             a = seq_index             # <<<<<<<<<<<<<<
  *             c = a + 1
  *             min_intermediate_score = c
  */
-      __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_v_seq_index); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 47, __pyx_L8_error)
+      __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_v_seq_index); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 49, __pyx_L8_error)
       __pyx_v_a = __pyx_t_3;
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":48
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":50
  *             # calculate scores, one for each character in the sub-sequence
  *             a = seq_index
  *             c = a + 1             # <<<<<<<<<<<<<<
@@ -1476,7 +1543,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
       __pyx_v_c = (__pyx_v_a + 1);
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":49
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":51
  *             a = seq_index
  *             c = a + 1
  *             min_intermediate_score = c             # <<<<<<<<<<<<<<
@@ -1485,7 +1552,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
       __pyx_v_min_intermediate_score = __pyx_v_c;
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":50
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":52
  *             c = a + 1
  *             min_intermediate_score = c
  *             for subseq_index in xrange(subseq_len):             # <<<<<<<<<<<<<<
@@ -1497,7 +1564,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_4; __pyx_t_10+=1) {
         __pyx_v_subseq_index = __pyx_t_10;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":51
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":53
  *             min_intermediate_score = c
  *             for subseq_index in xrange(subseq_len):
  *                 b = scores[subseq_index]             # <<<<<<<<<<<<<<
@@ -1506,7 +1573,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         __pyx_v_b = (__pyx_v_scores[__pyx_v_subseq_index]);
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":54
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":56
  *                 c = scores[subseq_index] = min(
  *                     a + (seq_char != subsequence[subseq_index]),
  *                     b + 1,             # <<<<<<<<<<<<<<
@@ -1515,7 +1582,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         __pyx_t_11 = (__pyx_v_b + 1);
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":55
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":57
  *                     a + (seq_char != subsequence[subseq_index]),
  *                     b + 1,
  *                     c + 1,             # <<<<<<<<<<<<<<
@@ -1524,39 +1591,39 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         __pyx_t_12 = (__pyx_v_c + 1);
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":53
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":55
  *                 b = scores[subseq_index]
  *                 c = scores[subseq_index] = min(
  *                     a + (seq_char != subsequence[subseq_index]),             # <<<<<<<<<<<<<<
  *                     b + 1,
  *                     c + 1,
  */
-        __pyx_t_9 = __Pyx_PyInt_From_unsigned_int(__pyx_v_a); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 53, __pyx_L8_error)
+        __pyx_t_9 = __Pyx_PyInt_From_unsigned_int(__pyx_v_a); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 55, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_13 = __Pyx_GetItemInt(__pyx_v_subsequence, __pyx_v_subseq_index, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 53, __pyx_L8_error)
+        __pyx_t_13 = __Pyx_GetItemInt(__pyx_v_subsequence, __pyx_v_subseq_index, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 55, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_13);
-        __pyx_t_14 = PyObject_RichCompare(__pyx_v_seq_char, __pyx_t_13, Py_NE); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 53, __pyx_L8_error)
+        __pyx_t_14 = PyObject_RichCompare(__pyx_v_seq_char, __pyx_t_13, Py_NE); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 55, __pyx_L8_error)
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-        __pyx_t_13 = PyNumber_Add(__pyx_t_9, __pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 53, __pyx_L8_error)
+        __pyx_t_13 = PyNumber_Add(__pyx_t_9, __pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 55, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_13);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":54
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":56
  *                 c = scores[subseq_index] = min(
  *                     a + (seq_char != subsequence[subseq_index]),
  *                     b + 1,             # <<<<<<<<<<<<<<
  *                     c + 1,
  *                 )
  */
-        __pyx_t_9 = __Pyx_PyInt_From_long(__pyx_t_11); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 54, __pyx_L8_error)
+        __pyx_t_9 = __Pyx_PyInt_From_long(__pyx_t_11); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 56, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_15 = PyObject_RichCompare(__pyx_t_9, __pyx_t_13, Py_LT); __Pyx_XGOTREF(__pyx_t_15); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 54, __pyx_L8_error)
+        __pyx_t_15 = PyObject_RichCompare(__pyx_t_9, __pyx_t_13, Py_LT); __Pyx_XGOTREF(__pyx_t_15); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 56, __pyx_L8_error)
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_15); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 54, __pyx_L8_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_15); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 56, __pyx_L8_error)
         __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
         if (__pyx_t_2) {
-          __pyx_t_15 = __Pyx_PyInt_From_long(__pyx_t_11); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 54, __pyx_L8_error)
+          __pyx_t_15 = __Pyx_PyInt_From_long(__pyx_t_11); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 56, __pyx_L8_error)
           __Pyx_GOTREF(__pyx_t_15);
           __pyx_t_14 = __pyx_t_15;
           __pyx_t_15 = 0;
@@ -1569,21 +1636,21 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
         __pyx_t_13 = __pyx_t_14;
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":55
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":57
  *                     a + (seq_char != subsequence[subseq_index]),
  *                     b + 1,
  *                     c + 1,             # <<<<<<<<<<<<<<
  *                 )
  *                 a = b
  */
-        __pyx_t_15 = __Pyx_PyInt_From_long(__pyx_t_12); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 55, __pyx_L8_error)
+        __pyx_t_15 = __Pyx_PyInt_From_long(__pyx_t_12); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 57, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_15);
-        __pyx_t_9 = PyObject_RichCompare(__pyx_t_15, __pyx_t_13, Py_LT); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 55, __pyx_L8_error)
+        __pyx_t_9 = PyObject_RichCompare(__pyx_t_15, __pyx_t_13, Py_LT); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 57, __pyx_L8_error)
         __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 55, __pyx_L8_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 57, __pyx_L8_error)
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         if (__pyx_t_2) {
-          __pyx_t_9 = __Pyx_PyInt_From_long(__pyx_t_12); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 55, __pyx_L8_error)
+          __pyx_t_9 = __Pyx_PyInt_From_long(__pyx_t_12); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 57, __pyx_L8_error)
           __Pyx_GOTREF(__pyx_t_9);
           __pyx_t_14 = __pyx_t_9;
           __pyx_t_9 = 0;
@@ -1592,11 +1659,11 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
           __pyx_t_14 = __pyx_t_13;
         }
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-        __pyx_t_16 = __Pyx_PyInt_As_unsigned_int(__pyx_t_14); if (unlikely((__pyx_t_16 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 55, __pyx_L8_error)
+        __pyx_t_16 = __Pyx_PyInt_As_unsigned_int(__pyx_t_14); if (unlikely((__pyx_t_16 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 57, __pyx_L8_error)
         __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         __pyx_v_c = __pyx_t_16;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":52
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":54
  *             for subseq_index in xrange(subseq_len):
  *                 b = scores[subseq_index]
  *                 c = scores[subseq_index] = min(             # <<<<<<<<<<<<<<
@@ -1605,7 +1672,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         (__pyx_v_scores[__pyx_v_subseq_index]) = __pyx_t_16;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":57
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":59
  *                     c + 1,
  *                 )
  *                 a = b             # <<<<<<<<<<<<<<
@@ -1614,7 +1681,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         __pyx_v_a = __pyx_v_b;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":58
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":60
  *                 )
  *                 a = b
  *                 if c < min_intermediate_score:             # <<<<<<<<<<<<<<
@@ -1624,7 +1691,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
         __pyx_t_2 = ((__pyx_v_c < __pyx_v_min_intermediate_score) != 0);
         if (__pyx_t_2) {
 
-          /* "fuzzysearch/_levenshtein_ngrams.pyx":59
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":61
  *                 a = b
  *                 if c < min_intermediate_score:
  *                     min_intermediate_score = c             # <<<<<<<<<<<<<<
@@ -1633,7 +1700,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
           __pyx_v_min_intermediate_score = __pyx_v_c;
 
-          /* "fuzzysearch/_levenshtein_ngrams.pyx":58
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":60
  *                 )
  *                 a = b
  *                 if c < min_intermediate_score:             # <<<<<<<<<<<<<<
@@ -1643,7 +1710,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
         }
       }
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":62
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":64
  * 
  *             # bail early when it is impossible to find a better expansion
  *             if min_intermediate_score >= min_score:             # <<<<<<<<<<<<<<
@@ -1653,7 +1720,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       __pyx_t_2 = ((__pyx_v_min_intermediate_score >= __pyx_v_min_score) != 0);
       if (__pyx_t_2) {
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":63
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":65
  *             # bail early when it is impossible to find a better expansion
  *             if min_intermediate_score >= min_score:
  *                 break             # <<<<<<<<<<<<<<
@@ -1662,7 +1729,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
         goto __pyx_L11_break;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":62
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":64
  * 
  *             # bail early when it is impossible to find a better expansion
  *             if min_intermediate_score >= min_score:             # <<<<<<<<<<<<<<
@@ -1671,45 +1738,45 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  */
       }
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":66
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":68
  * 
  *             # keep the minimum score found for matches of the entire sub-sequence
- *             elif c <= min_score:             # <<<<<<<<<<<<<<
+ *             if c <= min_score:             # <<<<<<<<<<<<<<
  *                 min_score = c
  *                 min_score_idx = seq_index
  */
       __pyx_t_2 = ((__pyx_v_c <= __pyx_v_min_score) != 0);
       if (__pyx_t_2) {
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":67
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":69
  *             # keep the minimum score found for matches of the entire sub-sequence
- *             elif c <= min_score:
+ *             if c <= min_score:
  *                 min_score = c             # <<<<<<<<<<<<<<
  *                 min_score_idx = seq_index
  * 
  */
         __pyx_v_min_score = __pyx_v_c;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":68
- *             elif c <= min_score:
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":70
+ *             if c <= min_score:
  *                 min_score = c
  *                 min_score_idx = seq_index             # <<<<<<<<<<<<<<
  * 
  *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
  */
-        __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_seq_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L8_error)
+        __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_seq_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L8_error)
         __pyx_v_min_score_idx = __pyx_t_5;
 
-        /* "fuzzysearch/_levenshtein_ngrams.pyx":66
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":68
  * 
  *             # keep the minimum score found for matches of the entire sub-sequence
- *             elif c <= min_score:             # <<<<<<<<<<<<<<
+ *             if c <= min_score:             # <<<<<<<<<<<<<<
  *                 min_score = c
  *                 min_score_idx = seq_index
  */
       }
 
-      /* "fuzzysearch/_levenshtein_ngrams.pyx":45
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":47
  * 
  *     try:
  *         for seq_index, seq_char in enumerate(sequence):             # <<<<<<<<<<<<<<
@@ -1721,7 +1788,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "fuzzysearch/_levenshtein_ngrams.pyx":70
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":72
  *                 min_score_idx = seq_index
  * 
  *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
@@ -1729,18 +1796,18 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  *     finally:
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 70, __pyx_L8_error)
+    __pyx_t_7 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L8_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_14 = PyObject_RichCompare(__pyx_t_7, __pyx_v_max_l_dist, Py_LE); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 70, __pyx_L8_error)
+    __pyx_t_14 = PyObject_RichCompare(__pyx_t_7, __pyx_v_max_l_dist, Py_LE); __Pyx_XGOTREF(__pyx_t_14); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 72, __pyx_L8_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_14); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 70, __pyx_L8_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_14); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 72, __pyx_L8_error)
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     if (__pyx_t_2) {
-      __pyx_t_14 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 70, __pyx_L8_error)
+      __pyx_t_14 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 72, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_14);
-      __pyx_t_7 = __Pyx_PyInt_FromSize_t((__pyx_v_min_score_idx + 1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 70, __pyx_L8_error)
+      __pyx_t_7 = __Pyx_PyInt_FromSize_t((__pyx_v_min_score_idx + 1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 70, __pyx_L8_error)
+      __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 72, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_13);
       __Pyx_GIVEREF(__pyx_t_14);
       PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_14);
@@ -1759,10 +1826,12 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     goto __pyx_L7_return;
   }
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":73
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":75
  * 
  *     finally:
  *         free(scores)             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
   /*finally:*/ {
     __pyx_L8_error:;
@@ -1812,8 +1881,8 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     }
   }
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":8
- * ]
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":9
+ * 
  * 
  * def c_expand_short(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
  *     """Straightforward implementation of partial match expansion."""
@@ -1833,6 +1902,979 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_seq_index);
   __Pyx_XDECREF(__pyx_v_seq_char);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "fuzzysearch/_levenshtein_ngrams.pyx":78
+ * 
+ * 
+ * def c_expand_long(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
+ *     """Partial match expansion, optimized for long sub-sequences."""
+ *     # The additional optimization in this version is to limit the part of
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_11fuzzysearch_19_levenshtein_ngrams_3c_expand_long(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long[] = "Partial match expansion, optimized for long sub-sequences.";
+static PyMethodDef __pyx_mdef_11fuzzysearch_19_levenshtein_ngrams_3c_expand_long = {"c_expand_long", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_11fuzzysearch_19_levenshtein_ngrams_3c_expand_long, METH_VARARGS|METH_KEYWORDS, __pyx_doc_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long};
+static PyObject *__pyx_pw_11fuzzysearch_19_levenshtein_ngrams_3c_expand_long(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_subsequence = 0;
+  PyObject *__pyx_v_sequence = 0;
+  PyObject *__pyx_v_max_l_dist = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("c_expand_long (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_subsequence,&__pyx_n_s_sequence,&__pyx_n_s_max_l_dist,0};
+    PyObject* values[3] = {0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        CYTHON_FALLTHROUGH;
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        CYTHON_FALLTHROUGH;
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_subsequence)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        CYTHON_FALLTHROUGH;
+        case  1:
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sequence)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("c_expand_long", 1, 3, 3, 1); __PYX_ERR(0, 78, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  2:
+        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_max_l_dist)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("c_expand_long", 1, 3, 3, 2); __PYX_ERR(0, 78, __pyx_L3_error)
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "c_expand_long") < 0)) __PYX_ERR(0, 78, __pyx_L3_error)
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+    }
+    __pyx_v_subsequence = values[0];
+    __pyx_v_sequence = values[1];
+    __pyx_v_max_l_dist = values[2];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("c_expand_long", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 78, __pyx_L3_error)
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("fuzzysearch._levenshtein_ngrams.c_expand_long", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(__pyx_self, __pyx_v_subsequence, __pyx_v_sequence, __pyx_v_max_l_dist);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subsequence, PyObject *__pyx_v_sequence, PyObject *__pyx_v_max_l_dist) {
+  unsigned int __pyx_v_subseq_len;
+  size_t __pyx_v_subseq_idx;
+  unsigned int __pyx_v_min_score;
+  size_t __pyx_v_min_score_idx;
+  unsigned int __pyx_v_a;
+  unsigned int __pyx_v_b;
+  unsigned int __pyx_v_c;
+  unsigned int __pyx_v_max_good_score;
+  size_t __pyx_v_new_needle_idx_range_start;
+  size_t __pyx_v_new_needle_idx_range_end;
+  unsigned int *__pyx_v_scores;
+  CYTHON_UNUSED size_t __pyx_v_needle_idx_range_start;
+  CYTHON_UNUSED size_t __pyx_v_needle_idx_range_end;
+  PyObject *__pyx_v_seq_index = NULL;
+  PyObject *__pyx_v_seq_char = NULL;
+  PyObject *__pyx_v_subseq_index = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  Py_ssize_t __pyx_t_1;
+  int __pyx_t_2;
+  unsigned int __pyx_t_3;
+  unsigned int __pyx_t_4;
+  size_t __pyx_t_5;
+  size_t __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *(*__pyx_t_9)(PyObject *);
+  PyObject *__pyx_t_10 = NULL;
+  PyObject *__pyx_t_11 = NULL;
+  Py_ssize_t __pyx_t_12;
+  PyObject *(*__pyx_t_13)(PyObject *);
+  Py_ssize_t __pyx_t_14;
+  long __pyx_t_15;
+  long __pyx_t_16;
+  PyObject *__pyx_t_17 = NULL;
+  PyObject *__pyx_t_18 = NULL;
+  PyObject *__pyx_t_19 = NULL;
+  int __pyx_t_20;
+  int __pyx_t_21;
+  char const *__pyx_t_22;
+  PyObject *__pyx_t_23 = NULL;
+  PyObject *__pyx_t_24 = NULL;
+  PyObject *__pyx_t_25 = NULL;
+  PyObject *__pyx_t_26 = NULL;
+  PyObject *__pyx_t_27 = NULL;
+  PyObject *__pyx_t_28 = NULL;
+  __Pyx_RefNannySetupContext("c_expand_long", 0);
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":87
+ *     # scores are smaller than the score of the best expansion found so far.
+ * 
+ *     cdef unsigned int subseq_len = len(subsequence)             # <<<<<<<<<<<<<<
+ *     if subseq_len == 0:
+ *         return (0, 0)
+ */
+  __pyx_t_1 = PyObject_Length(__pyx_v_subsequence); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_v_subseq_len = __pyx_t_1;
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":88
+ * 
+ *     cdef unsigned int subseq_len = len(subsequence)
+ *     if subseq_len == 0:             # <<<<<<<<<<<<<<
+ *         return (0, 0)
+ * 
+ */
+  __pyx_t_2 = ((__pyx_v_subseq_len == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":89
+ *     cdef unsigned int subseq_len = len(subsequence)
+ *     if subseq_len == 0:
+ *         return (0, 0)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef size_t subseq_idx, seq_idx
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_tuple_);
+    __pyx_r = __pyx_tuple_;
+    goto __pyx_L0;
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":88
+ * 
+ *     cdef unsigned int subseq_len = len(subsequence)
+ *     if subseq_len == 0:             # <<<<<<<<<<<<<<
+ *         return (0, 0)
+ * 
+ */
+  }
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":92
+ * 
+ *     cdef size_t subseq_idx, seq_idx
+ *     cdef unsigned int min_score = subseq_len             # <<<<<<<<<<<<<<
+ *     cdef size_t min_score_idx = -1
+ *     cdef unsigned int a, b, c
+ */
+  __pyx_v_min_score = __pyx_v_subseq_len;
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":93
+ *     cdef size_t subseq_idx, seq_idx
+ *     cdef unsigned int min_score = subseq_len
+ *     cdef size_t min_score_idx = -1             # <<<<<<<<<<<<<<
+ *     cdef unsigned int a, b, c
+ *     cdef unsigned int max_good_score = max_l_dist
+ */
+  __pyx_v_min_score_idx = -1L;
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":95
+ *     cdef size_t min_score_idx = -1
+ *     cdef unsigned int a, b, c
+ *     cdef unsigned int max_good_score = max_l_dist             # <<<<<<<<<<<<<<
+ *     cdef size_t new_needle_idx_range_start = 0
+ *     cdef size_t new_needle_idx_range_end = subseq_len - 1
+ */
+  __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_l_dist); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_v_max_good_score = __pyx_t_3;
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":96
+ *     cdef unsigned int a, b, c
+ *     cdef unsigned int max_good_score = max_l_dist
+ *     cdef size_t new_needle_idx_range_start = 0             # <<<<<<<<<<<<<<
+ *     cdef size_t new_needle_idx_range_end = subseq_len - 1
+ * 
+ */
+  __pyx_v_new_needle_idx_range_start = 0;
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":97
+ *     cdef unsigned int max_good_score = max_l_dist
+ *     cdef size_t new_needle_idx_range_start = 0
+ *     cdef size_t new_needle_idx_range_end = subseq_len - 1             # <<<<<<<<<<<<<<
+ * 
+ *     # Initialize the scores array with values for just skipping sub-sequence
+ */
+  __pyx_v_new_needle_idx_range_end = (__pyx_v_subseq_len - 1);
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":101
+ *     # Initialize the scores array with values for just skipping sub-sequence
+ *     # chars.
+ *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));             # <<<<<<<<<<<<<<
+ *     if scores is NULL:
+ *         raise MemoryError()
+ */
+  __pyx_v_scores = ((unsigned int *)malloc((__pyx_v_subseq_len * (sizeof(unsigned int)))));
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":102
+ *     # chars.
+ *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));
+ *     if scores is NULL:             # <<<<<<<<<<<<<<
+ *         raise MemoryError()
+ *     for subseq_idx in xrange(subseq_len):
+ */
+  __pyx_t_2 = ((__pyx_v_scores == NULL) != 0);
+  if (unlikely(__pyx_t_2)) {
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":103
+ *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));
+ *     if scores is NULL:
+ *         raise MemoryError()             # <<<<<<<<<<<<<<
+ *     for subseq_idx in xrange(subseq_len):
+ *         scores[subseq_idx] = (<unsigned int> subseq_idx) + 1
+ */
+    PyErr_NoMemory(); __PYX_ERR(0, 103, __pyx_L1_error)
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":102
+ *     # chars.
+ *     cdef unsigned int *scores = <unsigned int *> malloc(subseq_len * sizeof(unsigned int));
+ *     if scores is NULL:             # <<<<<<<<<<<<<<
+ *         raise MemoryError()
+ *     for subseq_idx in xrange(subseq_len):
+ */
+  }
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":104
+ *     if scores is NULL:
+ *         raise MemoryError()
+ *     for subseq_idx in xrange(subseq_len):             # <<<<<<<<<<<<<<
+ *         scores[subseq_idx] = (<unsigned int> subseq_idx) + 1
+ * 
+ */
+  __pyx_t_3 = __pyx_v_subseq_len;
+  __pyx_t_4 = __pyx_t_3;
+  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
+    __pyx_v_subseq_idx = __pyx_t_5;
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":105
+ *         raise MemoryError()
+ *     for subseq_idx in xrange(subseq_len):
+ *         scores[subseq_idx] = (<unsigned int> subseq_idx) + 1             # <<<<<<<<<<<<<<
+ * 
+ *     try:
+ */
+    (__pyx_v_scores[__pyx_v_subseq_idx]) = (((unsigned int)__pyx_v_subseq_idx) + 1);
+  }
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":107
+ *         scores[subseq_idx] = (<unsigned int> subseq_idx) + 1
+ * 
+ *     try:             # <<<<<<<<<<<<<<
+ *         needle_idx_range_start = new_needle_idx_range_start
+ *         needle_idx_range_end = min(subseq_len, new_needle_idx_range_end + 1)
+ */
+  /*try:*/ {
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":108
+ * 
+ *     try:
+ *         needle_idx_range_start = new_needle_idx_range_start             # <<<<<<<<<<<<<<
+ *         needle_idx_range_end = min(subseq_len, new_needle_idx_range_end + 1)
+ * 
+ */
+    __pyx_v_needle_idx_range_start = __pyx_v_new_needle_idx_range_start;
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":109
+ *     try:
+ *         needle_idx_range_start = new_needle_idx_range_start
+ *         needle_idx_range_end = min(subseq_len, new_needle_idx_range_end + 1)             # <<<<<<<<<<<<<<
+ * 
+ *         for seq_index, seq_char in enumerate(sequence):
+ */
+    __pyx_t_5 = (__pyx_v_new_needle_idx_range_end + 1);
+    __pyx_t_3 = __pyx_v_subseq_len;
+    if (((__pyx_t_5 < __pyx_t_3) != 0)) {
+      __pyx_t_6 = __pyx_t_5;
+    } else {
+      __pyx_t_6 = __pyx_t_3;
+    }
+    __pyx_v_needle_idx_range_end = __pyx_t_6;
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":111
+ *         needle_idx_range_end = min(subseq_len, new_needle_idx_range_end + 1)
+ * 
+ *         for seq_index, seq_char in enumerate(sequence):             # <<<<<<<<<<<<<<
+ *             # calculate scores, one for each character in the sub-sequence
+ *             a = seq_index
+ */
+    __Pyx_INCREF(__pyx_int_0);
+    __pyx_t_7 = __pyx_int_0;
+    if (likely(PyList_CheckExact(__pyx_v_sequence)) || PyTuple_CheckExact(__pyx_v_sequence)) {
+      __pyx_t_8 = __pyx_v_sequence; __Pyx_INCREF(__pyx_t_8); __pyx_t_1 = 0;
+      __pyx_t_9 = NULL;
+    } else {
+      __pyx_t_1 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_v_sequence); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 111, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 111, __pyx_L8_error)
+    }
+    for (;;) {
+      if (likely(!__pyx_t_9)) {
+        if (likely(PyList_CheckExact(__pyx_t_8))) {
+          if (__pyx_t_1 >= PyList_GET_SIZE(__pyx_t_8)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_1); __Pyx_INCREF(__pyx_t_10); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 111, __pyx_L8_error)
+          #else
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_8, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 111, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_10);
+          #endif
+        } else {
+          if (__pyx_t_1 >= PyTuple_GET_SIZE(__pyx_t_8)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_1); __Pyx_INCREF(__pyx_t_10); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 111, __pyx_L8_error)
+          #else
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_8, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 111, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_10);
+          #endif
+        }
+      } else {
+        __pyx_t_10 = __pyx_t_9(__pyx_t_8);
+        if (unlikely(!__pyx_t_10)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(0, 111, __pyx_L8_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_10);
+      }
+      __Pyx_XDECREF_SET(__pyx_v_seq_char, __pyx_t_10);
+      __pyx_t_10 = 0;
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_XDECREF_SET(__pyx_v_seq_index, __pyx_t_7);
+      __pyx_t_10 = __Pyx_PyInt_AddObjC(__pyx_t_7, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 111, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __Pyx_DECREF(__pyx_t_7);
+      __pyx_t_7 = __pyx_t_10;
+      __pyx_t_10 = 0;
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":113
+ *         for seq_index, seq_char in enumerate(sequence):
+ *             # calculate scores, one for each character in the sub-sequence
+ *             a = seq_index             # <<<<<<<<<<<<<<
+ *             c = a + 1
+ * 
+ */
+      __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_v_seq_index); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 113, __pyx_L8_error)
+      __pyx_v_a = __pyx_t_3;
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":114
+ *             # calculate scores, one for each character in the sub-sequence
+ *             a = seq_index
+ *             c = a + 1             # <<<<<<<<<<<<<<
+ * 
+ *             if c <= max_good_score:
+ */
+      __pyx_v_c = (__pyx_v_a + 1);
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":116
+ *             c = a + 1
+ * 
+ *             if c <= max_good_score:             # <<<<<<<<<<<<<<
+ *                 new_needle_idx_range_start = 0
+ *                 new_needle_idx_range_end = 0
+ */
+      __pyx_t_2 = ((__pyx_v_c <= __pyx_v_max_good_score) != 0);
+      if (__pyx_t_2) {
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":117
+ * 
+ *             if c <= max_good_score:
+ *                 new_needle_idx_range_start = 0             # <<<<<<<<<<<<<<
+ *                 new_needle_idx_range_end = 0
+ *             else:
+ */
+        __pyx_v_new_needle_idx_range_start = 0;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":118
+ *             if c <= max_good_score:
+ *                 new_needle_idx_range_start = 0
+ *                 new_needle_idx_range_end = 0             # <<<<<<<<<<<<<<
+ *             else:
+ *                 new_needle_idx_range_start = -1
+ */
+        __pyx_v_new_needle_idx_range_end = 0;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":116
+ *             c = a + 1
+ * 
+ *             if c <= max_good_score:             # <<<<<<<<<<<<<<
+ *                 new_needle_idx_range_start = 0
+ *                 new_needle_idx_range_end = 0
+ */
+        goto __pyx_L12;
+      }
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":120
+ *                 new_needle_idx_range_end = 0
+ *             else:
+ *                 new_needle_idx_range_start = -1             # <<<<<<<<<<<<<<
+ *                 new_needle_idx_range_end = -1
+ * 
+ */
+      /*else*/ {
+        __pyx_v_new_needle_idx_range_start = -1L;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":121
+ *             else:
+ *                 new_needle_idx_range_start = -1
+ *                 new_needle_idx_range_end = -1             # <<<<<<<<<<<<<<
+ * 
+ *             for subseq_index in xrange(subseq_len):
+ */
+        __pyx_v_new_needle_idx_range_end = -1L;
+      }
+      __pyx_L12:;
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":123
+ *                 new_needle_idx_range_end = -1
+ * 
+ *             for subseq_index in xrange(subseq_len):             # <<<<<<<<<<<<<<
+ *                 b = scores[subseq_index]
+ *                 c = scores[subseq_index] = min(
+ */
+      __pyx_t_10 = __Pyx_PyInt_From_unsigned_int(__pyx_v_subseq_len); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 123, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_11 = __Pyx_PyObject_CallOneArg(__pyx_builtin_xrange, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 123, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_11);
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      if (likely(PyList_CheckExact(__pyx_t_11)) || PyTuple_CheckExact(__pyx_t_11)) {
+        __pyx_t_10 = __pyx_t_11; __Pyx_INCREF(__pyx_t_10); __pyx_t_12 = 0;
+        __pyx_t_13 = NULL;
+      } else {
+        __pyx_t_12 = -1; __pyx_t_10 = PyObject_GetIter(__pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 123, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __pyx_t_13 = Py_TYPE(__pyx_t_10)->tp_iternext; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 123, __pyx_L8_error)
+      }
+      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+      for (;;) {
+        if (likely(!__pyx_t_13)) {
+          if (likely(PyList_CheckExact(__pyx_t_10))) {
+            if (__pyx_t_12 >= PyList_GET_SIZE(__pyx_t_10)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_11 = PyList_GET_ITEM(__pyx_t_10, __pyx_t_12); __Pyx_INCREF(__pyx_t_11); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 123, __pyx_L8_error)
+            #else
+            __pyx_t_11 = PySequence_ITEM(__pyx_t_10, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 123, __pyx_L8_error)
+            __Pyx_GOTREF(__pyx_t_11);
+            #endif
+          } else {
+            if (__pyx_t_12 >= PyTuple_GET_SIZE(__pyx_t_10)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_11 = PyTuple_GET_ITEM(__pyx_t_10, __pyx_t_12); __Pyx_INCREF(__pyx_t_11); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 123, __pyx_L8_error)
+            #else
+            __pyx_t_11 = PySequence_ITEM(__pyx_t_10, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 123, __pyx_L8_error)
+            __Pyx_GOTREF(__pyx_t_11);
+            #endif
+          }
+        } else {
+          __pyx_t_11 = __pyx_t_13(__pyx_t_10);
+          if (unlikely(!__pyx_t_11)) {
+            PyObject* exc_type = PyErr_Occurred();
+            if (exc_type) {
+              if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+              else __PYX_ERR(0, 123, __pyx_L8_error)
+            }
+            break;
+          }
+          __Pyx_GOTREF(__pyx_t_11);
+        }
+        __Pyx_XDECREF_SET(__pyx_v_subseq_index, __pyx_t_11);
+        __pyx_t_11 = 0;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":124
+ * 
+ *             for subseq_index in xrange(subseq_len):
+ *                 b = scores[subseq_index]             # <<<<<<<<<<<<<<
+ *                 c = scores[subseq_index] = min(
+ *                     a + (seq_char != subsequence[subseq_index]),
+ */
+        __pyx_t_14 = __Pyx_PyIndex_AsSsize_t(__pyx_v_subseq_index); if (unlikely((__pyx_t_14 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 124, __pyx_L8_error)
+        __pyx_v_b = (__pyx_v_scores[__pyx_t_14]);
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":127
+ *                 c = scores[subseq_index] = min(
+ *                     a + (seq_char != subsequence[subseq_index]),
+ *                     b + 1,             # <<<<<<<<<<<<<<
+ *                     c + 1,
+ *                 )
+ */
+        __pyx_t_15 = (__pyx_v_b + 1);
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":128
+ *                     a + (seq_char != subsequence[subseq_index]),
+ *                     b + 1,
+ *                     c + 1,             # <<<<<<<<<<<<<<
+ *                 )
+ *                 a = b
+ */
+        __pyx_t_16 = (__pyx_v_c + 1);
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":126
+ *                 b = scores[subseq_index]
+ *                 c = scores[subseq_index] = min(
+ *                     a + (seq_char != subsequence[subseq_index]),             # <<<<<<<<<<<<<<
+ *                     b + 1,
+ *                     c + 1,
+ */
+        __pyx_t_11 = __Pyx_PyInt_From_unsigned_int(__pyx_v_a); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 126, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_17 = __Pyx_PyObject_GetItem(__pyx_v_subsequence, __pyx_v_subseq_index); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 126, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_17);
+        __pyx_t_18 = PyObject_RichCompare(__pyx_v_seq_char, __pyx_t_17, Py_NE); __Pyx_XGOTREF(__pyx_t_18); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 126, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __pyx_t_17 = PyNumber_Add(__pyx_t_11, __pyx_t_18); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 126, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_17);
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":127
+ *                 c = scores[subseq_index] = min(
+ *                     a + (seq_char != subsequence[subseq_index]),
+ *                     b + 1,             # <<<<<<<<<<<<<<
+ *                     c + 1,
+ *                 )
+ */
+        __pyx_t_11 = __Pyx_PyInt_From_long(__pyx_t_15); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 127, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_19 = PyObject_RichCompare(__pyx_t_11, __pyx_t_17, Py_LT); __Pyx_XGOTREF(__pyx_t_19); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 127, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_19); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 127, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+        if (__pyx_t_2) {
+          __pyx_t_19 = __Pyx_PyInt_From_long(__pyx_t_15); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 127, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_19);
+          __pyx_t_18 = __pyx_t_19;
+          __pyx_t_19 = 0;
+        } else {
+          __Pyx_INCREF(__pyx_t_17);
+          __pyx_t_18 = __pyx_t_17;
+        }
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __Pyx_INCREF(__pyx_t_18);
+        __pyx_t_17 = __pyx_t_18;
+        __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":128
+ *                     a + (seq_char != subsequence[subseq_index]),
+ *                     b + 1,
+ *                     c + 1,             # <<<<<<<<<<<<<<
+ *                 )
+ *                 a = b
+ */
+        __pyx_t_19 = __Pyx_PyInt_From_long(__pyx_t_16); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 128, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_19);
+        __pyx_t_11 = PyObject_RichCompare(__pyx_t_19, __pyx_t_17, Py_LT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 128, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 128, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        if (__pyx_t_2) {
+          __pyx_t_11 = __Pyx_PyInt_From_long(__pyx_t_16); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 128, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_11);
+          __pyx_t_18 = __pyx_t_11;
+          __pyx_t_11 = 0;
+        } else {
+          __Pyx_INCREF(__pyx_t_17);
+          __pyx_t_18 = __pyx_t_17;
+        }
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_t_18); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 128, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+        __pyx_v_c = __pyx_t_3;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":125
+ *             for subseq_index in xrange(subseq_len):
+ *                 b = scores[subseq_index]
+ *                 c = scores[subseq_index] = min(             # <<<<<<<<<<<<<<
+ *                     a + (seq_char != subsequence[subseq_index]),
+ *                     b + 1,
+ */
+        __pyx_t_14 = __Pyx_PyIndex_AsSsize_t(__pyx_v_subseq_index); if (unlikely((__pyx_t_14 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 125, __pyx_L8_error)
+        (__pyx_v_scores[__pyx_t_14]) = __pyx_t_3;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":130
+ *                     c + 1,
+ *                 )
+ *                 a = b             # <<<<<<<<<<<<<<
+ * 
+ *                 if c <= max_good_score:
+ */
+        __pyx_v_a = __pyx_v_b;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":132
+ *                 a = b
+ * 
+ *                 if c <= max_good_score:             # <<<<<<<<<<<<<<
+ *                     if new_needle_idx_range_start == -1:
+ *                         new_needle_idx_range_start = subseq_index
+ */
+        __pyx_t_2 = ((__pyx_v_c <= __pyx_v_max_good_score) != 0);
+        if (__pyx_t_2) {
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":133
+ * 
+ *                 if c <= max_good_score:
+ *                     if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *                         new_needle_idx_range_start = subseq_index
+ *                     new_needle_idx_range_end = max(
+ */
+          __pyx_t_2 = ((__pyx_v_new_needle_idx_range_start == -1L) != 0);
+          if (__pyx_t_2) {
+
+            /* "fuzzysearch/_levenshtein_ngrams.pyx":134
+ *                 if c <= max_good_score:
+ *                     if new_needle_idx_range_start == -1:
+ *                         new_needle_idx_range_start = subseq_index             # <<<<<<<<<<<<<<
+ *                     new_needle_idx_range_end = max(
+ *                         new_needle_idx_range_end,
+ */
+            __pyx_t_6 = __Pyx_PyInt_As_size_t(__pyx_v_subseq_index); if (unlikely((__pyx_t_6 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 134, __pyx_L8_error)
+            __pyx_v_new_needle_idx_range_start = __pyx_t_6;
+
+            /* "fuzzysearch/_levenshtein_ngrams.pyx":133
+ * 
+ *                 if c <= max_good_score:
+ *                     if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *                         new_needle_idx_range_start = subseq_index
+ *                     new_needle_idx_range_end = max(
+ */
+          }
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":137
+ *                     new_needle_idx_range_end = max(
+ *                         new_needle_idx_range_end,
+ *                         subseq_index + 1 + (max_good_score - c),             # <<<<<<<<<<<<<<
+ *                     )
+ * 
+ */
+          __pyx_t_18 = __Pyx_PyInt_AddObjC(__pyx_v_subseq_index, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 137, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_18);
+          __pyx_t_17 = __Pyx_PyInt_From_unsigned_int((__pyx_v_max_good_score - __pyx_v_c)); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 137, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_17);
+          __pyx_t_11 = PyNumber_Add(__pyx_t_18, __pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 137, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_11);
+          __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":136
+ *                         new_needle_idx_range_start = subseq_index
+ *                     new_needle_idx_range_end = max(
+ *                         new_needle_idx_range_end,             # <<<<<<<<<<<<<<
+ *                         subseq_index + 1 + (max_good_score - c),
+ *                     )
+ */
+          __pyx_t_6 = __pyx_v_new_needle_idx_range_end;
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":137
+ *                     new_needle_idx_range_end = max(
+ *                         new_needle_idx_range_end,
+ *                         subseq_index + 1 + (max_good_score - c),             # <<<<<<<<<<<<<<
+ *                     )
+ * 
+ */
+          __pyx_t_18 = __Pyx_PyInt_FromSize_t(__pyx_t_6); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 136, __pyx_L8_error)
+          __Pyx_GOTREF(__pyx_t_18);
+          __pyx_t_19 = PyObject_RichCompare(__pyx_t_11, __pyx_t_18, Py_GT); __Pyx_XGOTREF(__pyx_t_19); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 137, __pyx_L8_error)
+          __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+          __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_19); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 137, __pyx_L8_error)
+          __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+          if (__pyx_t_2) {
+            __Pyx_INCREF(__pyx_t_11);
+            __pyx_t_17 = __pyx_t_11;
+          } else {
+
+            /* "fuzzysearch/_levenshtein_ngrams.pyx":136
+ *                         new_needle_idx_range_start = subseq_index
+ *                     new_needle_idx_range_end = max(
+ *                         new_needle_idx_range_end,             # <<<<<<<<<<<<<<
+ *                         subseq_index + 1 + (max_good_score - c),
+ *                     )
+ */
+            __pyx_t_19 = __Pyx_PyInt_FromSize_t(__pyx_t_6); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 136, __pyx_L8_error)
+            __Pyx_GOTREF(__pyx_t_19);
+            __pyx_t_17 = __pyx_t_19;
+            __pyx_t_19 = 0;
+          }
+          __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":137
+ *                     new_needle_idx_range_end = max(
+ *                         new_needle_idx_range_end,
+ *                         subseq_index + 1 + (max_good_score - c),             # <<<<<<<<<<<<<<
+ *                     )
+ * 
+ */
+          __pyx_t_6 = __Pyx_PyInt_As_size_t(__pyx_t_17); if (unlikely((__pyx_t_6 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 137, __pyx_L8_error)
+          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+          __pyx_v_new_needle_idx_range_end = __pyx_t_6;
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":132
+ *                 a = b
+ * 
+ *                 if c <= max_good_score:             # <<<<<<<<<<<<<<
+ *                     if new_needle_idx_range_start == -1:
+ *                         new_needle_idx_range_start = subseq_index
+ */
+        }
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":123
+ *                 new_needle_idx_range_end = -1
+ * 
+ *             for subseq_index in xrange(subseq_len):             # <<<<<<<<<<<<<<
+ *                 b = scores[subseq_index]
+ *                 c = scores[subseq_index] = min(
+ */
+      }
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":141
+ * 
+ *             # bail early when it is impossible to find a better expansion
+ *             if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *                 break
+ * 
+ */
+      __pyx_t_2 = ((__pyx_v_new_needle_idx_range_start == -1L) != 0);
+      if (__pyx_t_2) {
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":142
+ *             # bail early when it is impossible to find a better expansion
+ *             if new_needle_idx_range_start == -1:
+ *                 break             # <<<<<<<<<<<<<<
+ * 
+ *             # keep the minimum score found for matches of the entire sub-sequence
+ */
+        goto __pyx_L11_break;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":141
+ * 
+ *             # bail early when it is impossible to find a better expansion
+ *             if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *                 break
+ * 
+ */
+      }
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":145
+ * 
+ *             # keep the minimum score found for matches of the entire sub-sequence
+ *             if c <= min_score:             # <<<<<<<<<<<<<<
+ *                 min_score = c
+ *                 min_score_idx = seq_index
+ */
+      __pyx_t_2 = ((__pyx_v_c <= __pyx_v_min_score) != 0);
+      if (__pyx_t_2) {
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":146
+ *             # keep the minimum score found for matches of the entire sub-sequence
+ *             if c <= min_score:
+ *                 min_score = c             # <<<<<<<<<<<<<<
+ *                 min_score_idx = seq_index
+ *                 if min_score < max_good_score:
+ */
+        __pyx_v_min_score = __pyx_v_c;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":147
+ *             if c <= min_score:
+ *                 min_score = c
+ *                 min_score_idx = seq_index             # <<<<<<<<<<<<<<
+ *                 if min_score < max_good_score:
+ *                     max_good_score = min_score
+ */
+        __pyx_t_6 = __Pyx_PyInt_As_size_t(__pyx_v_seq_index); if (unlikely((__pyx_t_6 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L8_error)
+        __pyx_v_min_score_idx = __pyx_t_6;
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":148
+ *                 min_score = c
+ *                 min_score_idx = seq_index
+ *                 if min_score < max_good_score:             # <<<<<<<<<<<<<<
+ *                     max_good_score = min_score
+ * 
+ */
+        __pyx_t_2 = ((__pyx_v_min_score < __pyx_v_max_good_score) != 0);
+        if (__pyx_t_2) {
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":149
+ *                 min_score_idx = seq_index
+ *                 if min_score < max_good_score:
+ *                     max_good_score = min_score             # <<<<<<<<<<<<<<
+ * 
+ *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
+ */
+          __pyx_v_max_good_score = __pyx_v_min_score;
+
+          /* "fuzzysearch/_levenshtein_ngrams.pyx":148
+ *                 min_score = c
+ *                 min_score_idx = seq_index
+ *                 if min_score < max_good_score:             # <<<<<<<<<<<<<<
+ *                     max_good_score = min_score
+ * 
+ */
+        }
+
+        /* "fuzzysearch/_levenshtein_ngrams.pyx":145
+ * 
+ *             # keep the minimum score found for matches of the entire sub-sequence
+ *             if c <= min_score:             # <<<<<<<<<<<<<<
+ *                 min_score = c
+ *                 min_score_idx = seq_index
+ */
+      }
+
+      /* "fuzzysearch/_levenshtein_ngrams.pyx":111
+ *         needle_idx_range_end = min(subseq_len, new_needle_idx_range_end + 1)
+ * 
+ *         for seq_index, seq_char in enumerate(sequence):             # <<<<<<<<<<<<<<
+ *             # calculate scores, one for each character in the sub-sequence
+ *             a = seq_index
+ */
+    }
+    __pyx_L11_break:;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+    /* "fuzzysearch/_levenshtein_ngrams.pyx":151
+ *                     max_good_score = min_score
+ * 
+ *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
+ * 
+ *     finally:
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_8 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 151, __pyx_L8_error)
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_10 = PyObject_RichCompare(__pyx_t_8, __pyx_v_max_l_dist, Py_LE); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 151, __pyx_L8_error)
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 151, __pyx_L8_error)
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    if (__pyx_t_2) {
+      __pyx_t_10 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 151, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_8 = __Pyx_PyInt_FromSize_t((__pyx_v_min_score_idx + 1)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 151, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 151, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_17);
+      __Pyx_GIVEREF(__pyx_t_10);
+      PyTuple_SET_ITEM(__pyx_t_17, 0, __pyx_t_10);
+      __Pyx_GIVEREF(__pyx_t_8);
+      PyTuple_SET_ITEM(__pyx_t_17, 1, __pyx_t_8);
+      __pyx_t_10 = 0;
+      __pyx_t_8 = 0;
+      __pyx_t_7 = __pyx_t_17;
+      __pyx_t_17 = 0;
+    } else {
+      __Pyx_INCREF(__pyx_tuple__2);
+      __pyx_t_7 = __pyx_tuple__2;
+    }
+    __pyx_r = __pyx_t_7;
+    __pyx_t_7 = 0;
+    goto __pyx_L7_return;
+  }
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":154
+ * 
+ *     finally:
+ *         free(scores)             # <<<<<<<<<<<<<<
+ */
+  /*finally:*/ {
+    __pyx_L8_error:;
+    /*exception exit:*/{
+      __Pyx_PyThreadState_declare
+      __Pyx_PyThreadState_assign
+      __pyx_t_23 = 0; __pyx_t_24 = 0; __pyx_t_25 = 0; __pyx_t_26 = 0; __pyx_t_27 = 0; __pyx_t_28 = 0;
+      __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
+      __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
+      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_26, &__pyx_t_27, &__pyx_t_28);
+      if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_23, &__pyx_t_24, &__pyx_t_25) < 0)) __Pyx_ErrFetch(&__pyx_t_23, &__pyx_t_24, &__pyx_t_25);
+      __Pyx_XGOTREF(__pyx_t_23);
+      __Pyx_XGOTREF(__pyx_t_24);
+      __Pyx_XGOTREF(__pyx_t_25);
+      __Pyx_XGOTREF(__pyx_t_26);
+      __Pyx_XGOTREF(__pyx_t_27);
+      __Pyx_XGOTREF(__pyx_t_28);
+      __pyx_t_20 = __pyx_lineno; __pyx_t_21 = __pyx_clineno; __pyx_t_22 = __pyx_filename;
+      {
+        free(__pyx_v_scores);
+      }
+      if (PY_MAJOR_VERSION >= 3) {
+        __Pyx_XGIVEREF(__pyx_t_26);
+        __Pyx_XGIVEREF(__pyx_t_27);
+        __Pyx_XGIVEREF(__pyx_t_28);
+        __Pyx_ExceptionReset(__pyx_t_26, __pyx_t_27, __pyx_t_28);
+      }
+      __Pyx_XGIVEREF(__pyx_t_23);
+      __Pyx_XGIVEREF(__pyx_t_24);
+      __Pyx_XGIVEREF(__pyx_t_25);
+      __Pyx_ErrRestore(__pyx_t_23, __pyx_t_24, __pyx_t_25);
+      __pyx_t_23 = 0; __pyx_t_24 = 0; __pyx_t_25 = 0; __pyx_t_26 = 0; __pyx_t_27 = 0; __pyx_t_28 = 0;
+      __pyx_lineno = __pyx_t_20; __pyx_clineno = __pyx_t_21; __pyx_filename = __pyx_t_22;
+      goto __pyx_L1_error;
+    }
+    __pyx_L7_return: {
+      __pyx_t_28 = __pyx_r;
+      __pyx_r = 0;
+      free(__pyx_v_scores);
+      __pyx_r = __pyx_t_28;
+      __pyx_t_28 = 0;
+      goto __pyx_L0;
+    }
+  }
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":78
+ * 
+ * 
+ * def c_expand_long(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
+ *     """Partial match expansion, optimized for long sub-sequences."""
+ *     # The additional optimization in this version is to limit the part of
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_17);
+  __Pyx_XDECREF(__pyx_t_18);
+  __Pyx_XDECREF(__pyx_t_19);
+  __Pyx_AddTraceback("fuzzysearch._levenshtein_ngrams.c_expand_long", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_seq_index);
+  __Pyx_XDECREF(__pyx_v_seq_char);
+  __Pyx_XDECREF(__pyx_v_subseq_index);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -1889,16 +2931,22 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
   {&__pyx_n_s_b, __pyx_k_b, sizeof(__pyx_k_b), 0, 0, 1, 1},
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
+  {&__pyx_n_s_c_expand_long, __pyx_k_c_expand_long, sizeof(__pyx_k_c_expand_long), 0, 0, 1, 1},
   {&__pyx_n_s_c_expand_short, __pyx_k_c_expand_short, sizeof(__pyx_k_c_expand_short), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_n_s_fuzzysearch__levenshtein_ngrams, __pyx_k_fuzzysearch__levenshtein_ngrams, sizeof(__pyx_k_fuzzysearch__levenshtein_ngrams), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_n_s_max_good_score, __pyx_k_max_good_score, sizeof(__pyx_k_max_good_score), 0, 0, 1, 1},
   {&__pyx_n_s_max_l_dist, __pyx_k_max_l_dist, sizeof(__pyx_k_max_l_dist), 0, 0, 1, 1},
   {&__pyx_n_s_min_intermediate_score, __pyx_k_min_intermediate_score, sizeof(__pyx_k_min_intermediate_score), 0, 0, 1, 1},
   {&__pyx_n_s_min_score, __pyx_k_min_score, sizeof(__pyx_k_min_score), 0, 0, 1, 1},
   {&__pyx_n_s_min_score_idx, __pyx_k_min_score_idx, sizeof(__pyx_k_min_score_idx), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
+  {&__pyx_n_s_needle_idx_range_end, __pyx_k_needle_idx_range_end, sizeof(__pyx_k_needle_idx_range_end), 0, 0, 1, 1},
+  {&__pyx_n_s_needle_idx_range_start, __pyx_k_needle_idx_range_start, sizeof(__pyx_k_needle_idx_range_start), 0, 0, 1, 1},
+  {&__pyx_n_s_new_needle_idx_range_end, __pyx_k_new_needle_idx_range_end, sizeof(__pyx_k_new_needle_idx_range_end), 0, 0, 1, 1},
+  {&__pyx_n_s_new_needle_idx_range_start, __pyx_k_new_needle_idx_range_start, sizeof(__pyx_k_new_needle_idx_range_start), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_scores, __pyx_k_scores, sizeof(__pyx_k_scores), 0, 0, 1, 1},
   {&__pyx_n_s_seq_char, __pyx_k_seq_char, sizeof(__pyx_k_seq_char), 0, 0, 1, 1},
@@ -1915,13 +2963,13 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 42, __pyx_L1_error)
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 43, __pyx_L1_error)
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 43, __pyx_L1_error)
   #endif
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 47, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -1931,39 +2979,73 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":28
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":30
  *     cdef unsigned int subseq_len = len(subsequence)
  *     if subseq_len == 0:
  *         return (0, 0)             # <<<<<<<<<<<<<<
  * 
  *     cdef size_t subseq_idx, seq_idx
  */
-  __pyx_tuple_ = PyTuple_Pack(2, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(2, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":70
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":72
  *                 min_score_idx = seq_index
  * 
  *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */
-  __pyx_tuple__2 = PyTuple_Pack(2, Py_None, Py_None); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 70, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(2, Py_None, Py_None); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":8
- * ]
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":89
+ *     cdef unsigned int subseq_len = len(subsequence)
+ *     if subseq_len == 0:
+ *         return (0, 0)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef size_t subseq_idx, seq_idx
+ */
+  __pyx_tuple_ = PyTuple_Pack(2, __pyx_int_0, __pyx_int_0); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple_);
+  __Pyx_GIVEREF(__pyx_tuple_);
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":151
+ *                     max_good_score = min_score
+ * 
+ *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
+ * 
+ *     finally:
+ */
+  __pyx_tuple__2 = PyTuple_Pack(2, Py_None, Py_None); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__2);
+  __Pyx_GIVEREF(__pyx_tuple__2);
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":9
+ * 
  * 
  * def c_expand_short(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
  *     """Straightforward implementation of partial match expansion."""
  *     # The following diagram shows the score calculation step.
  */
-  __pyx_tuple__3 = PyTuple_Pack(16, __pyx_n_s_subsequence, __pyx_n_s_sequence, __pyx_n_s_max_l_dist, __pyx_n_s_subseq_len, __pyx_n_s_subseq_idx, __pyx_n_s_seq_idx, __pyx_n_s_min_score, __pyx_n_s_min_score_idx, __pyx_n_s_min_intermediate_score, __pyx_n_s_a, __pyx_n_s_b, __pyx_n_s_c, __pyx_n_s_scores, __pyx_n_s_seq_index, __pyx_n_s_seq_char, __pyx_n_s_subseq_index); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(16, __pyx_n_s_subsequence, __pyx_n_s_sequence, __pyx_n_s_max_l_dist, __pyx_n_s_subseq_len, __pyx_n_s_subseq_idx, __pyx_n_s_seq_idx, __pyx_n_s_min_score, __pyx_n_s_min_score_idx, __pyx_n_s_min_intermediate_score, __pyx_n_s_a, __pyx_n_s_b, __pyx_n_s_c, __pyx_n_s_scores, __pyx_n_s_seq_index, __pyx_n_s_seq_char, __pyx_n_s_subseq_index); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(3, 0, 16, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_fuzzysearch__levenshtein_ngr, __pyx_n_s_c_expand_short, 8, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(3, 0, 16, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_fuzzysearch__levenshtein_ngr, __pyx_n_s_c_expand_short, 9, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 9, __pyx_L1_error)
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":78
+ * 
+ * 
+ * def c_expand_long(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
+ *     """Partial match expansion, optimized for long sub-sequences."""
+ *     # The additional optimization in this version is to limit the part of
+ */
+  __pyx_tuple__5 = PyTuple_Pack(20, __pyx_n_s_subsequence, __pyx_n_s_sequence, __pyx_n_s_max_l_dist, __pyx_n_s_subseq_len, __pyx_n_s_subseq_idx, __pyx_n_s_seq_idx, __pyx_n_s_min_score, __pyx_n_s_min_score_idx, __pyx_n_s_a, __pyx_n_s_b, __pyx_n_s_c, __pyx_n_s_max_good_score, __pyx_n_s_new_needle_idx_range_start, __pyx_n_s_new_needle_idx_range_end, __pyx_n_s_scores, __pyx_n_s_needle_idx_range_start, __pyx_n_s_needle_idx_range_end, __pyx_n_s_seq_index, __pyx_n_s_seq_char, __pyx_n_s_subseq_index); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__5);
+  __Pyx_GIVEREF(__pyx_tuple__5);
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(3, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_fuzzysearch__levenshtein_ngr, __pyx_n_s_c_expand_long, 78, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2246,27 +3328,42 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  * __all__ = [             # <<<<<<<<<<<<<<
- *     'c_expand_short',
+ *     'c_expand_short', 'c_expand_long'
  * ]
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_c_expand_short);
   __Pyx_GIVEREF(__pyx_n_s_c_expand_short);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_c_expand_short);
+  __Pyx_INCREF(__pyx_n_s_c_expand_long);
+  __Pyx_GIVEREF(__pyx_n_s_c_expand_long);
+  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_c_expand_long);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "fuzzysearch/_levenshtein_ngrams.pyx":8
- * ]
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":9
+ * 
  * 
  * def c_expand_short(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
  *     """Straightforward implementation of partial match expansion."""
  *     # The following diagram shows the score calculation step.
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11fuzzysearch_19_levenshtein_ngrams_1c_expand_short, NULL, __pyx_n_s_fuzzysearch__levenshtein_ngrams); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11fuzzysearch_19_levenshtein_ngrams_1c_expand_short, NULL, __pyx_n_s_fuzzysearch__levenshtein_ngrams); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_c_expand_short, __pyx_t_1) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_c_expand_short, __pyx_t_1) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "fuzzysearch/_levenshtein_ngrams.pyx":78
+ * 
+ * 
+ * def c_expand_long(subsequence, sequence, max_l_dist):             # <<<<<<<<<<<<<<
+ *     """Partial match expansion, optimized for long sub-sequences."""
+ *     # The additional optimization in this version is to limit the part of
+ */
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_11fuzzysearch_19_levenshtein_ngrams_3c_expand_long, NULL, __pyx_n_s_fuzzysearch__levenshtein_ngrams); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_c_expand_long, __pyx_t_1) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "fuzzysearch/_levenshtein_ngrams.pyx":1
@@ -2886,6 +3983,257 @@ static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject 
     Py_XDECREF(tmp_type);
     Py_XDECREF(tmp_value);
     Py_XDECREF(tmp_tb);
+}
+#endif
+
+/* PyCFunctionFastCall */
+#if CYTHON_FAST_PYCCALL
+static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
+    PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
+    PyCFunction meth = PyCFunction_GET_FUNCTION(func);
+    PyObject *self = PyCFunction_GET_SELF(func);
+    int flags = PyCFunction_GET_FLAGS(func);
+    assert(PyCFunction_Check(func));
+    assert(METH_FASTCALL == (flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_KEYWORDS | METH_STACKLESS)));
+    assert(nargs >= 0);
+    assert(nargs == 0 || args != NULL);
+    /* _PyCFunction_FastCallDict() must not be called with an exception set,
+       because it may clear it (directly or indirectly) and so the
+       caller loses its exception */
+    assert(!PyErr_Occurred());
+    if ((PY_VERSION_HEX < 0x030700A0) || unlikely(flags & METH_KEYWORDS)) {
+        return (*((__Pyx_PyCFunctionFastWithKeywords)(void*)meth)) (self, args, nargs, NULL);
+    } else {
+        return (*((__Pyx_PyCFunctionFast)(void*)meth)) (self, args, nargs);
+    }
+}
+#endif
+
+/* PyFunctionFastCall */
+#if CYTHON_FAST_PYCALL
+static PyObject* __Pyx_PyFunction_FastCallNoKw(PyCodeObject *co, PyObject **args, Py_ssize_t na,
+                                               PyObject *globals) {
+    PyFrameObject *f;
+    PyThreadState *tstate = __Pyx_PyThreadState_Current;
+    PyObject **fastlocals;
+    Py_ssize_t i;
+    PyObject *result;
+    assert(globals != NULL);
+    /* XXX Perhaps we should create a specialized
+       PyFrame_New() that doesn't take locals, but does
+       take builtins without sanity checking them.
+       */
+    assert(tstate != NULL);
+    f = PyFrame_New(tstate, co, globals, NULL);
+    if (f == NULL) {
+        return NULL;
+    }
+    fastlocals = __Pyx_PyFrame_GetLocalsplus(f);
+    for (i = 0; i < na; i++) {
+        Py_INCREF(*args);
+        fastlocals[i] = *args++;
+    }
+    result = PyEval_EvalFrameEx(f,0);
+    ++tstate->recursion_depth;
+    Py_DECREF(f);
+    --tstate->recursion_depth;
+    return result;
+}
+#if 1 || PY_VERSION_HEX < 0x030600B1
+static PyObject *__Pyx_PyFunction_FastCallDict(PyObject *func, PyObject **args, int nargs, PyObject *kwargs) {
+    PyCodeObject *co = (PyCodeObject *)PyFunction_GET_CODE(func);
+    PyObject *globals = PyFunction_GET_GLOBALS(func);
+    PyObject *argdefs = PyFunction_GET_DEFAULTS(func);
+    PyObject *closure;
+#if PY_MAJOR_VERSION >= 3
+    PyObject *kwdefs;
+#endif
+    PyObject *kwtuple, **k;
+    PyObject **d;
+    Py_ssize_t nd;
+    Py_ssize_t nk;
+    PyObject *result;
+    assert(kwargs == NULL || PyDict_Check(kwargs));
+    nk = kwargs ? PyDict_Size(kwargs) : 0;
+    if (Py_EnterRecursiveCall((char*)" while calling a Python object")) {
+        return NULL;
+    }
+    if (
+#if PY_MAJOR_VERSION >= 3
+            co->co_kwonlyargcount == 0 &&
+#endif
+            likely(kwargs == NULL || nk == 0) &&
+            co->co_flags == (CO_OPTIMIZED | CO_NEWLOCALS | CO_NOFREE)) {
+        if (argdefs == NULL && co->co_argcount == nargs) {
+            result = __Pyx_PyFunction_FastCallNoKw(co, args, nargs, globals);
+            goto done;
+        }
+        else if (nargs == 0 && argdefs != NULL
+                 && co->co_argcount == Py_SIZE(argdefs)) {
+            /* function called with no arguments, but all parameters have
+               a default value: use default values as arguments .*/
+            args = &PyTuple_GET_ITEM(argdefs, 0);
+            result =__Pyx_PyFunction_FastCallNoKw(co, args, Py_SIZE(argdefs), globals);
+            goto done;
+        }
+    }
+    if (kwargs != NULL) {
+        Py_ssize_t pos, i;
+        kwtuple = PyTuple_New(2 * nk);
+        if (kwtuple == NULL) {
+            result = NULL;
+            goto done;
+        }
+        k = &PyTuple_GET_ITEM(kwtuple, 0);
+        pos = i = 0;
+        while (PyDict_Next(kwargs, &pos, &k[i], &k[i+1])) {
+            Py_INCREF(k[i]);
+            Py_INCREF(k[i+1]);
+            i += 2;
+        }
+        nk = i / 2;
+    }
+    else {
+        kwtuple = NULL;
+        k = NULL;
+    }
+    closure = PyFunction_GET_CLOSURE(func);
+#if PY_MAJOR_VERSION >= 3
+    kwdefs = PyFunction_GET_KW_DEFAULTS(func);
+#endif
+    if (argdefs != NULL) {
+        d = &PyTuple_GET_ITEM(argdefs, 0);
+        nd = Py_SIZE(argdefs);
+    }
+    else {
+        d = NULL;
+        nd = 0;
+    }
+#if PY_MAJOR_VERSION >= 3
+    result = PyEval_EvalCodeEx((PyObject*)co, globals, (PyObject *)NULL,
+                               args, nargs,
+                               k, (int)nk,
+                               d, (int)nd, kwdefs, closure);
+#else
+    result = PyEval_EvalCodeEx(co, globals, (PyObject *)NULL,
+                               args, nargs,
+                               k, (int)nk,
+                               d, (int)nd, closure);
+#endif
+    Py_XDECREF(kwtuple);
+done:
+    Py_LeaveRecursiveCall();
+    return result;
+}
+#endif
+#endif
+
+/* PyObjectCall */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+/* PyObjectCallMethO */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
+    PyObject *self, *result;
+    PyCFunction cfunc;
+    cfunc = PyCFunction_GET_FUNCTION(func);
+    self = PyCFunction_GET_SELF(func);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = cfunc(self, arg);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+/* PyObjectCallOneArg */
+#if CYTHON_COMPILING_IN_CPYTHON
+static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+    PyObject *result;
+    PyObject *args = PyTuple_New(1);
+    if (unlikely(!args)) return NULL;
+    Py_INCREF(arg);
+    PyTuple_SET_ITEM(args, 0, arg);
+    result = __Pyx_PyObject_Call(func, args, NULL);
+    Py_DECREF(args);
+    return result;
+}
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+#if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(func)) {
+        return __Pyx_PyFunction_FastCall(func, &arg, 1);
+    }
+#endif
+    if (likely(PyCFunction_Check(func))) {
+        if (likely(PyCFunction_GET_FLAGS(func) & METH_O)) {
+            return __Pyx_PyObject_CallMethO(func, arg);
+#if CYTHON_FAST_PYCCALL
+        } else if (PyCFunction_GET_FLAGS(func) & METH_FASTCALL) {
+            return __Pyx_PyCFunction_FastCall(func, &arg, 1);
+#endif
+        }
+    }
+    return __Pyx__PyObject_CallOneArg(func, arg);
+}
+#else
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg) {
+    PyObject *result;
+    PyObject *args = PyTuple_Pack(1, arg);
+    if (unlikely(!args)) return NULL;
+    result = __Pyx_PyObject_Call(func, args, NULL);
+    Py_DECREF(args);
+    return result;
+}
+#endif
+
+/* ObjectGetItem */
+#if CYTHON_USE_TYPE_SLOTS
+static PyObject *__Pyx_PyObject_GetIndex(PyObject *obj, PyObject* index) {
+    PyObject *runerr;
+    Py_ssize_t key_value;
+    PySequenceMethods *m = Py_TYPE(obj)->tp_as_sequence;
+    if (unlikely(!(m && m->sq_item))) {
+        PyErr_Format(PyExc_TypeError, "'%.200s' object is not subscriptable", Py_TYPE(obj)->tp_name);
+        return NULL;
+    }
+    key_value = __Pyx_PyIndex_AsSsize_t(index);
+    if (likely(key_value != -1 || !(runerr = PyErr_Occurred()))) {
+        return __Pyx_GetItemInt_Fast(obj, key_value, 0, 1, 1);
+    }
+    if (PyErr_GivenExceptionMatches(runerr, PyExc_OverflowError)) {
+        PyErr_Clear();
+        PyErr_Format(PyExc_IndexError, "cannot fit '%.200s' into an index-sized integer", Py_TYPE(index)->tp_name);
+    }
+    return NULL;
+}
+static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
+    PyMappingMethods *m = Py_TYPE(obj)->tp_as_mapping;
+    if (likely(m && m->mp_subscript)) {
+        return m->mp_subscript(obj, key);
+    }
+    return __Pyx_PyObject_GetIndex(obj, key);
 }
 #endif
 

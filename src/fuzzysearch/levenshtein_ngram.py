@@ -76,15 +76,7 @@ def _py_expand_short(subsequence, sequence, max_l_dist):
     return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
 
 
-try:
-    from fuzzysearch._levenshtein_ngrams import c_expand_short as _c_expand_short
-except ImportError:
-    _expand_short = _py_expand_short
-else:
-    _expand_short = _c_expand_short
-
-
-def _expand_long(subsequence, sequence, max_l_dist):
+def _py_expand_long(subsequence, sequence, max_l_dist):
     """Partial match expansion, optimized for long sub-sequences."""
     # The additional optimization in this version is to limit the part of
     # the sub-sequence inspected for each sequence character.  The start and
@@ -151,6 +143,19 @@ def _expand_long(subsequence, sequence, max_l_dist):
                 max_good_score = min_score
 
     return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
+
+
+try:
+    from fuzzysearch._levenshtein_ngrams import (
+        c_expand_short as _c_expand_short,
+        c_expand_long as _c_expand_long,
+    )
+except ImportError:
+    _expand_short = _py_expand_short
+    _expand_long = _py_expand_long
+else:
+    _expand_short = _c_expand_short
+    _expand_long = _c_expand_long
 
 
 def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
