@@ -165,9 +165,10 @@ count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
 
 static PyMethodDef _common_methods[] = {
     {"count_differences_with_maximum_byteslike",
-     count_differences_with_maximum_byteslike,
+     (PyCFunction)count_differences_with_maximum_byteslike,
      METH_VARARGS, "DOCSTRING."},
-    {"search_exact_byteslike", search_exact_byteslike,
+    {"search_exact_byteslike",
+     (PyCFunction)search_exact_byteslike,
      METH_VARARGS | METH_KEYWORDS, "DOCSTRING"},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
