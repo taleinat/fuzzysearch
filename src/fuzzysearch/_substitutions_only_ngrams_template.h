@@ -1,8 +1,5 @@
 #include "src/fuzzysearch/memmem.h"
 
-#if PY_MAJOR_VERSION >= 3
-#define IS_PY3K
-#endif
 
 #ifdef __GNUC__
   /* Test for GCC > 2.95 */
@@ -27,7 +24,8 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     /* input params */
     const char *subsequence;
     const char *sequence;
-    int subseq_len, seq_len, max_substitutions;
+    int subseq_len_input, seq_len_input, max_substitutions_input;
+    unsigned int subseq_len, seq_len, max_substitutions;
 
     int ngram_len, ngram_start, subseq_len_after_ngram;
     const char *match_ptr, *seq_ptr, *subseq_ptr, *subseq_end;
@@ -36,26 +34,41 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
 
     DECLARE_VARS;
 
-    if (!PyArg_ParseTuple(
-        args,
 #ifdef IS_PY3K
-        "y#y#i",
+    #define ARGSPEC "y#y#i"
 #else
     #if PY_HEX_VERSION >= 0x02070000
-        "t#t#i",
+        #define ARGSPEC "t#t#i"
     #else
-        "s#s#i",
+        #define ARGSPEC "s#s#i"
     #endif
 #endif
-        &subsequence, &subseq_len,
-        &sequence, &seq_len,
-        &max_substitutions
-    )) {
+
+    if (unlikely(!PyArg_ParseTuple(
+        args,
+        ARGSPEC,
+        &subsequence, &subseq_len_input,
+        &sequence, &seq_len_input,
+        &max_substitutions_input
+    ))) {
         return NULL;
     }
 
+    if (unlikely(max_substitutions_input < 0)) {
+        PyErr_SetString(PyExc_ValueError, "max_l_dist must be non-negative");
+        return NULL;
+    }
+    max_substitutions = (unsigned int) max_substitutions_input;
+
+    if (unlikely(subseq_len_input < 0 || seq_len_input < 0)) {
+        PyErr_SetString(PyExc_Exception, "an unknown error occurred");
+        return NULL;
+    }
+    subseq_len = (unsigned int) subseq_len_input;
+    seq_len = (unsigned int) seq_len_input;
+
     ngram_len = subseq_len / (max_substitutions + 1);
-    if (ngram_len == 0) {
+    if (unlikely(ngram_len == 0)) {
         PyErr_SetString(PyExc_ValueError,
             "The subsequence's length must be greater than max_substitutions!"
         );
@@ -64,7 +77,7 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
 
     PREPARE;
 
-    if (seq_len < subseq_len) {
+    if (unlikely(seq_len < subseq_len)) {
         DO_FREES;
         RETURN_AT_END;
     }
