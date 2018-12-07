@@ -31,7 +31,7 @@ def c_expand_short(subsequence, sequence, max_l_dist):
 
     cdef size_t subseq_idx, seq_idx
     cdef unsigned int min_score = subseq_len
-    cdef size_t min_score_idx = -1
+    cdef size_t min_score_idx = 0
     cdef unsigned int min_intermediate_score
     cdef unsigned int a, b, c
 
@@ -67,9 +67,9 @@ def c_expand_short(subsequence, sequence, max_l_dist):
             # keep the minimum score found for matches of the entire sub-sequence
             if c <= min_score:
                 min_score = c
-                min_score_idx = seq_index
+                min_score_idx = seq_index + 1
 
-        return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
+        return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)
 
     finally:
         free(scores)
@@ -90,11 +90,11 @@ def c_expand_long(subsequence, sequence, max_l_dist):
 
     cdef size_t subseq_idx, seq_idx
     cdef unsigned int min_score = subseq_len
-    cdef size_t min_score_idx = -1
+    cdef size_t min_score_idx = 0
     cdef unsigned int a, b, c
     cdef unsigned int max_good_score = max_l_dist
     cdef size_t new_needle_idx_range_start = 0
-    cdef size_t new_needle_idx_range_end = subseq_len - 1
+    cdef size_t new_needle_idx_range_end = subseq_len
 
     # Initialize the scores array with values for just skipping sub-sequence
     # chars.
@@ -130,7 +130,7 @@ def c_expand_long(subsequence, sequence, max_l_dist):
                 a = b
 
                 if c <= max_good_score:
-                    if new_needle_idx_range_start == -1:
+                    if new_needle_idx_range_start == subseq_len:
                         new_needle_idx_range_start = subseq_index
                     new_needle_idx_range_end = max(
                         new_needle_idx_range_end,
@@ -138,17 +138,17 @@ def c_expand_long(subsequence, sequence, max_l_dist):
                     )
 
             # bail early when it is impossible to find a better expansion
-            if new_needle_idx_range_start == -1:
+            if new_needle_idx_range_start == subseq_len:
                 break
 
             # keep the minimum score found for matches of the entire sub-sequence
             if c <= min_score:
                 min_score = c
-                min_score_idx = seq_index
+                min_score_idx = seq_index + 1
                 if min_score < max_good_score:
                     max_good_score = min_score
 
-        return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
+        return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)
 
     finally:
         free(scores)

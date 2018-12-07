@@ -1384,7 +1384,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  * 
  *     cdef size_t subseq_idx, seq_idx
  *     cdef unsigned int min_score = subseq_len             # <<<<<<<<<<<<<<
- *     cdef size_t min_score_idx = -1
+ *     cdef size_t min_score_idx = 0
  *     cdef unsigned int min_intermediate_score
  */
   __pyx_v_min_score = __pyx_v_subseq_len;
@@ -1392,11 +1392,11 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
   /* "fuzzysearch/_levenshtein_ngrams.pyx":34
  *     cdef size_t subseq_idx, seq_idx
  *     cdef unsigned int min_score = subseq_len
- *     cdef size_t min_score_idx = -1             # <<<<<<<<<<<<<<
+ *     cdef size_t min_score_idx = 0             # <<<<<<<<<<<<<<
  *     cdef unsigned int min_intermediate_score
  *     cdef unsigned int a, b, c
  */
-  __pyx_v_min_score_idx = -1L;
+  __pyx_v_min_score_idx = 0;
 
   /* "fuzzysearch/_levenshtein_ngrams.pyx":40
  *     # Initialize the scores array with values for just skipping sub-sequence
@@ -1743,7 +1743,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             if c <= min_score:             # <<<<<<<<<<<<<<
  *                 min_score = c
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  */
       __pyx_t_2 = ((__pyx_v_c <= __pyx_v_min_score) != 0);
       if (__pyx_t_2) {
@@ -1752,7 +1752,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             if c <= min_score:
  *                 min_score = c             # <<<<<<<<<<<<<<
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  * 
  */
         __pyx_v_min_score = __pyx_v_c;
@@ -1760,11 +1760,14 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
         /* "fuzzysearch/_levenshtein_ngrams.pyx":70
  *             if c <= min_score:
  *                 min_score = c
- *                 min_score_idx = seq_index             # <<<<<<<<<<<<<<
+ *                 min_score_idx = seq_index + 1             # <<<<<<<<<<<<<<
  * 
- *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
+ *         return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)
  */
-        __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_seq_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L8_error)
+        __pyx_t_14 = __Pyx_PyInt_AddObjC(__pyx_v_seq_index, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 70, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_14);
+        __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_t_14); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 70, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
         __pyx_v_min_score_idx = __pyx_t_5;
 
         /* "fuzzysearch/_levenshtein_ngrams.pyx":68
@@ -1772,7 +1775,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             if c <= min_score:             # <<<<<<<<<<<<<<
  *                 min_score = c
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  */
       }
 
@@ -1789,9 +1792,9 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
     /* "fuzzysearch/_levenshtein_ngrams.pyx":72
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  * 
- *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
+ *         return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */
@@ -1805,7 +1808,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
     if (__pyx_t_2) {
       __pyx_t_14 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 72, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_14);
-      __pyx_t_7 = __Pyx_PyInt_FromSize_t((__pyx_v_min_score_idx + 1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L8_error)
+      __pyx_t_7 = __Pyx_PyInt_FromSize_t(__pyx_v_min_score_idx); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 72, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 72, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_13);
@@ -2083,7 +2086,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
  * 
  *     cdef size_t subseq_idx, seq_idx
  *     cdef unsigned int min_score = subseq_len             # <<<<<<<<<<<<<<
- *     cdef size_t min_score_idx = -1
+ *     cdef size_t min_score_idx = 0
  *     cdef unsigned int a, b, c
  */
   __pyx_v_min_score = __pyx_v_subseq_len;
@@ -2091,18 +2094,18 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
   /* "fuzzysearch/_levenshtein_ngrams.pyx":93
  *     cdef size_t subseq_idx, seq_idx
  *     cdef unsigned int min_score = subseq_len
- *     cdef size_t min_score_idx = -1             # <<<<<<<<<<<<<<
+ *     cdef size_t min_score_idx = 0             # <<<<<<<<<<<<<<
  *     cdef unsigned int a, b, c
  *     cdef unsigned int max_good_score = max_l_dist
  */
-  __pyx_v_min_score_idx = -1L;
+  __pyx_v_min_score_idx = 0;
 
   /* "fuzzysearch/_levenshtein_ngrams.pyx":95
- *     cdef size_t min_score_idx = -1
+ *     cdef size_t min_score_idx = 0
  *     cdef unsigned int a, b, c
  *     cdef unsigned int max_good_score = max_l_dist             # <<<<<<<<<<<<<<
  *     cdef size_t new_needle_idx_range_start = 0
- *     cdef size_t new_needle_idx_range_end = subseq_len - 1
+ *     cdef size_t new_needle_idx_range_end = subseq_len
  */
   __pyx_t_3 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_l_dist); if (unlikely((__pyx_t_3 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_max_good_score = __pyx_t_3;
@@ -2111,7 +2114,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
  *     cdef unsigned int a, b, c
  *     cdef unsigned int max_good_score = max_l_dist
  *     cdef size_t new_needle_idx_range_start = 0             # <<<<<<<<<<<<<<
- *     cdef size_t new_needle_idx_range_end = subseq_len - 1
+ *     cdef size_t new_needle_idx_range_end = subseq_len
  * 
  */
   __pyx_v_new_needle_idx_range_start = 0;
@@ -2119,11 +2122,11 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
   /* "fuzzysearch/_levenshtein_ngrams.pyx":97
  *     cdef unsigned int max_good_score = max_l_dist
  *     cdef size_t new_needle_idx_range_start = 0
- *     cdef size_t new_needle_idx_range_end = subseq_len - 1             # <<<<<<<<<<<<<<
+ *     cdef size_t new_needle_idx_range_end = subseq_len             # <<<<<<<<<<<<<<
  * 
  *     # Initialize the scores array with values for just skipping sub-sequence
  */
-  __pyx_v_new_needle_idx_range_end = (__pyx_v_subseq_len - 1);
+  __pyx_v_new_needle_idx_range_end = __pyx_v_subseq_len;
 
   /* "fuzzysearch/_levenshtein_ngrams.pyx":101
  *     # Initialize the scores array with values for just skipping sub-sequence
@@ -2532,7 +2535,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
  *                 a = b
  * 
  *                 if c <= max_good_score:             # <<<<<<<<<<<<<<
- *                     if new_needle_idx_range_start == -1:
+ *                     if new_needle_idx_range_start == subseq_len:
  *                         new_needle_idx_range_start = subseq_index
  */
         __pyx_t_2 = ((__pyx_v_c <= __pyx_v_max_good_score) != 0);
@@ -2541,16 +2544,16 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
           /* "fuzzysearch/_levenshtein_ngrams.pyx":133
  * 
  *                 if c <= max_good_score:
- *                     if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *                     if new_needle_idx_range_start == subseq_len:             # <<<<<<<<<<<<<<
  *                         new_needle_idx_range_start = subseq_index
  *                     new_needle_idx_range_end = max(
  */
-          __pyx_t_2 = ((__pyx_v_new_needle_idx_range_start == -1L) != 0);
+          __pyx_t_2 = ((__pyx_v_new_needle_idx_range_start == __pyx_v_subseq_len) != 0);
           if (__pyx_t_2) {
 
             /* "fuzzysearch/_levenshtein_ngrams.pyx":134
  *                 if c <= max_good_score:
- *                     if new_needle_idx_range_start == -1:
+ *                     if new_needle_idx_range_start == subseq_len:
  *                         new_needle_idx_range_start = subseq_index             # <<<<<<<<<<<<<<
  *                     new_needle_idx_range_end = max(
  *                         new_needle_idx_range_end,
@@ -2561,7 +2564,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
             /* "fuzzysearch/_levenshtein_ngrams.pyx":133
  * 
  *                 if c <= max_good_score:
- *                     if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *                     if new_needle_idx_range_start == subseq_len:             # <<<<<<<<<<<<<<
  *                         new_needle_idx_range_start = subseq_index
  *                     new_needle_idx_range_end = max(
  */
@@ -2639,7 +2642,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
  *                 a = b
  * 
  *                 if c <= max_good_score:             # <<<<<<<<<<<<<<
- *                     if new_needle_idx_range_start == -1:
+ *                     if new_needle_idx_range_start == subseq_len:
  *                         new_needle_idx_range_start = subseq_index
  */
         }
@@ -2657,16 +2660,16 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
       /* "fuzzysearch/_levenshtein_ngrams.pyx":141
  * 
  *             # bail early when it is impossible to find a better expansion
- *             if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *             if new_needle_idx_range_start == subseq_len:             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
-      __pyx_t_2 = ((__pyx_v_new_needle_idx_range_start == -1L) != 0);
+      __pyx_t_2 = ((__pyx_v_new_needle_idx_range_start == __pyx_v_subseq_len) != 0);
       if (__pyx_t_2) {
 
         /* "fuzzysearch/_levenshtein_ngrams.pyx":142
  *             # bail early when it is impossible to find a better expansion
- *             if new_needle_idx_range_start == -1:
+ *             if new_needle_idx_range_start == subseq_len:
  *                 break             # <<<<<<<<<<<<<<
  * 
  *             # keep the minimum score found for matches of the entire sub-sequence
@@ -2676,7 +2679,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
         /* "fuzzysearch/_levenshtein_ngrams.pyx":141
  * 
  *             # bail early when it is impossible to find a better expansion
- *             if new_needle_idx_range_start == -1:             # <<<<<<<<<<<<<<
+ *             if new_needle_idx_range_start == subseq_len:             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
@@ -2687,7 +2690,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             if c <= min_score:             # <<<<<<<<<<<<<<
  *                 min_score = c
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  */
       __pyx_t_2 = ((__pyx_v_c <= __pyx_v_min_score) != 0);
       if (__pyx_t_2) {
@@ -2696,7 +2699,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             if c <= min_score:
  *                 min_score = c             # <<<<<<<<<<<<<<
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  *                 if min_score < max_good_score:
  */
         __pyx_v_min_score = __pyx_v_c;
@@ -2704,16 +2707,19 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
         /* "fuzzysearch/_levenshtein_ngrams.pyx":147
  *             if c <= min_score:
  *                 min_score = c
- *                 min_score_idx = seq_index             # <<<<<<<<<<<<<<
+ *                 min_score_idx = seq_index + 1             # <<<<<<<<<<<<<<
  *                 if min_score < max_good_score:
  *                     max_good_score = min_score
  */
-        __pyx_t_6 = __Pyx_PyInt_As_size_t(__pyx_v_seq_index); if (unlikely((__pyx_t_6 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L8_error)
+        __pyx_t_10 = __Pyx_PyInt_AddObjC(__pyx_v_seq_index, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 147, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __pyx_t_6 = __Pyx_PyInt_As_size_t(__pyx_t_10); if (unlikely((__pyx_t_6 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 147, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         __pyx_v_min_score_idx = __pyx_t_6;
 
         /* "fuzzysearch/_levenshtein_ngrams.pyx":148
  *                 min_score = c
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  *                 if min_score < max_good_score:             # <<<<<<<<<<<<<<
  *                     max_good_score = min_score
  * 
@@ -2722,17 +2728,17 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
         if (__pyx_t_2) {
 
           /* "fuzzysearch/_levenshtein_ngrams.pyx":149
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  *                 if min_score < max_good_score:
  *                     max_good_score = min_score             # <<<<<<<<<<<<<<
  * 
- *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)
+ *         return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)
  */
           __pyx_v_max_good_score = __pyx_v_min_score;
 
           /* "fuzzysearch/_levenshtein_ngrams.pyx":148
  *                 min_score = c
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  *                 if min_score < max_good_score:             # <<<<<<<<<<<<<<
  *                     max_good_score = min_score
  * 
@@ -2744,7 +2750,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
  *             # keep the minimum score found for matches of the entire sub-sequence
  *             if c <= min_score:             # <<<<<<<<<<<<<<
  *                 min_score = c
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  */
       }
 
@@ -2763,7 +2769,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
     /* "fuzzysearch/_levenshtein_ngrams.pyx":151
  *                     max_good_score = min_score
  * 
- *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
+ *         return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */
@@ -2777,7 +2783,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_2c_expand_long(CYT
     if (__pyx_t_2) {
       __pyx_t_10 = __Pyx_PyInt_From_unsigned_int(__pyx_v_min_score); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 151, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_8 = __Pyx_PyInt_FromSize_t((__pyx_v_min_score_idx + 1)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 151, __pyx_L8_error)
+      __pyx_t_8 = __Pyx_PyInt_FromSize_t(__pyx_v_min_score_idx); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 151, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_8);
       __pyx_t_17 = PyTuple_New(2); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 151, __pyx_L8_error)
       __Pyx_GOTREF(__pyx_t_17);
@@ -2991,9 +2997,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple_);
 
   /* "fuzzysearch/_levenshtein_ngrams.pyx":72
- *                 min_score_idx = seq_index
+ *                 min_score_idx = seq_index + 1
  * 
- *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
+ *         return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */
@@ -3015,7 +3021,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   /* "fuzzysearch/_levenshtein_ngrams.pyx":151
  *                     max_good_score = min_score
  * 
- *         return (min_score, min_score_idx + 1) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
+ *         return (min_score, min_score_idx) if min_score <= max_l_dist else (None, None)             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */

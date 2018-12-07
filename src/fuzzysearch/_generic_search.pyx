@@ -15,7 +15,8 @@ __all__ = [
 
 
 cdef struct GenericSearchCandidate:
-    int start, subseq_index, l_dist, n_subs, n_ins, n_dels
+    size_t start, subseq_index
+    unsigned int l_dist, n_subs, n_ins, n_dels
 
 
 ALLOWED_TYPES = (six.binary_type, bytearray)
@@ -76,7 +77,7 @@ cdef _c_find_near_matches_generic_linear_programming(
     cdef size_t n_new_candidates = 0
     cdef size_t n_cand
 
-    alloc_size = min(10, subseq_len * 3 + 1)
+    alloc_size = min(<size_t> 10, subseq_len * 3 + 1)
     candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
     if candidates is NULL:
         raise MemoryError()
@@ -89,6 +90,7 @@ cdef _c_find_near_matches_generic_linear_programming(
 
     cdef size_t index
     cdef char seq_char
+    cdef unsigned int n_skipped
 
     try:
         index = 0
@@ -170,7 +172,7 @@ cdef _c_find_near_matches_generic_linear_programming(
                             matches.append(Match(cand.start, index + 1, cand.l_dist + 1))
 
                     # try skipping subsequence chars
-                    for n_skipped in xrange(1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + 1):
+                    for n_skipped in xrange(<unsigned int> 1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + <unsigned int> 1):
                         # if skipping n_dels sub-sequence chars reaches the end
                         # of the sub-sequence, yield a match
                         if cand.subseq_index + n_skipped == subseq_len:
