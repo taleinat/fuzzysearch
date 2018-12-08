@@ -13,7 +13,7 @@ Example:
 """
 __author__ = 'Tal Einat'
 __email__ = 'taleinat@gmail.com'
-__version__ = '0.6.0'
+__version__ = '0.6.1'
 
 __all__ = [
     'find_near_matches',
