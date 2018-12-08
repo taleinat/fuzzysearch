@@ -3,6 +3,35 @@
 History
 -------
 
+0.6.1 (2018-12-08)
+++++++++++++++++++
+
+* Fixed some C compiler warnings for the C and Cython modules
+
+0.6.0 (2018-12-07)
+++++++++++++++++++
+
+* Dropped support for Python versions 2.6, 3.2 and 3.3
+* Added support and testing for Python 3.7
+* Optimized the n-grams Levenshtein search for long sub-sequences
+* Further optimized the n-grams Levenshtein search
+* Cython versions of the optimized parts of the n-grams Levenshtein search
+
+0.5.0 (2017-09-05)
+++++++++++++++++++
+
+* Fixed ``search_exact_byteslike()`` to support supplying start and end indexes
+* Added support for lists, tuples and other Sequence types to ``search_exact()``
+* Fixed a bug where ``find_near_matches()`` could return a wrong ``Match.end``
+  with ``max_l_dist=0``
+* Added more tests and improved some existing ones.
+
+0.4.0 (2017-07-06)
+++++++++++++++++++
+
+* Added support and testing for Python 3.5 and 3.6
+* Many small improvements to README, setup.py and CI testing
+
 0.3.0 (2015-02-12)
 ++++++++++++++++++
 
