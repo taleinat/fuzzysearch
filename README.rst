@@ -41,22 +41,22 @@ fuzzysearch
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
     [Match(start=3, end=9, dist=1)]
 
-* approximate sub-string searches
+* Approximate sub-string searches
 
-* single, simple function to use
+* A single, simple function to use
 
-  * chooses the fastest available search mechanism based on the given input
+  * Chooses the fastest available search mechanism based on the given input
 
-* uses the Levenshtein Distance metric with configurable parameters
+* Uses the Levenshtein Distance metric with configurable parameters
 
-  * separately configure the max. allowed distance, substitutions, deletions
+  * Separately configure the max. allowed distance, substitutions, deletions
     and insertions
 
-* optional, highly optimized C and Cython implementations
+* Advanced algorithms with optional C and Cython optimizations
 
-* extensively tested
+* Extensively tested
 
-* free software: `MIT license <LICENSE>`_
+* Free software: `MIT license <LICENSE>`_
 
 For more info, see the `documentation <http://fuzzysearch.rtfd.org>`_.
 
