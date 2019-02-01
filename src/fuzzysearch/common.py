@@ -154,9 +154,12 @@ else:
     _search_exact = search_exact
     @wraps(_search_exact)
     def search_exact(subsequence, sequence, start_index=0, end_index=None):
+        if end_index is None:
+            end_index = len(sequence)
+
         try:
             return search_exact_byteslike(subsequence, sequence,
-                                          start_index, end_index if end_index is not None else -1)
+                                          start_index, end_index)
         except (TypeError, UnicodeEncodeError):
             return _search_exact(subsequence, sequence, start_index, end_index)
 
