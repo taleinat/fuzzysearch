@@ -222,7 +222,7 @@ def find_near_matches_generic_ngrams(subsequence, sequence, search_params):
 
 
 def _find_near_matches_generic_ngrams(subsequence, sequence, search_params):
-    max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
+    max_l_dist = search_params.max_l_dist
 
     # optimization: prepare some often used things in advance
     subseq_len = len(subsequence)
