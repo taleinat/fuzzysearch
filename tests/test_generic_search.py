@@ -215,21 +215,6 @@ class TestGenericSearchBase(object):
             [Match(start=2, end=5, dist=0)],
         )
 
-
-class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
-    def search(self, pattern, sequence, max_subs, max_ins, max_dels,
-               max_l_dist=None):
-        return list(find_near_matches_generic(pattern, sequence,
-                                              LevenshteinSearchParams(max_subs, max_ins, max_dels, max_l_dist)))
-
-    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
-        best_from_grouped_exepected_outcomes = [
-            get_best_match_in_group(group)
-            for group in group_matches(expected_outcomes)
-        ]
-        return self.assertEqual(search_results,
-                                best_from_grouped_exepected_outcomes)
-
     def test_valid_none_arguments_with_defined_max_l_dist(self):
         # expect no exception when max_l_dist is not None and some or all other
         # values are None
@@ -274,6 +259,21 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
                     max_subs, max_ins, max_dels)):
                 with self.assertRaises(ValueError):
                     self.search(b('a'), b('b'), max_subs, max_ins, max_dels, None)
+
+
+class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
+    def search(self, pattern, sequence, max_subs, max_ins, max_dels,
+               max_l_dist=None):
+        return list(find_near_matches_generic(pattern, sequence,
+                                              LevenshteinSearchParams(max_subs, max_ins, max_dels, max_l_dist)))
+
+    def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
+        best_from_grouped_exepected_outcomes = [
+            get_best_match_in_group(group)
+            for group in group_matches(expected_outcomes)
+        ]
+        return self.assertEqual(search_results,
+                                best_from_grouped_exepected_outcomes)
 
     def test_non_string_sequences(self):
         supported_types = [list, tuple]
@@ -399,6 +399,7 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
                 self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3),
             ))
         )
+
 
 class TestGenericSearchNgrams(TestGenericSearchBase,
                               TestNgramsBase,
