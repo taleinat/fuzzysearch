@@ -111,7 +111,7 @@ def run_setup(with_binary=True):
 
     setup(
         name='fuzzysearch',
-        version='0.6.1',
+        version='0.6.2',
         description='fuzzysearch is useful for finding approximate subsequence matches',
         long_description=readme + '\n\n' + history,
         author='Tal Einat',
