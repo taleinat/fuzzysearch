@@ -81,6 +81,9 @@ class TestExpand(unittest.TestCase):
 class TestFindNearMatchesNoDeletionsNgramsAsNoSubstituions(
     TestFindNearMatchesSubstitionsNgrams, unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
+        if max_subs >= len(subsequence):
+            self.skipTest("avoiding calling fnm_no_deletions_ngrams() " +
+                          "with max_subs >= len(subsequence)")
         return fnm_nodels_ngrams(subsequence, sequence, max_subs, 0)
 
 

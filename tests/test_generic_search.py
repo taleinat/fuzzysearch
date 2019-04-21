@@ -27,6 +27,9 @@ class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,
 class TestGenericSearchNgramsAsLevenshtein(TestFindNearMatchesLevenshteinBase,
                                            unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
+        if max_l_dist >= len(subsequence):
+            self.skipTest("avoiding calling fnm_generic_ngrams() " +
+                          "with max_l_dist >= len(subsequence)")
         return fnm_generic_ngrams(subsequence, sequence,
                                   LevenshteinSearchParams(max_l_dist, max_l_dist, max_l_dist, max_l_dist))
 
@@ -45,6 +48,9 @@ class TestGenericSearchLpAsSubstitutionsOnly(TestSubstitionsOnlyBase,
 class TestGenericSearchNgramsAsSubstitutionsOnly(TestSubstitionsOnlyBase,
                                                  unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
+        if max_subs >= len(subsequence):
+            self.skipTest("avoiding calling fnm_generic_ngrams() " +
+                          "with max_subs >= len(subsequence)")
         return fnm_generic_ngrams(subsequence, sequence,
                                   LevenshteinSearchParams(max_subs, 0, 0, max_subs))
 

@@ -80,6 +80,13 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         return PyErr_NoMemory();
     }
 
+    if (unlikely(max_substitutions >= subseq_len)) {
+        for (seq_idx = 0; seq_idx <= seq_len - subseq_len; ++seq_idx) {
+            OUTPUT_VALUE(seq_idx);
+        }
+        RETURN_AT_END;
+    }
+
     for (seq_idx = 0; seq_idx < subseq_len - 1; ++seq_idx) {
         sub_counts[seq_idx] = 0;
         for (subseq_idx = 0; subseq_idx <= seq_idx; ++subseq_idx) {

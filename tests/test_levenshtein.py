@@ -315,10 +315,24 @@ class TestFindNearMatchesLevenshteinBase(object):
         with self.assertRaises(ValueError):
             self.search('', 'TEXT', max_l_dist=0)
 
+    def test_all_different(self):
+        for max_l_dist in [0, 1, 2, 3]:
+            self.assertEqual(
+                self.search('AAAA', 'ZZZZ', max_l_dist),
+                [],
+            )
+
+        matches = self.search('AAAA', 'ZZZZ', max_l_dist=4)
+        self.assertGreater(len(matches), 0)
+        self.assertTrue(all(match.dist == 4 for match in matches))
+
 
 class TestFindNearMatchesLevenshteinNgrams(TestFindNearMatchesLevenshteinBase,
                                            unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
+        if max_l_dist >= len(subsequence):
+            self.skipTest(
+                'skipping ngram search with max_l_dist >= len(subsequence)')
         return fnm_levenshtein_ngrams(subsequence, sequence, max_l_dist)
 
 

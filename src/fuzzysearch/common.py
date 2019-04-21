@@ -166,7 +166,7 @@ else:
 
 class GroupOfMatches(object):
     def __init__(self, match):
-        assert match.start < match.end
+        assert match.start <= match.end
         self.start = match.start
         self.end = match.end
         self.matches = set([match])

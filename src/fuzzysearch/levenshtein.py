@@ -57,10 +57,16 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
     if not subsequence:
         raise ValueError('Given subsequence is empty!')
 
+    subseq_len = len(subsequence)
+
+    if max_l_dist >= subseq_len:
+        for index in range(len(sequence) + 1):
+            yield Match(index, index, subseq_len)
+        return
+
     # optimization: prepare some often used things in advance
     char2first_subseq_index = make_char2first_subseq_index(subsequence,
                                                            max_l_dist)
-    subseq_len = len(subsequence)
 
     candidates = []
     for index, char in enumerate(sequence):

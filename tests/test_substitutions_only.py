@@ -133,6 +133,22 @@ class TestSubstitionsOnlyBase(object):
                 [],
             )
 
+    def test_all_different(self):
+        substring = b('AAAA')
+        text = b('ZZZZ')
+
+        for max_subs in [0, 1, 2, 3]:
+            self.expectedOutcomes(
+                self.search(substring, text, max_subs=max_subs),
+                [],
+            )
+
+        for max_subs in [4, 5]:
+            self.expectedOutcomes(
+                self.search(substring, text, max_subs=max_subs),
+                [Match(start=0, end=4, dist=4)],
+            )
+
     def test_dna_search(self):
         # see: http://stackoverflow.com/questions/19725127/
         text = b(''.join('''\
@@ -223,21 +239,17 @@ class TestSubstitionsOnlyBase(object):
             [Match(1, 3, 0)]
         )
 
-
-class TestNgramsBase(object):
-    def test_subseq_length_less_than_max_substitutions(self):
-        with self.assertRaises(ValueError):
-            self.search(b('b'), b('abc'), 2)
-
-        with self.assertRaises(ValueError):
-            self.search(b('b'), b('abc'), 5)
-
-        with self.assertRaises(ValueError):
-            self.search(b('PATTERN'), b('PATTERN'), len('PATTERN') + 1)
-
-        with self.assertRaises(ValueError):
-            self.search(b('PATTERN'), b('PATTERN'), len('PATTERN') + 7)
-
+    def test_max_substitutions_gte_subseq_len(self):
+        for max_subs in [1, 2, 5]:
+            self.expectedOutcomes(
+                self.search(b('b'), b('abc'), max_subs),
+                [Match(0, 1, 1), Match(1, 2, 0), Match(2, 3, 1)]
+            )
+        for extra_subs in [0, 1, 7]:
+            self.expectedOutcomes(
+                self.search(b('PATTERN'), b('PATTERN'), len('PATTERN') + extra_subs),
+                [Match(0, len('PATTERN'), 0)]
+            )
 
 
 class TestFindNearMatchesSubstitions(TestSubstitionsOnlyBase,
@@ -269,9 +281,11 @@ class TestFindNearMatchesSubstitionsLinearProgramming(TestSubstitionsOnlyBase,
 
 
 class TestFindNearMatchesSubstitionsNgrams(TestSubstitionsOnlyBase,
-                                           TestNgramsBase,
                                            unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
+        if max_subs >= len(subsequence):
+            self.skipTest("avoiding calling fnm_subs_ngrams() " +
+                          "with max_subs >= len(subsequence)")
         return fnm_subs_ngrams(subsequence, sequence, max_subs)
 
     def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
@@ -305,9 +319,11 @@ class TestHasNearMatchSubstitionsOnly(TestHasNearMatchSubstitionsOnlyBase,
 
 
 class TestHasNearMatchSubstitionsOnlyNgrams(TestHasNearMatchSubstitionsOnlyBase,
-                                            TestNgramsBase,
                                             unittest.TestCase):
     def search(self, subsequence, sequence, max_subs):
+        if max_subs >= len(subsequence):
+            self.skipTest("avoiding calling hnm_subs_ngrams() " +
+                          "with max_subs >= len(subsequence)")
         return hnm_subs_ngrams(subsequence, sequence, max_subs)
 
 
@@ -341,11 +357,13 @@ else:
 
     class TestHasNearMatchesSubstitionsNgramsByteslike(
             TestHasNearMatchSubstitionsOnlyBase,
-            TestNgramsBase,
             unittest.TestCase
     ):
         @skip_if_arguments_arent_byteslike
         def search(self, subsequence, sequence, max_subs):
+            if max_subs >= len(subsequence):
+                self.skipTest("avoiding calling hnm_subs_ngrams_byteslike() " +
+                              "with max_subs >= len(subsequence)")
             return hnm_subs_ngrams_byteslike(subsequence, sequence,
                                              max_subs)
 
@@ -378,7 +396,6 @@ else:
 
     class TestFindNearMatchesSubstitionsNgramsByteslike(
             TestSubstitionsOnlyBase,
-            TestNgramsBase,
             unittest.TestCase
     ):
         @skip_if_arguments_arent_byteslike

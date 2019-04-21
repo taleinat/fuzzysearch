@@ -67,18 +67,29 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     subseq_len = (unsigned int) subseq_len_input;
     seq_len = (unsigned int) seq_len_input;
 
-    ngram_len = subseq_len / (max_substitutions + 1);
-    if (unlikely(ngram_len == 0)) {
-        PyErr_SetString(PyExc_ValueError,
-            "The subsequence's length must be greater than max_substitutions!"
-        );
+    if (unlikely(subseq_len == 0)) {
+        PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
         return NULL;
     }
 
     PREPARE;
 
     if (unlikely(seq_len < subseq_len)) {
-        DO_FREES;
+        RETURN_AT_END;
+    }
+
+    ngram_len = subseq_len / (max_substitutions + 1);
+    if (unlikely(ngram_len <= 0)) {
+        /* ngram_len <= 0                                 *
+         * IFF                                            *
+         * max_substitutions + 1 > subseq_len             *
+         * IFF                                            *
+         * max_substitutions >= subseq_len                *
+         *                                                *
+         * So the sub-sequence may be found at any index. */
+        for (ngram_start = 0; ngram_start <= seq_len - subseq_len; ngram_start++) {
+            OUTPUT_VALUE(ngram_start);
+        }
         RETURN_AT_END;
     }
 
@@ -125,7 +136,6 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         }
     }
 
-    DO_FREES;
     RETURN_AT_END;
 }
 
