@@ -3,6 +3,12 @@
 History
 -------
 
+0.6.2 (2019-04-22)
+++++++++++++++++++
+
+* Fix calling ``search_exact()`` without passing ``end_index``.
+* Fix edge case: max. dist >= sub-sequence length.
+
 0.6.1 (2018-12-08)
 ++++++++++++++++++
 
