@@ -17,6 +17,7 @@ __version__ = '0.6.2'
 
 __all__ = [
     'find_near_matches',
+    'find_near_matches_multiple',
     'Match',
 ]
 
@@ -25,6 +26,7 @@ from fuzzysearch.common import Match, search_exact, LevenshteinSearchParams
 from fuzzysearch.levenshtein import find_near_matches_levenshtein
 from fuzzysearch.substitutions_only import find_near_matches_substitutions
 from fuzzysearch.generic_search import find_near_matches_generic
+from fuzzysearch.multi import find_near_matches_multiple
 
 
 def find_near_matches(subsequence, sequence,
