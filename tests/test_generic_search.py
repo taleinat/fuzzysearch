@@ -1,4 +1,4 @@
-from tests.compat import unittest
+from tests.compat import b, unittest
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches, LevenshteinSearchParams
 from tests.test_substitutions_only import TestSubstitionsOnlyBase, \
@@ -8,8 +8,6 @@ from fuzzysearch.generic_search import \
     find_near_matches_generic_ngrams as fnm_generic_ngrams, \
     has_near_match_generic_ngrams as hnm_generic_ngrams, \
     find_near_matches_generic
-
-from six import b
 
 
 class TestGenericSearchLpAsLevenshtein(TestFindNearMatchesLevenshteinBase,

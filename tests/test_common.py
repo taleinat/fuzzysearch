@@ -1,8 +1,7 @@
 from fuzzysearch.common import Match, group_matches, GroupOfMatches, \
     search_exact, count_differences_with_maximum
-from tests.compat import unittest
-
-from six import b, u, text_type
+from fuzzysearch.compat import text_type
+from tests.compat import b, u, unittest
 
 
 class TestGroupOfMatches(unittest.TestCase):

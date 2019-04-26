@@ -1,11 +1,9 @@
-from tests.compat import unittest
+from tests.compat import b, unittest
 from tests.utils import skip_if_arguments_arent_byteslike
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches, LevenshteinSearchParams
 from tests.test_substitutions_only import TestSubstitionsOnlyBase
 from tests.test_generic_search import TestGenericSearchBase
-
-from six import b
 
 
 try:

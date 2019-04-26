@@ -1,7 +1,8 @@
-import sys
 from collections import namedtuple
 from functools import wraps
-from six.moves import range, zip
+
+from fuzzysearch.compat import text_type, xrange
+
 
 __all__ = [
     'Match', 'Ngram', 'LevenshteinSearchParams',
@@ -11,10 +12,7 @@ __all__ = [
 
 
 CLASSES_WITH_INDEX = (list, tuple)
-if sys.version_info >= (3,):
-    CLASSES_WITH_FIND = (bytes, str)
-else:
-    CLASSES_WITH_FIND = (str, unicode)
+CLASSES_WITH_FIND = (bytes, text_type)
 
 try:
     from Bio.Seq import Seq
@@ -111,7 +109,7 @@ def search_exact(subsequence, sequence, start_index=0, end_index=None):
                     start_index = first_index + 1
                 except ValueError:
                     return -1
-                for subseq_index in range(1, len(subsequence)):
+                for subseq_index in xrange(1, len(subsequence)):
                     if sequence[first_index + subseq_index] != subsequence[subseq_index]:
                         break
                 else:

@@ -2,9 +2,8 @@ from collections import namedtuple
 
 from fuzzysearch.common import Match, group_matches, get_best_match_in_group, \
     search_exact
+from fuzzysearch.compat import xrange
 from fuzzysearch.levenshtein_ngram import find_near_matches_levenshtein_ngrams
-
-from six.moves import xrange
 
 
 def find_near_matches_levenshtein(subsequence, sequence, max_l_dist):
@@ -60,7 +59,7 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
     subseq_len = len(subsequence)
 
     if max_l_dist >= subseq_len:
-        for index in range(len(sequence) + 1):
+        for index in xrange(len(sequence) + 1):
             yield Match(index, index, subseq_len)
         return
 

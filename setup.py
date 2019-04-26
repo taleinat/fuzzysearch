@@ -120,9 +120,7 @@ def run_setup(with_binary=True):
         packages=['fuzzysearch'],
         package_dir={'': 'src'},
         ext_modules=ext_modules,
-        install_requires=[
-            'six',
-        ],
+        install_requires=[],
         license='MIT',
         keywords='fuzzysearch',
         classifiers=[

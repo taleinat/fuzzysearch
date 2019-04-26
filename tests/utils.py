@@ -1,5 +1,6 @@
 from functools import wraps
-from six import text_type
+
+from fuzzysearch.compat import text_type
 
 
 def skip_if_arguments_arent_byteslike(test_method):

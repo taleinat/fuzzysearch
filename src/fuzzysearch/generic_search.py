@@ -1,9 +1,8 @@
 from collections import namedtuple
+
 from fuzzysearch.common import Match, search_exact, \
     group_matches, get_best_match_in_group
-
-import six
-from six.moves import xrange
+from fuzzysearch.compat import text_type, xrange
 
 
 __all__ = [
@@ -184,8 +183,8 @@ except ImportError:
 else:
     def find_near_matches_generic_linear_programming(subsequence, sequence, search_params):
         if not (
-            isinstance(subsequence, six.text_type) or
-            isinstance(sequence, six.text_type)
+            isinstance(subsequence, text_type) or
+            isinstance(sequence, text_type)
         ):
             try:
                 for match in c_fnm_generic_lp(subsequence, sequence, search_params):

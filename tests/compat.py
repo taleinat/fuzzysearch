@@ -4,8 +4,10 @@
 import sys
 
 __all__ = [
-    'unittest',
+    'b',
     'mock',
+    'u',
+    'unittest',
 ]
 
 # The `unittest2` module is a backport of the new unittest features introduced
@@ -23,3 +25,16 @@ if sys.version_info < (3, 3):
     import mock
 else:
     import unittest.mock as mock
+
+if sys.version_info < (3,):
+    def b(x):
+        return x
+
+    def u(x):
+        return unicode(x.replace(r'\\', r'\\\\'), 'unicode_escape')
+else:
+    def b(x):
+        return x.encode('latin-1')
+
+    def u(x):
+        return x

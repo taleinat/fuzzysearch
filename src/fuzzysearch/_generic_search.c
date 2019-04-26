@@ -9,7 +9,7 @@
 #else
 #define CYTHON_ABI "0_29_1"
 #define CYTHON_HEX_VERSION 0x001D01F0
-#define CYTHON_FUTURE_DIVISION 0
+#define CYTHON_FUTURE_DIVISION 1
 #include <stddef.h>
 #ifndef offsetof
   #define offsetof(type, member) ( (size_t) & ((type*)0) -> member )
@@ -824,7 +824,7 @@ static const char *__pyx_f[] = {
 /*--- Type declarations ---*/
 struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate;
 
-/* "fuzzysearch/_generic_search.pyx":17
+/* "fuzzysearch/_generic_search.pyx":16
  * 
  * 
  * cdef struct GenericSearchCandidate:             # <<<<<<<<<<<<<<
@@ -1185,7 +1185,6 @@ static PyObject *__pyx_builtin_MemoryError;
 static PyObject *__pyx_builtin_xrange;
 static const char __pyx_k_all[] = "__all__";
 static const char __pyx_k_end[] = "end";
-static const char __pyx_k_six[] = "six";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
@@ -1214,7 +1213,6 @@ static const char __pyx_k_max_l_dist[] = "max_l_dist";
 static const char __pyx_k_subseq_len[] = "_subseq_len";
 static const char __pyx_k_subseq_sum[] = "subseq_sum";
 static const char __pyx_k_MemoryError[] = "MemoryError";
-static const char __pyx_k_binary_type[] = "binary_type";
 static const char __pyx_k_ngram_start[] = "ngram_start";
 static const char __pyx_k_subsequence[] = "subsequence";
 static const char __pyx_k_c_max_l_dist[] = "c_max_l_dist";
@@ -1242,15 +1240,16 @@ static const char __pyx_k_c_find_near_matches_generic_ngra[] = "c_find_near_matc
 static const char __pyx_k_subsequence_is_of_invalid_type_s[] = "subsequence is of invalid type %s";
 static const char __pyx_k_the_subsequence_length_must_be_g[] = "the subsequence length must be greater than max_l_dist";
 static PyObject *__pyx_n_s_ALLOWED_TYPES;
-static PyObject *__pyx_kp_s_Given_subsequence_is_empty;
+static PyObject *__pyx_kp_u_Given_subsequence_is_empty;
 static PyObject *__pyx_n_s_Match;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_all;
-static PyObject *__pyx_n_s_binary_type;
 static PyObject *__pyx_n_s_c_find_near_matches_generic_line;
+static PyObject *__pyx_n_u_c_find_near_matches_generic_line;
 static PyObject *__pyx_n_s_c_find_near_matches_generic_ngra;
+static PyObject *__pyx_n_u_c_find_near_matches_generic_ngra;
 static PyObject *__pyx_n_s_c_max_deletions;
 static PyObject *__pyx_n_s_c_max_insertions;
 static PyObject *__pyx_n_s_c_max_l_dist;
@@ -1283,8 +1282,7 @@ static PyObject *__pyx_n_s_replace;
 static PyObject *__pyx_n_s_search_params;
 static PyObject *__pyx_n_s_seq_len;
 static PyObject *__pyx_n_s_sequence;
-static PyObject *__pyx_kp_s_sequence_is_of_invalid_type_s;
-static PyObject *__pyx_n_s_six;
+static PyObject *__pyx_kp_u_sequence_is_of_invalid_type_s;
 static PyObject *__pyx_n_s_small_search_length;
 static PyObject *__pyx_n_s_small_search_start_index;
 static PyObject *__pyx_kp_s_src_fuzzysearch__generic_search;
@@ -1294,9 +1292,9 @@ static PyObject *__pyx_n_s_subseq_len;
 static PyObject *__pyx_n_s_subseq_len_minus_one;
 static PyObject *__pyx_n_s_subseq_sum;
 static PyObject *__pyx_n_s_subsequence;
-static PyObject *__pyx_kp_s_subsequence_is_of_invalid_type_s;
+static PyObject *__pyx_kp_u_subsequence_is_of_invalid_type_s;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_kp_s_the_subsequence_length_must_be_g;
+static PyObject *__pyx_kp_u_the_subsequence_length_must_be_g;
 static PyObject *__pyx_n_s_unpacked;
 static PyObject *__pyx_n_s_xrange;
 static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_generic_linear_programming(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subsequence, PyObject *__pyx_v_sequence, PyObject *__pyx_v_search_params); /* proto */
@@ -1311,7 +1309,7 @@ static PyObject *__pyx_codeobj__4;
 static PyObject *__pyx_codeobj__6;
 /* Late includes */
 
-/* "fuzzysearch/_generic_search.pyx":25
+/* "fuzzysearch/_generic_search.pyx":24
  * 
  * 
  * def c_find_near_matches_generic_linear_programming(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
@@ -1355,17 +1353,17 @@ static PyObject *__pyx_pw_11fuzzysearch_15_generic_search_1c_find_near_matches_g
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sequence)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_linear_programming", 1, 3, 3, 1); __PYX_ERR(0, 25, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_linear_programming", 1, 3, 3, 1); __PYX_ERR(0, 24, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_search_params)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_linear_programming", 1, 3, 3, 2); __PYX_ERR(0, 25, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_linear_programming", 1, 3, 3, 2); __PYX_ERR(0, 24, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "c_find_near_matches_generic_linear_programming") < 0)) __PYX_ERR(0, 25, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "c_find_near_matches_generic_linear_programming") < 0)) __PYX_ERR(0, 24, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1380,7 +1378,7 @@ static PyObject *__pyx_pw_11fuzzysearch_15_generic_search_1c_find_near_matches_g
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_linear_programming", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 25, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_linear_programming", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 24, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("fuzzysearch._generic_search.c_find_near_matches_generic_linear_programming", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1422,37 +1420,37 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
   unsigned int __pyx_t_18;
   __Pyx_RefNannySetupContext("c_find_near_matches_generic_linear_programming", 0);
 
-  /* "fuzzysearch/_generic_search.pyx":36
+  /* "fuzzysearch/_generic_search.pyx":35
  *     * the total number of substitutions, insertions and deletions
  *     """
  *     if not isinstance(sequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_sequence, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_sequence, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "fuzzysearch/_generic_search.pyx":37
+    /* "fuzzysearch/_generic_search.pyx":36
  *     """
  *     if not isinstance(sequence, ALLOWED_TYPES):
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))             # <<<<<<<<<<<<<<
  *     if not isinstance(subsequence, ALLOWED_TYPES):
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  */
-    __pyx_t_1 = __Pyx_PyString_FormatSafe(__pyx_kp_s_sequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_sequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 37, __pyx_L1_error)
+    __PYX_ERR(0, 36, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":36
+    /* "fuzzysearch/_generic_search.pyx":35
  *     * the total number of substitutions, insertions and deletions
  *     """
  *     if not isinstance(sequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
@@ -1461,37 +1459,37 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":38
+  /* "fuzzysearch/_generic_search.pyx":37
  *     if not isinstance(sequence, ALLOWED_TYPES):
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyObject_IsInstance(__pyx_v_subsequence, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_3 = PyObject_IsInstance(__pyx_v_subsequence, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_2 = ((!(__pyx_t_3 != 0)) != 0);
   if (unlikely(__pyx_t_2)) {
 
-    /* "fuzzysearch/_generic_search.pyx":39
+    /* "fuzzysearch/_generic_search.pyx":38
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))             # <<<<<<<<<<<<<<
  * 
  *     if not subsequence:
  */
-    __pyx_t_4 = __Pyx_PyString_FormatSafe(__pyx_kp_s_subsequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_subsequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 39, __pyx_L1_error)
+    __PYX_ERR(0, 38, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":38
+    /* "fuzzysearch/_generic_search.pyx":37
  *     if not isinstance(sequence, ALLOWED_TYPES):
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
@@ -1500,31 +1498,31 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":41
+  /* "fuzzysearch/_generic_search.pyx":40
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  * 
  *     if not subsequence:             # <<<<<<<<<<<<<<
  *         raise ValueError('Given subsequence is empty!')
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_subsequence); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_subsequence); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "fuzzysearch/_generic_search.pyx":42
+    /* "fuzzysearch/_generic_search.pyx":41
  * 
  *     if not subsequence:
  *         raise ValueError('Given subsequence is empty!')             # <<<<<<<<<<<<<<
  * 
  *     max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 42, __pyx_L1_error)
+    __PYX_ERR(0, 41, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":41
+    /* "fuzzysearch/_generic_search.pyx":40
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  * 
  *     if not subsequence:             # <<<<<<<<<<<<<<
@@ -1533,14 +1531,14 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":44
+  /* "fuzzysearch/_generic_search.pyx":43
  *         raise ValueError('Given subsequence is empty!')
  * 
  *     max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked             # <<<<<<<<<<<<<<
  * 
  *     cdef const char *c_subsequence = subsequence
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_search_params, __pyx_n_s_unpacked); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_search_params, __pyx_n_s_unpacked); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
     PyObject* sequence = __pyx_t_1;
@@ -1548,7 +1546,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
     if (unlikely(size != 4)) {
       if (size > 4) __Pyx_RaiseTooManyValuesError(4);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 44, __pyx_L1_error)
+      __PYX_ERR(0, 43, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -1571,7 +1569,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
       Py_ssize_t i;
       PyObject** temps[4] = {&__pyx_t_4,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7};
       for (i=0; i < 4; i++) {
-        PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 44, __pyx_L1_error)
+        PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 43, __pyx_L1_error)
         __Pyx_GOTREF(item);
         *(temps[i]) = item;
       }
@@ -1581,7 +1579,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
   } else {
     Py_ssize_t index = -1;
     PyObject** temps[4] = {&__pyx_t_4,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7};
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 44, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 43, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -1590,7 +1588,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
       __Pyx_GOTREF(item);
       *(temps[index]) = item;
     }
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 4) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 4) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L7_unpacking_done;
@@ -1598,7 +1596,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 44, __pyx_L1_error)
+    __PYX_ERR(0, 43, __pyx_L1_error)
     __pyx_L7_unpacking_done:;
   }
   __pyx_v_max_substitutions = __pyx_t_4;
@@ -1610,27 +1608,27 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
   __pyx_v_max_l_dist = __pyx_t_7;
   __pyx_t_7 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":46
+  /* "fuzzysearch/_generic_search.pyx":45
  *     max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
  * 
  *     cdef const char *c_subsequence = subsequence             # <<<<<<<<<<<<<<
  *     cdef const char *c_sequence = sequence
  * 
  */
-  __pyx_t_10 = __Pyx_PyObject_AsString(__pyx_v_subsequence); if (unlikely((!__pyx_t_10) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_AsString(__pyx_v_subsequence); if (unlikely((!__pyx_t_10) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L1_error)
   __pyx_v_c_subsequence = __pyx_t_10;
 
-  /* "fuzzysearch/_generic_search.pyx":47
+  /* "fuzzysearch/_generic_search.pyx":46
  * 
  *     cdef const char *c_subsequence = subsequence
  *     cdef const char *c_sequence = sequence             # <<<<<<<<<<<<<<
  * 
  *     return _c_find_near_matches_generic_linear_programming(
  */
-  __pyx_t_11 = __Pyx_PyObject_AsString(__pyx_v_sequence); if (unlikely((!__pyx_t_11) && PyErr_Occurred())) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_AsString(__pyx_v_sequence); if (unlikely((!__pyx_t_11) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
   __pyx_v_c_sequence = __pyx_t_11;
 
-  /* "fuzzysearch/_generic_search.pyx":49
+  /* "fuzzysearch/_generic_search.pyx":48
  *     cdef const char *c_sequence = sequence
  * 
  *     return _c_find_near_matches_generic_linear_programming(             # <<<<<<<<<<<<<<
@@ -1639,25 +1637,25 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "fuzzysearch/_generic_search.pyx":50
+  /* "fuzzysearch/_generic_search.pyx":49
  * 
  *     return _c_find_near_matches_generic_linear_programming(
  *         c_subsequence, len(subsequence),             # <<<<<<<<<<<<<<
  *         c_sequence, len(sequence),
  *         max_substitutions if max_substitutions is not None else (1<<29),
  */
-  __pyx_t_12 = PyObject_Length(__pyx_v_subsequence); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_12 = PyObject_Length(__pyx_v_subsequence); if (unlikely(__pyx_t_12 == ((Py_ssize_t)-1))) __PYX_ERR(0, 49, __pyx_L1_error)
 
-  /* "fuzzysearch/_generic_search.pyx":51
+  /* "fuzzysearch/_generic_search.pyx":50
  *     return _c_find_near_matches_generic_linear_programming(
  *         c_subsequence, len(subsequence),
  *         c_sequence, len(sequence),             # <<<<<<<<<<<<<<
  *         max_substitutions if max_substitutions is not None else (1<<29),
  *         max_insertions if max_insertions is not None else (1<<29),
  */
-  __pyx_t_13 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_13 == ((Py_ssize_t)-1))) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_13 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_13 == ((Py_ssize_t)-1))) __PYX_ERR(0, 50, __pyx_L1_error)
 
-  /* "fuzzysearch/_generic_search.pyx":52
+  /* "fuzzysearch/_generic_search.pyx":51
  *         c_subsequence, len(subsequence),
  *         c_sequence, len(sequence),
  *         max_substitutions if max_substitutions is not None else (1<<29),             # <<<<<<<<<<<<<<
@@ -1666,13 +1664,13 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   __pyx_t_3 = (__pyx_v_max_substitutions != Py_None);
   if ((__pyx_t_3 != 0)) {
-    __pyx_t_15 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_substitutions); if (unlikely((__pyx_t_15 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_substitutions); if (unlikely((__pyx_t_15 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 51, __pyx_L1_error)
     __pyx_t_14 = __pyx_t_15;
   } else {
     __pyx_t_14 = 0x20000000;
   }
 
-  /* "fuzzysearch/_generic_search.pyx":53
+  /* "fuzzysearch/_generic_search.pyx":52
  *         c_sequence, len(sequence),
  *         max_substitutions if max_substitutions is not None else (1<<29),
  *         max_insertions if max_insertions is not None else (1<<29),             # <<<<<<<<<<<<<<
@@ -1681,13 +1679,13 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   __pyx_t_3 = (__pyx_v_max_insertions != Py_None);
   if ((__pyx_t_3 != 0)) {
-    __pyx_t_16 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_insertions); if (unlikely((__pyx_t_16 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_insertions); if (unlikely((__pyx_t_16 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 52, __pyx_L1_error)
     __pyx_t_15 = __pyx_t_16;
   } else {
     __pyx_t_15 = 0x20000000;
   }
 
-  /* "fuzzysearch/_generic_search.pyx":54
+  /* "fuzzysearch/_generic_search.pyx":53
  *         max_substitutions if max_substitutions is not None else (1<<29),
  *         max_insertions if max_insertions is not None else (1<<29),
  *         max_deletions if max_deletions is not None else (1<<29),             # <<<<<<<<<<<<<<
@@ -1696,13 +1694,13 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   __pyx_t_3 = (__pyx_v_max_deletions != Py_None);
   if ((__pyx_t_3 != 0)) {
-    __pyx_t_17 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_deletions); if (unlikely((__pyx_t_17 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_17 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_deletions); if (unlikely((__pyx_t_17 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L1_error)
     __pyx_t_16 = __pyx_t_17;
   } else {
     __pyx_t_16 = 0x20000000;
   }
 
-  /* "fuzzysearch/_generic_search.pyx":55
+  /* "fuzzysearch/_generic_search.pyx":54
  *         max_insertions if max_insertions is not None else (1<<29),
  *         max_deletions if max_deletions is not None else (1<<29),
  *         max_l_dist if max_l_dist is not None else (1<<29),             # <<<<<<<<<<<<<<
@@ -1711,26 +1709,26 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
  */
   __pyx_t_3 = (__pyx_v_max_l_dist != Py_None);
   if ((__pyx_t_3 != 0)) {
-    __pyx_t_18 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_l_dist); if (unlikely((__pyx_t_18 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_l_dist); if (unlikely((__pyx_t_18 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L1_error)
     __pyx_t_17 = __pyx_t_18;
   } else {
     __pyx_t_17 = 0x20000000;
   }
 
-  /* "fuzzysearch/_generic_search.pyx":49
+  /* "fuzzysearch/_generic_search.pyx":48
  *     cdef const char *c_sequence = sequence
  * 
  *     return _c_find_near_matches_generic_linear_programming(             # <<<<<<<<<<<<<<
  *         c_subsequence, len(subsequence),
  *         c_sequence, len(sequence),
  */
-  __pyx_t_1 = __pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_generic_linear_programming(__pyx_v_c_subsequence, __pyx_t_12, __pyx_v_c_sequence, __pyx_t_13, __pyx_t_14, __pyx_t_15, __pyx_t_16, __pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_generic_linear_programming(__pyx_v_c_subsequence, __pyx_t_12, __pyx_v_c_sequence, __pyx_t_13, __pyx_t_14, __pyx_t_15, __pyx_t_16, __pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "fuzzysearch/_generic_search.pyx":25
+  /* "fuzzysearch/_generic_search.pyx":24
  * 
  * 
  * def c_find_near_matches_generic_linear_programming(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
@@ -1758,7 +1756,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_c_find_near_matches_ge
   return __pyx_r;
 }
 
-/* "fuzzysearch/_generic_search.pyx":61
+/* "fuzzysearch/_generic_search.pyx":60
  * # subsequence strings, which means if they contain null bytes the data after
  * # the first null byte will not be copied.
  * cdef _c_find_near_matches_generic_linear_programming(             # <<<<<<<<<<<<<<
@@ -1816,7 +1814,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
   PyObject *__pyx_t_31 = NULL;
   __Pyx_RefNannySetupContext("_c_find_near_matches_generic_linear_programming", 0);
 
-  /* "fuzzysearch/_generic_search.pyx":69
+  /* "fuzzysearch/_generic_search.pyx":68
  *         unsigned int max_l_dist,
  * ):
  *     cdef unsigned int subseq_len_minus_one = subseq_len - 1             # <<<<<<<<<<<<<<
@@ -1825,7 +1823,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   __pyx_v_subseq_len_minus_one = (__pyx_v_subseq_len - 1);
 
-  /* "fuzzysearch/_generic_search.pyx":76
+  /* "fuzzysearch/_generic_search.pyx":75
  *     cdef GenericSearchCandidate* _tmp
  *     cdef GenericSearchCandidate cand
  *     cdef size_t n_candidates = 0             # <<<<<<<<<<<<<<
@@ -1834,7 +1832,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   __pyx_v_n_candidates = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":77
+  /* "fuzzysearch/_generic_search.pyx":76
  *     cdef GenericSearchCandidate cand
  *     cdef size_t n_candidates = 0
  *     cdef size_t n_new_candidates = 0             # <<<<<<<<<<<<<<
@@ -1843,7 +1841,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   __pyx_v_n_new_candidates = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":80
+  /* "fuzzysearch/_generic_search.pyx":79
  *     cdef size_t n_cand
  * 
  *     alloc_size = min(<size_t> 10, subseq_len * 3 + 1)             # <<<<<<<<<<<<<<
@@ -1859,7 +1857,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
   }
   __pyx_v_alloc_size = __pyx_t_3;
 
-  /* "fuzzysearch/_generic_search.pyx":81
+  /* "fuzzysearch/_generic_search.pyx":80
  * 
  *     alloc_size = min(<size_t> 10, subseq_len * 3 + 1)
  *     candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))             # <<<<<<<<<<<<<<
@@ -1868,7 +1866,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   __pyx_v_candidates = ((struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate *)malloc((__pyx_v_alloc_size * (sizeof(struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate)))));
 
-  /* "fuzzysearch/_generic_search.pyx":82
+  /* "fuzzysearch/_generic_search.pyx":81
  *     alloc_size = min(<size_t> 10, subseq_len * 3 + 1)
  *     candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
  *     if candidates is NULL:             # <<<<<<<<<<<<<<
@@ -1878,16 +1876,16 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
   __pyx_t_4 = ((__pyx_v_candidates == NULL) != 0);
   if (unlikely(__pyx_t_4)) {
 
-    /* "fuzzysearch/_generic_search.pyx":83
+    /* "fuzzysearch/_generic_search.pyx":82
  *     candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
  *     if candidates is NULL:
  *         raise MemoryError()             # <<<<<<<<<<<<<<
  *     new_candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
  *     if candidates is NULL:
  */
-    PyErr_NoMemory(); __PYX_ERR(0, 83, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(0, 82, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":82
+    /* "fuzzysearch/_generic_search.pyx":81
  *     alloc_size = min(<size_t> 10, subseq_len * 3 + 1)
  *     candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
  *     if candidates is NULL:             # <<<<<<<<<<<<<<
@@ -1896,7 +1894,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":84
+  /* "fuzzysearch/_generic_search.pyx":83
  *     if candidates is NULL:
  *         raise MemoryError()
  *     new_candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))             # <<<<<<<<<<<<<<
@@ -1905,7 +1903,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   __pyx_v_new_candidates = ((struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate *)malloc((__pyx_v_alloc_size * (sizeof(struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate)))));
 
-  /* "fuzzysearch/_generic_search.pyx":85
+  /* "fuzzysearch/_generic_search.pyx":84
  *         raise MemoryError()
  *     new_candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
  *     if candidates is NULL:             # <<<<<<<<<<<<<<
@@ -1915,7 +1913,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
   __pyx_t_4 = ((__pyx_v_candidates == NULL) != 0);
   if (unlikely(__pyx_t_4)) {
 
-    /* "fuzzysearch/_generic_search.pyx":86
+    /* "fuzzysearch/_generic_search.pyx":85
  *     new_candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
  *     if candidates is NULL:
  *         free(candidates)             # <<<<<<<<<<<<<<
@@ -1924,16 +1922,16 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
     free(__pyx_v_candidates);
 
-    /* "fuzzysearch/_generic_search.pyx":87
+    /* "fuzzysearch/_generic_search.pyx":86
  *     if candidates is NULL:
  *         free(candidates)
  *         raise MemoryError()             # <<<<<<<<<<<<<<
  * 
  *     matches = []
  */
-    PyErr_NoMemory(); __PYX_ERR(0, 87, __pyx_L1_error)
+    PyErr_NoMemory(); __PYX_ERR(0, 86, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":85
+    /* "fuzzysearch/_generic_search.pyx":84
  *         raise MemoryError()
  *     new_candidates = <GenericSearchCandidate *> malloc(alloc_size * sizeof(GenericSearchCandidate))
  *     if candidates is NULL:             # <<<<<<<<<<<<<<
@@ -1942,19 +1940,19 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":89
+  /* "fuzzysearch/_generic_search.pyx":88
  *         raise MemoryError()
  * 
  *     matches = []             # <<<<<<<<<<<<<<
  * 
  *     cdef size_t index
  */
-  __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_v_matches = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":95
+  /* "fuzzysearch/_generic_search.pyx":94
  *     cdef unsigned int n_skipped
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -1963,7 +1961,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
   /*try:*/ {
 
-    /* "fuzzysearch/_generic_search.pyx":96
+    /* "fuzzysearch/_generic_search.pyx":95
  * 
  *     try:
  *         index = 0             # <<<<<<<<<<<<<<
@@ -1972,7 +1970,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
     __pyx_v_index = 0;
 
-    /* "fuzzysearch/_generic_search.pyx":97
+    /* "fuzzysearch/_generic_search.pyx":96
  *     try:
  *         index = 0
  *         have_realloced = False             # <<<<<<<<<<<<<<
@@ -1981,14 +1979,14 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
     __pyx_v_have_realloced = 0;
 
-    /* "fuzzysearch/_generic_search.pyx":98
+    /* "fuzzysearch/_generic_search.pyx":97
  *         index = 0
  *         have_realloced = False
  *         for seq_char in sequence[:seq_len]:             # <<<<<<<<<<<<<<
  *             candidates[n_candidates] = GenericSearchCandidate(index, 0, 0, 0, 0, 0)
  *             n_candidates += 1
  */
-    __pyx_t_5 = __Pyx_PyBytes_FromStringAndSize(__pyx_v_sequence + 0, __pyx_v_seq_len - 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 98, __pyx_L6_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromStringAndSize(__pyx_v_sequence + 0, __pyx_v_seq_len - 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 97, __pyx_L6_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = PyBytes_AS_STRING(__pyx_t_5);
     __pyx_t_8 = (__pyx_t_7 + PyBytes_GET_SIZE(__pyx_t_5));
@@ -1996,7 +1994,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
       __pyx_t_6 = __pyx_t_9;
       __pyx_v_seq_char = (__pyx_t_6[0]);
 
-      /* "fuzzysearch/_generic_search.pyx":99
+      /* "fuzzysearch/_generic_search.pyx":98
  *         have_realloced = False
  *         for seq_char in sequence[:seq_len]:
  *             candidates[n_candidates] = GenericSearchCandidate(index, 0, 0, 0, 0, 0)             # <<<<<<<<<<<<<<
@@ -2011,7 +2009,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
       __pyx_t_10.n_dels = 0;
       (__pyx_v_candidates[__pyx_v_n_candidates]) = __pyx_t_10;
 
-      /* "fuzzysearch/_generic_search.pyx":100
+      /* "fuzzysearch/_generic_search.pyx":99
  *         for seq_char in sequence[:seq_len]:
  *             candidates[n_candidates] = GenericSearchCandidate(index, 0, 0, 0, 0, 0)
  *             n_candidates += 1             # <<<<<<<<<<<<<<
@@ -2020,7 +2018,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v_n_candidates = (__pyx_v_n_candidates + 1);
 
-      /* "fuzzysearch/_generic_search.pyx":102
+      /* "fuzzysearch/_generic_search.pyx":101
  *             n_candidates += 1
  * 
  *             for n_cand in xrange(n_candidates):             # <<<<<<<<<<<<<<
@@ -2032,7 +2030,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
       for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
         __pyx_v_n_cand = __pyx_t_2;
 
-        /* "fuzzysearch/_generic_search.pyx":103
+        /* "fuzzysearch/_generic_search.pyx":102
  * 
  *             for n_cand in xrange(n_candidates):
  *                 cand = candidates[n_cand]             # <<<<<<<<<<<<<<
@@ -2041,7 +2039,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
         __pyx_v_cand = (__pyx_v_candidates[__pyx_v_n_cand]);
 
-        /* "fuzzysearch/_generic_search.pyx":105
+        /* "fuzzysearch/_generic_search.pyx":104
  *                 cand = candidates[n_cand]
  * 
  *                 if n_new_candidates + 4 > alloc_size:             # <<<<<<<<<<<<<<
@@ -2051,7 +2049,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         __pyx_t_4 = (((__pyx_v_n_new_candidates + 4) > __pyx_v_alloc_size) != 0);
         if (__pyx_t_4) {
 
-          /* "fuzzysearch/_generic_search.pyx":106
+          /* "fuzzysearch/_generic_search.pyx":105
  * 
  *                 if n_new_candidates + 4 > alloc_size:
  *                     alloc_size *= 2             # <<<<<<<<<<<<<<
@@ -2060,7 +2058,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           __pyx_v_alloc_size = (__pyx_v_alloc_size * 2);
 
-          /* "fuzzysearch/_generic_search.pyx":107
+          /* "fuzzysearch/_generic_search.pyx":106
  *                 if n_new_candidates + 4 > alloc_size:
  *                     alloc_size *= 2
  *                     _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))             # <<<<<<<<<<<<<<
@@ -2069,7 +2067,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           __pyx_v__tmp = ((struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate *)realloc(__pyx_v_new_candidates, (__pyx_v_alloc_size * (sizeof(struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate)))));
 
-          /* "fuzzysearch/_generic_search.pyx":108
+          /* "fuzzysearch/_generic_search.pyx":107
  *                     alloc_size *= 2
  *                     _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))
  *                     if _tmp is NULL:             # <<<<<<<<<<<<<<
@@ -2079,16 +2077,16 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           __pyx_t_4 = ((__pyx_v__tmp == NULL) != 0);
           if (unlikely(__pyx_t_4)) {
 
-            /* "fuzzysearch/_generic_search.pyx":109
+            /* "fuzzysearch/_generic_search.pyx":108
  *                     _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))
  *                     if _tmp is NULL:
  *                         raise MemoryError()             # <<<<<<<<<<<<<<
  *                     new_candidates = _tmp
  *                     have_realloced = True
  */
-            PyErr_NoMemory(); __PYX_ERR(0, 109, __pyx_L6_error)
+            PyErr_NoMemory(); __PYX_ERR(0, 108, __pyx_L6_error)
 
-            /* "fuzzysearch/_generic_search.pyx":108
+            /* "fuzzysearch/_generic_search.pyx":107
  *                     alloc_size *= 2
  *                     _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))
  *                     if _tmp is NULL:             # <<<<<<<<<<<<<<
@@ -2097,7 +2095,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           }
 
-          /* "fuzzysearch/_generic_search.pyx":110
+          /* "fuzzysearch/_generic_search.pyx":109
  *                     if _tmp is NULL:
  *                         raise MemoryError()
  *                     new_candidates = _tmp             # <<<<<<<<<<<<<<
@@ -2106,7 +2104,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           __pyx_v_new_candidates = __pyx_v__tmp;
 
-          /* "fuzzysearch/_generic_search.pyx":111
+          /* "fuzzysearch/_generic_search.pyx":110
  *                         raise MemoryError()
  *                     new_candidates = _tmp
  *                     have_realloced = True             # <<<<<<<<<<<<<<
@@ -2115,7 +2113,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           __pyx_v_have_realloced = 1;
 
-          /* "fuzzysearch/_generic_search.pyx":105
+          /* "fuzzysearch/_generic_search.pyx":104
  *                 cand = candidates[n_cand]
  * 
  *                 if n_new_candidates + 4 > alloc_size:             # <<<<<<<<<<<<<<
@@ -2124,7 +2122,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
         }
 
-        /* "fuzzysearch/_generic_search.pyx":114
+        /* "fuzzysearch/_generic_search.pyx":113
  * 
  *                 # if this sequence char is the candidate's next expected char
  *                 if seq_char == subsequence[cand.subseq_index]:             # <<<<<<<<<<<<<<
@@ -2134,7 +2132,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         __pyx_t_4 = ((__pyx_v_seq_char == (__pyx_v_subsequence[__pyx_v_cand.subseq_index])) != 0);
         if (__pyx_t_4) {
 
-          /* "fuzzysearch/_generic_search.pyx":116
+          /* "fuzzysearch/_generic_search.pyx":115
  *                 if seq_char == subsequence[cand.subseq_index]:
  *                     # if reached the end of the subsequence, return a match
  *                     if cand.subseq_index == subseq_len_minus_one:             # <<<<<<<<<<<<<<
@@ -2144,20 +2142,20 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           __pyx_t_4 = ((__pyx_v_cand.subseq_index == __pyx_v_subseq_len_minus_one) != 0);
           if (__pyx_t_4) {
 
-            /* "fuzzysearch/_generic_search.pyx":117
+            /* "fuzzysearch/_generic_search.pyx":116
  *                     # if reached the end of the subsequence, return a match
  *                     if cand.subseq_index == subseq_len_minus_one:
  *                         matches.append(Match(cand.start, index + 1, cand.l_dist))             # <<<<<<<<<<<<<<
  *                     # otherwise, update the candidate's subseq_index and keep it
  *                     else:
  */
-            __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 117, __pyx_L6_error)
+            __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 116, __pyx_L6_error)
             __Pyx_GOTREF(__pyx_t_12);
-            __pyx_t_13 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 117, __pyx_L6_error)
+            __pyx_t_13 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 116, __pyx_L6_error)
             __Pyx_GOTREF(__pyx_t_13);
-            __pyx_t_14 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 117, __pyx_L6_error)
+            __pyx_t_14 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 116, __pyx_L6_error)
             __Pyx_GOTREF(__pyx_t_14);
-            __pyx_t_15 = __Pyx_PyInt_From_unsigned_int(__pyx_v_cand.l_dist); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 117, __pyx_L6_error)
+            __pyx_t_15 = __Pyx_PyInt_From_unsigned_int(__pyx_v_cand.l_dist); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 116, __pyx_L6_error)
             __Pyx_GOTREF(__pyx_t_15);
             __pyx_t_16 = NULL;
             __pyx_t_17 = 0;
@@ -2174,7 +2172,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             #if CYTHON_FAST_PYCALL
             if (PyFunction_Check(__pyx_t_12)) {
               PyObject *__pyx_temp[4] = {__pyx_t_16, __pyx_t_13, __pyx_t_14, __pyx_t_15};
-              __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 117, __pyx_L6_error)
+              __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 116, __pyx_L6_error)
               __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
               __Pyx_GOTREF(__pyx_t_11);
               __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
@@ -2185,7 +2183,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             #if CYTHON_FAST_PYCCALL
             if (__Pyx_PyFastCFunction_Check(__pyx_t_12)) {
               PyObject *__pyx_temp[4] = {__pyx_t_16, __pyx_t_13, __pyx_t_14, __pyx_t_15};
-              __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 117, __pyx_L6_error)
+              __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 116, __pyx_L6_error)
               __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
               __Pyx_GOTREF(__pyx_t_11);
               __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
@@ -2194,7 +2192,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             } else
             #endif
             {
-              __pyx_t_18 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 117, __pyx_L6_error)
+              __pyx_t_18 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 116, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_18);
               if (__pyx_t_16) {
                 __Pyx_GIVEREF(__pyx_t_16); PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_t_16); __pyx_t_16 = NULL;
@@ -2208,15 +2206,15 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_13 = 0;
               __pyx_t_14 = 0;
               __pyx_t_15 = 0;
-              __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_18, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 117, __pyx_L6_error)
+              __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_18, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 116, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_11);
               __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
             }
             __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-            __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 117, __pyx_L6_error)
+            __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 116, __pyx_L6_error)
             __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-            /* "fuzzysearch/_generic_search.pyx":116
+            /* "fuzzysearch/_generic_search.pyx":115
  *                 if seq_char == subsequence[cand.subseq_index]:
  *                     # if reached the end of the subsequence, return a match
  *                     if cand.subseq_index == subseq_len_minus_one:             # <<<<<<<<<<<<<<
@@ -2226,7 +2224,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             goto __pyx_L15;
           }
 
-          /* "fuzzysearch/_generic_search.pyx":120
+          /* "fuzzysearch/_generic_search.pyx":119
  *                     # otherwise, update the candidate's subseq_index and keep it
  *                     else:
  *                         new_candidates[n_new_candidates] = GenericSearchCandidate(             # <<<<<<<<<<<<<<
@@ -2235,7 +2233,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           /*else*/ {
 
-            /* "fuzzysearch/_generic_search.pyx":121
+            /* "fuzzysearch/_generic_search.pyx":120
  *                     else:
  *                         new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                             cand.start, cand.subseq_index + 1,             # <<<<<<<<<<<<<<
@@ -2245,7 +2243,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_10.start = __pyx_v_cand.start;
             __pyx_t_10.subseq_index = (__pyx_v_cand.subseq_index + 1);
 
-            /* "fuzzysearch/_generic_search.pyx":122
+            /* "fuzzysearch/_generic_search.pyx":121
  *                         new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                             cand.start, cand.subseq_index + 1,
  *                             cand.l_dist, cand.n_subs,             # <<<<<<<<<<<<<<
@@ -2255,7 +2253,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_10.l_dist = __pyx_v_cand.l_dist;
             __pyx_t_10.n_subs = __pyx_v_cand.n_subs;
 
-            /* "fuzzysearch/_generic_search.pyx":123
+            /* "fuzzysearch/_generic_search.pyx":122
  *                             cand.start, cand.subseq_index + 1,
  *                             cand.l_dist, cand.n_subs,
  *                             cand.n_ins, cand.n_dels,             # <<<<<<<<<<<<<<
@@ -2265,7 +2263,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_10.n_ins = __pyx_v_cand.n_ins;
             __pyx_t_10.n_dels = __pyx_v_cand.n_dels;
 
-            /* "fuzzysearch/_generic_search.pyx":120
+            /* "fuzzysearch/_generic_search.pyx":119
  *                     # otherwise, update the candidate's subseq_index and keep it
  *                     else:
  *                         new_candidates[n_new_candidates] = GenericSearchCandidate(             # <<<<<<<<<<<<<<
@@ -2274,7 +2272,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
             (__pyx_v_new_candidates[__pyx_v_n_new_candidates]) = __pyx_t_10;
 
-            /* "fuzzysearch/_generic_search.pyx":125
+            /* "fuzzysearch/_generic_search.pyx":124
  *                             cand.n_ins, cand.n_dels,
  *                         )
  *                         n_new_candidates += 1             # <<<<<<<<<<<<<<
@@ -2285,7 +2283,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           }
           __pyx_L15:;
 
-          /* "fuzzysearch/_generic_search.pyx":114
+          /* "fuzzysearch/_generic_search.pyx":113
  * 
  *                 # if this sequence char is the candidate's next expected char
  *                 if seq_char == subsequence[cand.subseq_index]:             # <<<<<<<<<<<<<<
@@ -2295,7 +2293,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           goto __pyx_L14;
         }
 
-        /* "fuzzysearch/_generic_search.pyx":132
+        /* "fuzzysearch/_generic_search.pyx":131
  *                     # unless this candidate has already skipped the maximum allowed
  *                     # number of characters
  *                     if cand.l_dist == max_l_dist:             # <<<<<<<<<<<<<<
@@ -2306,7 +2304,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           __pyx_t_4 = ((__pyx_v_cand.l_dist == __pyx_v_max_l_dist) != 0);
           if (__pyx_t_4) {
 
-            /* "fuzzysearch/_generic_search.pyx":133
+            /* "fuzzysearch/_generic_search.pyx":132
  *                     # number of characters
  *                     if cand.l_dist == max_l_dist:
  *                         continue             # <<<<<<<<<<<<<<
@@ -2315,7 +2313,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
             goto __pyx_L10_continue;
 
-            /* "fuzzysearch/_generic_search.pyx":132
+            /* "fuzzysearch/_generic_search.pyx":131
  *                     # unless this candidate has already skipped the maximum allowed
  *                     # number of characters
  *                     if cand.l_dist == max_l_dist:             # <<<<<<<<<<<<<<
@@ -2324,7 +2322,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           }
 
-          /* "fuzzysearch/_generic_search.pyx":135
+          /* "fuzzysearch/_generic_search.pyx":134
  *                         continue
  * 
  *                     if cand.n_ins < max_insertions:             # <<<<<<<<<<<<<<
@@ -2334,7 +2332,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           __pyx_t_4 = ((__pyx_v_cand.n_ins < __pyx_v_max_insertions) != 0);
           if (__pyx_t_4) {
 
-            /* "fuzzysearch/_generic_search.pyx":138
+            /* "fuzzysearch/_generic_search.pyx":137
  *                         # add a candidate skipping a sequence char
  *                         new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                             cand.start, cand.subseq_index,             # <<<<<<<<<<<<<<
@@ -2344,7 +2342,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_10.start = __pyx_v_cand.start;
             __pyx_t_10.subseq_index = __pyx_v_cand.subseq_index;
 
-            /* "fuzzysearch/_generic_search.pyx":139
+            /* "fuzzysearch/_generic_search.pyx":138
  *                         new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                             cand.start, cand.subseq_index,
  *                             cand.l_dist + 1, cand.n_subs,             # <<<<<<<<<<<<<<
@@ -2354,7 +2352,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_10.l_dist = (__pyx_v_cand.l_dist + 1);
             __pyx_t_10.n_subs = __pyx_v_cand.n_subs;
 
-            /* "fuzzysearch/_generic_search.pyx":140
+            /* "fuzzysearch/_generic_search.pyx":139
  *                             cand.start, cand.subseq_index,
  *                             cand.l_dist + 1, cand.n_subs,
  *                             cand.n_ins + 1, cand.n_dels,             # <<<<<<<<<<<<<<
@@ -2364,7 +2362,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_10.n_ins = (__pyx_v_cand.n_ins + 1);
             __pyx_t_10.n_dels = __pyx_v_cand.n_dels;
 
-            /* "fuzzysearch/_generic_search.pyx":137
+            /* "fuzzysearch/_generic_search.pyx":136
  *                     if cand.n_ins < max_insertions:
  *                         # add a candidate skipping a sequence char
  *                         new_candidates[n_new_candidates] = GenericSearchCandidate(             # <<<<<<<<<<<<<<
@@ -2373,7 +2371,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
             (__pyx_v_new_candidates[__pyx_v_n_new_candidates]) = __pyx_t_10;
 
-            /* "fuzzysearch/_generic_search.pyx":142
+            /* "fuzzysearch/_generic_search.pyx":141
  *                             cand.n_ins + 1, cand.n_dels,
  *                         )
  *                         n_new_candidates += 1             # <<<<<<<<<<<<<<
@@ -2382,7 +2380,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
             __pyx_v_n_new_candidates = (__pyx_v_n_new_candidates + 1);
 
-            /* "fuzzysearch/_generic_search.pyx":135
+            /* "fuzzysearch/_generic_search.pyx":134
  *                         continue
  * 
  *                     if cand.n_ins < max_insertions:             # <<<<<<<<<<<<<<
@@ -2391,7 +2389,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           }
 
-          /* "fuzzysearch/_generic_search.pyx":144
+          /* "fuzzysearch/_generic_search.pyx":143
  *                         n_new_candidates += 1
  * 
  *                     if cand.subseq_index + 1 < subseq_len:             # <<<<<<<<<<<<<<
@@ -2401,7 +2399,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           __pyx_t_4 = (((__pyx_v_cand.subseq_index + 1) < __pyx_v_subseq_len) != 0);
           if (__pyx_t_4) {
 
-            /* "fuzzysearch/_generic_search.pyx":145
+            /* "fuzzysearch/_generic_search.pyx":144
  * 
  *                     if cand.subseq_index + 1 < subseq_len:
  *                         if cand.n_subs < max_substitutions:             # <<<<<<<<<<<<<<
@@ -2411,7 +2409,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_4 = ((__pyx_v_cand.n_subs < __pyx_v_max_substitutions) != 0);
             if (__pyx_t_4) {
 
-              /* "fuzzysearch/_generic_search.pyx":149
+              /* "fuzzysearch/_generic_search.pyx":148
  *                             # subsequence char
  *                             new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                                 cand.start, cand.subseq_index + 1,             # <<<<<<<<<<<<<<
@@ -2421,7 +2419,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_10.start = __pyx_v_cand.start;
               __pyx_t_10.subseq_index = (__pyx_v_cand.subseq_index + 1);
 
-              /* "fuzzysearch/_generic_search.pyx":150
+              /* "fuzzysearch/_generic_search.pyx":149
  *                             new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                                 cand.start, cand.subseq_index + 1,
  *                                 cand.l_dist + 1, cand.n_subs + 1,             # <<<<<<<<<<<<<<
@@ -2431,7 +2429,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_10.l_dist = (__pyx_v_cand.l_dist + 1);
               __pyx_t_10.n_subs = (__pyx_v_cand.n_subs + 1);
 
-              /* "fuzzysearch/_generic_search.pyx":151
+              /* "fuzzysearch/_generic_search.pyx":150
  *                                 cand.start, cand.subseq_index + 1,
  *                                 cand.l_dist + 1, cand.n_subs + 1,
  *                                 cand.n_ins, cand.n_dels,             # <<<<<<<<<<<<<<
@@ -2441,7 +2439,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_10.n_ins = __pyx_v_cand.n_ins;
               __pyx_t_10.n_dels = __pyx_v_cand.n_dels;
 
-              /* "fuzzysearch/_generic_search.pyx":148
+              /* "fuzzysearch/_generic_search.pyx":147
  *                             # add a candidate skipping both a sequence char and a
  *                             # subsequence char
  *                             new_candidates[n_new_candidates] = GenericSearchCandidate(             # <<<<<<<<<<<<<<
@@ -2450,7 +2448,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
               (__pyx_v_new_candidates[__pyx_v_n_new_candidates]) = __pyx_t_10;
 
-              /* "fuzzysearch/_generic_search.pyx":153
+              /* "fuzzysearch/_generic_search.pyx":152
  *                                 cand.n_ins, cand.n_dels,
  *                             )
  *                             n_new_candidates += 1             # <<<<<<<<<<<<<<
@@ -2459,7 +2457,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
               __pyx_v_n_new_candidates = (__pyx_v_n_new_candidates + 1);
 
-              /* "fuzzysearch/_generic_search.pyx":145
+              /* "fuzzysearch/_generic_search.pyx":144
  * 
  *                     if cand.subseq_index + 1 < subseq_len:
  *                         if cand.n_subs < max_substitutions:             # <<<<<<<<<<<<<<
@@ -2469,7 +2467,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               goto __pyx_L19;
             }
 
-            /* "fuzzysearch/_generic_search.pyx":154
+            /* "fuzzysearch/_generic_search.pyx":153
  *                             )
  *                             n_new_candidates += 1
  *                         elif cand.n_dels < max_deletions and cand.n_ins < max_insertions:             # <<<<<<<<<<<<<<
@@ -2487,7 +2485,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_L20_bool_binop_done:;
             if (__pyx_t_4) {
 
-              /* "fuzzysearch/_generic_search.pyx":158
+              /* "fuzzysearch/_generic_search.pyx":157
  *                             # subsequence char
  *                             new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                                 cand.start, cand.subseq_index + 1,             # <<<<<<<<<<<<<<
@@ -2497,7 +2495,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_10.start = __pyx_v_cand.start;
               __pyx_t_10.subseq_index = (__pyx_v_cand.subseq_index + 1);
 
-              /* "fuzzysearch/_generic_search.pyx":159
+              /* "fuzzysearch/_generic_search.pyx":158
  *                             new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                                 cand.start, cand.subseq_index + 1,
  *                                 cand.l_dist + 1, cand.n_subs,             # <<<<<<<<<<<<<<
@@ -2507,7 +2505,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_10.l_dist = (__pyx_v_cand.l_dist + 1);
               __pyx_t_10.n_subs = __pyx_v_cand.n_subs;
 
-              /* "fuzzysearch/_generic_search.pyx":160
+              /* "fuzzysearch/_generic_search.pyx":159
  *                                 cand.start, cand.subseq_index + 1,
  *                                 cand.l_dist + 1, cand.n_subs,
  *                                 cand.n_ins + 1, cand.n_dels + 1,             # <<<<<<<<<<<<<<
@@ -2517,7 +2515,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_10.n_ins = (__pyx_v_cand.n_ins + 1);
               __pyx_t_10.n_dels = (__pyx_v_cand.n_dels + 1);
 
-              /* "fuzzysearch/_generic_search.pyx":157
+              /* "fuzzysearch/_generic_search.pyx":156
  *                             # add a candidate skipping both a sequence char and a
  *                             # subsequence char
  *                             new_candidates[n_new_candidates] = GenericSearchCandidate(             # <<<<<<<<<<<<<<
@@ -2526,7 +2524,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
               (__pyx_v_new_candidates[__pyx_v_n_new_candidates]) = __pyx_t_10;
 
-              /* "fuzzysearch/_generic_search.pyx":162
+              /* "fuzzysearch/_generic_search.pyx":161
  *                                 cand.n_ins + 1, cand.n_dels + 1,
  *                             )
  *                             n_new_candidates += 1             # <<<<<<<<<<<<<<
@@ -2535,7 +2533,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
               __pyx_v_n_new_candidates = (__pyx_v_n_new_candidates + 1);
 
-              /* "fuzzysearch/_generic_search.pyx":154
+              /* "fuzzysearch/_generic_search.pyx":153
  *                             )
  *                             n_new_candidates += 1
  *                         elif cand.n_dels < max_deletions and cand.n_ins < max_insertions:             # <<<<<<<<<<<<<<
@@ -2545,7 +2543,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             }
             __pyx_L19:;
 
-            /* "fuzzysearch/_generic_search.pyx":144
+            /* "fuzzysearch/_generic_search.pyx":143
  *                         n_new_candidates += 1
  * 
  *                     if cand.subseq_index + 1 < subseq_len:             # <<<<<<<<<<<<<<
@@ -2555,7 +2553,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             goto __pyx_L18;
           }
 
-          /* "fuzzysearch/_generic_search.pyx":165
+          /* "fuzzysearch/_generic_search.pyx":164
  *                     else:
  *                         # cand.subseq_index == _subseq_len - 1
  *                         if (             # <<<<<<<<<<<<<<
@@ -2564,7 +2562,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
           /*else*/ {
 
-            /* "fuzzysearch/_generic_search.pyx":166
+            /* "fuzzysearch/_generic_search.pyx":165
  *                         # cand.subseq_index == _subseq_len - 1
  *                         if (
  *                                 cand.n_subs < max_substitutions or             # <<<<<<<<<<<<<<
@@ -2578,7 +2576,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               goto __pyx_L23_bool_binop_done;
             }
 
-            /* "fuzzysearch/_generic_search.pyx":168
+            /* "fuzzysearch/_generic_search.pyx":167
  *                                 cand.n_subs < max_substitutions or
  *                                 (
  *                                     cand.n_dels < max_deletions and             # <<<<<<<<<<<<<<
@@ -2592,7 +2590,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               goto __pyx_L23_bool_binop_done;
             }
 
-            /* "fuzzysearch/_generic_search.pyx":169
+            /* "fuzzysearch/_generic_search.pyx":168
  *                                 (
  *                                     cand.n_dels < max_deletions and
  *                                     cand.n_ins < max_insertions             # <<<<<<<<<<<<<<
@@ -2603,7 +2601,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_4 = __pyx_t_20;
             __pyx_L23_bool_binop_done:;
 
-            /* "fuzzysearch/_generic_search.pyx":165
+            /* "fuzzysearch/_generic_search.pyx":164
  *                     else:
  *                         # cand.subseq_index == _subseq_len - 1
  *                         if (             # <<<<<<<<<<<<<<
@@ -2612,20 +2610,20 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
             if (__pyx_t_4) {
 
-              /* "fuzzysearch/_generic_search.pyx":172
+              /* "fuzzysearch/_generic_search.pyx":171
  *                                 )
  *                         ):
  *                             matches.append(Match(cand.start, index + 1, cand.l_dist + 1))             # <<<<<<<<<<<<<<
  * 
  *                     # try skipping subsequence chars
  */
-              __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 172, __pyx_L6_error)
+              __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 171, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_12);
-              __pyx_t_18 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 172, __pyx_L6_error)
+              __pyx_t_18 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 171, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_18);
-              __pyx_t_15 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 172, __pyx_L6_error)
+              __pyx_t_15 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 171, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_15);
-              __pyx_t_14 = __Pyx_PyInt_From_long((__pyx_v_cand.l_dist + 1)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 172, __pyx_L6_error)
+              __pyx_t_14 = __Pyx_PyInt_From_long((__pyx_v_cand.l_dist + 1)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 171, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_14);
               __pyx_t_13 = NULL;
               __pyx_t_17 = 0;
@@ -2642,7 +2640,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               #if CYTHON_FAST_PYCALL
               if (PyFunction_Check(__pyx_t_12)) {
                 PyObject *__pyx_temp[4] = {__pyx_t_13, __pyx_t_18, __pyx_t_15, __pyx_t_14};
-                __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 172, __pyx_L6_error)
+                __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 171, __pyx_L6_error)
                 __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
                 __Pyx_GOTREF(__pyx_t_11);
                 __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
@@ -2653,7 +2651,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               #if CYTHON_FAST_PYCCALL
               if (__Pyx_PyFastCFunction_Check(__pyx_t_12)) {
                 PyObject *__pyx_temp[4] = {__pyx_t_13, __pyx_t_18, __pyx_t_15, __pyx_t_14};
-                __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 172, __pyx_L6_error)
+                __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 171, __pyx_L6_error)
                 __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
                 __Pyx_GOTREF(__pyx_t_11);
                 __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
@@ -2662,7 +2660,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               } else
               #endif
               {
-                __pyx_t_16 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 172, __pyx_L6_error)
+                __pyx_t_16 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 171, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_16);
                 if (__pyx_t_13) {
                   __Pyx_GIVEREF(__pyx_t_13); PyTuple_SET_ITEM(__pyx_t_16, 0, __pyx_t_13); __pyx_t_13 = NULL;
@@ -2676,15 +2674,15 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 __pyx_t_18 = 0;
                 __pyx_t_15 = 0;
                 __pyx_t_14 = 0;
-                __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_16, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 172, __pyx_L6_error)
+                __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_16, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 171, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_11);
                 __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
               }
               __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-              __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 172, __pyx_L6_error)
+              __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 171, __pyx_L6_error)
               __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-              /* "fuzzysearch/_generic_search.pyx":165
+              /* "fuzzysearch/_generic_search.pyx":164
  *                     else:
  *                         # cand.subseq_index == _subseq_len - 1
  *                         if (             # <<<<<<<<<<<<<<
@@ -2695,7 +2693,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           }
           __pyx_L18:;
 
-          /* "fuzzysearch/_generic_search.pyx":175
+          /* "fuzzysearch/_generic_search.pyx":174
  * 
  *                     # try skipping subsequence chars
  *                     for n_skipped in xrange(<unsigned int> 1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + <unsigned int> 1):             # <<<<<<<<<<<<<<
@@ -2714,7 +2712,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           for (__pyx_t_22 = ((unsigned int)1); __pyx_t_22 < __pyx_t_23; __pyx_t_22+=1) {
             __pyx_v_n_skipped = __pyx_t_22;
 
-            /* "fuzzysearch/_generic_search.pyx":178
+            /* "fuzzysearch/_generic_search.pyx":177
  *                         # if skipping n_dels sub-sequence chars reaches the end
  *                         # of the sub-sequence, yield a match
  *                         if cand.subseq_index + n_skipped == subseq_len:             # <<<<<<<<<<<<<<
@@ -2724,28 +2722,28 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_4 = (((__pyx_v_cand.subseq_index + __pyx_v_n_skipped) == __pyx_v_subseq_len) != 0);
             if (__pyx_t_4) {
 
-              /* "fuzzysearch/_generic_search.pyx":179
+              /* "fuzzysearch/_generic_search.pyx":178
  *                         # of the sub-sequence, yield a match
  *                         if cand.subseq_index + n_skipped == subseq_len:
  *                             matches.append(Match(cand.start, index + 1,             # <<<<<<<<<<<<<<
  *                                                  cand.l_dist + n_skipped))
  *                             break
  */
-              __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 179, __pyx_L6_error)
+              __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 178, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_12);
-              __pyx_t_16 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 179, __pyx_L6_error)
+              __pyx_t_16 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 178, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_16);
-              __pyx_t_14 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 179, __pyx_L6_error)
+              __pyx_t_14 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 178, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_14);
 
-              /* "fuzzysearch/_generic_search.pyx":180
+              /* "fuzzysearch/_generic_search.pyx":179
  *                         if cand.subseq_index + n_skipped == subseq_len:
  *                             matches.append(Match(cand.start, index + 1,
  *                                                  cand.l_dist + n_skipped))             # <<<<<<<<<<<<<<
  *                             break
  *                         # otherwise, if skipping n_skipped sub-sequence chars
  */
-              __pyx_t_15 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 180, __pyx_L6_error)
+              __pyx_t_15 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 179, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_15);
               __pyx_t_18 = NULL;
               __pyx_t_17 = 0;
@@ -2762,7 +2760,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               #if CYTHON_FAST_PYCALL
               if (PyFunction_Check(__pyx_t_12)) {
                 PyObject *__pyx_temp[4] = {__pyx_t_18, __pyx_t_16, __pyx_t_14, __pyx_t_15};
-                __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 179, __pyx_L6_error)
+                __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 178, __pyx_L6_error)
                 __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
                 __Pyx_GOTREF(__pyx_t_11);
                 __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
@@ -2773,7 +2771,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               #if CYTHON_FAST_PYCCALL
               if (__Pyx_PyFastCFunction_Check(__pyx_t_12)) {
                 PyObject *__pyx_temp[4] = {__pyx_t_18, __pyx_t_16, __pyx_t_14, __pyx_t_15};
-                __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 179, __pyx_L6_error)
+                __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 178, __pyx_L6_error)
                 __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
                 __Pyx_GOTREF(__pyx_t_11);
                 __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
@@ -2782,7 +2780,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               } else
               #endif
               {
-                __pyx_t_13 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 179, __pyx_L6_error)
+                __pyx_t_13 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 178, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_13);
                 if (__pyx_t_18) {
                   __Pyx_GIVEREF(__pyx_t_18); PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_18); __pyx_t_18 = NULL;
@@ -2796,23 +2794,23 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 __pyx_t_16 = 0;
                 __pyx_t_14 = 0;
                 __pyx_t_15 = 0;
-                __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_13, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 179, __pyx_L6_error)
+                __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_13, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 178, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_11);
                 __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
               }
               __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-              /* "fuzzysearch/_generic_search.pyx":179
+              /* "fuzzysearch/_generic_search.pyx":178
  *                         # of the sub-sequence, yield a match
  *                         if cand.subseq_index + n_skipped == subseq_len:
  *                             matches.append(Match(cand.start, index + 1,             # <<<<<<<<<<<<<<
  *                                                  cand.l_dist + n_skipped))
  *                             break
  */
-              __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 179, __pyx_L6_error)
+              __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 178, __pyx_L6_error)
               __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-              /* "fuzzysearch/_generic_search.pyx":181
+              /* "fuzzysearch/_generic_search.pyx":180
  *                             matches.append(Match(cand.start, index + 1,
  *                                                  cand.l_dist + n_skipped))
  *                             break             # <<<<<<<<<<<<<<
@@ -2821,7 +2819,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
               goto __pyx_L27_break;
 
-              /* "fuzzysearch/_generic_search.pyx":178
+              /* "fuzzysearch/_generic_search.pyx":177
  *                         # if skipping n_dels sub-sequence chars reaches the end
  *                         # of the sub-sequence, yield a match
  *                         if cand.subseq_index + n_skipped == subseq_len:             # <<<<<<<<<<<<<<
@@ -2830,7 +2828,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
             }
 
-            /* "fuzzysearch/_generic_search.pyx":185
+            /* "fuzzysearch/_generic_search.pyx":184
  *                         # reaches a sub-sequence char identical to this sequence
  *                         # char ...
  *                         elif seq_char == subsequence[cand.subseq_index + n_skipped]:             # <<<<<<<<<<<<<<
@@ -2840,7 +2838,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
             __pyx_t_4 = ((__pyx_v_seq_char == (__pyx_v_subsequence[(__pyx_v_cand.subseq_index + __pyx_v_n_skipped)])) != 0);
             if (__pyx_t_4) {
 
-              /* "fuzzysearch/_generic_search.pyx":188
+              /* "fuzzysearch/_generic_search.pyx":187
  *                             # if this is the last char of the sub-sequence, yield
  *                             # a match
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:             # <<<<<<<<<<<<<<
@@ -2850,28 +2848,28 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               __pyx_t_4 = ((((__pyx_v_cand.subseq_index + __pyx_v_n_skipped) + 1) == __pyx_v_subseq_len) != 0);
               if (__pyx_t_4) {
 
-                /* "fuzzysearch/_generic_search.pyx":189
+                /* "fuzzysearch/_generic_search.pyx":188
  *                             # a match
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:
  *                                 matches.append(Match(cand.start, index + 1,             # <<<<<<<<<<<<<<
  *                                                      cand.l_dist + n_skipped))
  *                             # otherwise add a candidate skipping n_skipped
  */
-                __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 189, __pyx_L6_error)
+                __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_Match); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 188, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_12);
-                __pyx_t_13 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 189, __pyx_L6_error)
+                __pyx_t_13 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 188, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_13);
-                __pyx_t_15 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 189, __pyx_L6_error)
+                __pyx_t_15 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 188, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_15);
 
-                /* "fuzzysearch/_generic_search.pyx":190
+                /* "fuzzysearch/_generic_search.pyx":189
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:
  *                                 matches.append(Match(cand.start, index + 1,
  *                                                      cand.l_dist + n_skipped))             # <<<<<<<<<<<<<<
  *                             # otherwise add a candidate skipping n_skipped
  *                             # subsequence chars
  */
-                __pyx_t_14 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 190, __pyx_L6_error)
+                __pyx_t_14 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 189, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_14);
                 __pyx_t_16 = NULL;
                 __pyx_t_17 = 0;
@@ -2888,7 +2886,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 #if CYTHON_FAST_PYCALL
                 if (PyFunction_Check(__pyx_t_12)) {
                   PyObject *__pyx_temp[4] = {__pyx_t_16, __pyx_t_13, __pyx_t_15, __pyx_t_14};
-                  __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 189, __pyx_L6_error)
+                  __pyx_t_11 = __Pyx_PyFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 188, __pyx_L6_error)
                   __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
                   __Pyx_GOTREF(__pyx_t_11);
                   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
@@ -2899,7 +2897,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 #if CYTHON_FAST_PYCCALL
                 if (__Pyx_PyFastCFunction_Check(__pyx_t_12)) {
                   PyObject *__pyx_temp[4] = {__pyx_t_16, __pyx_t_13, __pyx_t_15, __pyx_t_14};
-                  __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 189, __pyx_L6_error)
+                  __pyx_t_11 = __Pyx_PyCFunction_FastCall(__pyx_t_12, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 188, __pyx_L6_error)
                   __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
                   __Pyx_GOTREF(__pyx_t_11);
                   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
@@ -2908,7 +2906,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 } else
                 #endif
                 {
-                  __pyx_t_18 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 189, __pyx_L6_error)
+                  __pyx_t_18 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 188, __pyx_L6_error)
                   __Pyx_GOTREF(__pyx_t_18);
                   if (__pyx_t_16) {
                     __Pyx_GIVEREF(__pyx_t_16); PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_t_16); __pyx_t_16 = NULL;
@@ -2922,23 +2920,23 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                   __pyx_t_13 = 0;
                   __pyx_t_15 = 0;
                   __pyx_t_14 = 0;
-                  __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_18, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 189, __pyx_L6_error)
+                  __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_18, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 188, __pyx_L6_error)
                   __Pyx_GOTREF(__pyx_t_11);
                   __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
                 }
                 __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-                /* "fuzzysearch/_generic_search.pyx":189
+                /* "fuzzysearch/_generic_search.pyx":188
  *                             # a match
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:
  *                                 matches.append(Match(cand.start, index + 1,             # <<<<<<<<<<<<<<
  *                                                      cand.l_dist + n_skipped))
  *                             # otherwise add a candidate skipping n_skipped
  */
-                __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 189, __pyx_L6_error)
+                __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_11); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 188, __pyx_L6_error)
                 __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-                /* "fuzzysearch/_generic_search.pyx":188
+                /* "fuzzysearch/_generic_search.pyx":187
  *                             # if this is the last char of the sub-sequence, yield
  *                             # a match
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:             # <<<<<<<<<<<<<<
@@ -2948,7 +2946,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 goto __pyx_L29;
               }
 
-              /* "fuzzysearch/_generic_search.pyx":194
+              /* "fuzzysearch/_generic_search.pyx":193
  *                             # subsequence chars
  *                             else:
  *                                 new_candidates[n_new_candidates] = GenericSearchCandidate(             # <<<<<<<<<<<<<<
@@ -2957,7 +2955,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
               /*else*/ {
 
-                /* "fuzzysearch/_generic_search.pyx":195
+                /* "fuzzysearch/_generic_search.pyx":194
  *                             else:
  *                                 new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                                     cand.start, cand.subseq_index + 1 + n_skipped,             # <<<<<<<<<<<<<<
@@ -2967,7 +2965,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 __pyx_t_10.start = __pyx_v_cand.start;
                 __pyx_t_10.subseq_index = ((__pyx_v_cand.subseq_index + 1) + __pyx_v_n_skipped);
 
-                /* "fuzzysearch/_generic_search.pyx":196
+                /* "fuzzysearch/_generic_search.pyx":195
  *                                 new_candidates[n_new_candidates] = GenericSearchCandidate(
  *                                     cand.start, cand.subseq_index + 1 + n_skipped,
  *                                     cand.l_dist + n_skipped, cand.n_subs,             # <<<<<<<<<<<<<<
@@ -2977,7 +2975,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 __pyx_t_10.l_dist = (__pyx_v_cand.l_dist + __pyx_v_n_skipped);
                 __pyx_t_10.n_subs = __pyx_v_cand.n_subs;
 
-                /* "fuzzysearch/_generic_search.pyx":197
+                /* "fuzzysearch/_generic_search.pyx":196
  *                                     cand.start, cand.subseq_index + 1 + n_skipped,
  *                                     cand.l_dist + n_skipped, cand.n_subs,
  *                                     cand.n_ins, cand.n_dels + n_skipped,             # <<<<<<<<<<<<<<
@@ -2987,7 +2985,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 __pyx_t_10.n_ins = __pyx_v_cand.n_ins;
                 __pyx_t_10.n_dels = (__pyx_v_cand.n_dels + __pyx_v_n_skipped);
 
-                /* "fuzzysearch/_generic_search.pyx":194
+                /* "fuzzysearch/_generic_search.pyx":193
  *                             # subsequence chars
  *                             else:
  *                                 new_candidates[n_new_candidates] = GenericSearchCandidate(             # <<<<<<<<<<<<<<
@@ -2996,7 +2994,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
                 (__pyx_v_new_candidates[__pyx_v_n_new_candidates]) = __pyx_t_10;
 
-                /* "fuzzysearch/_generic_search.pyx":199
+                /* "fuzzysearch/_generic_search.pyx":198
  *                                     cand.n_ins, cand.n_dels + n_skipped,
  *                                 )
  *                                 n_new_candidates += 1             # <<<<<<<<<<<<<<
@@ -3007,7 +3005,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               }
               __pyx_L29:;
 
-              /* "fuzzysearch/_generic_search.pyx":200
+              /* "fuzzysearch/_generic_search.pyx":199
  *                                 )
  *                                 n_new_candidates += 1
  *                             break             # <<<<<<<<<<<<<<
@@ -3016,7 +3014,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
               goto __pyx_L27_break;
 
-              /* "fuzzysearch/_generic_search.pyx":185
+              /* "fuzzysearch/_generic_search.pyx":184
  *                         # reaches a sub-sequence char identical to this sequence
  *                         # char ...
  *                         elif seq_char == subsequence[cand.subseq_index + n_skipped]:             # <<<<<<<<<<<<<<
@@ -3031,7 +3029,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         __pyx_L10_continue:;
       }
 
-      /* "fuzzysearch/_generic_search.pyx":206
+      /* "fuzzysearch/_generic_search.pyx":205
  * 
  *             # new_candidates = candidates; candidates = []
  *             _tmp = candidates             # <<<<<<<<<<<<<<
@@ -3040,7 +3038,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v__tmp = __pyx_v_candidates;
 
-      /* "fuzzysearch/_generic_search.pyx":207
+      /* "fuzzysearch/_generic_search.pyx":206
  *             # new_candidates = candidates; candidates = []
  *             _tmp = candidates
  *             candidates = new_candidates             # <<<<<<<<<<<<<<
@@ -3049,7 +3047,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v_candidates = __pyx_v_new_candidates;
 
-      /* "fuzzysearch/_generic_search.pyx":208
+      /* "fuzzysearch/_generic_search.pyx":207
  *             _tmp = candidates
  *             candidates = new_candidates
  *             new_candidates = _tmp             # <<<<<<<<<<<<<<
@@ -3058,7 +3056,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v_new_candidates = __pyx_v__tmp;
 
-      /* "fuzzysearch/_generic_search.pyx":209
+      /* "fuzzysearch/_generic_search.pyx":208
  *             candidates = new_candidates
  *             new_candidates = _tmp
  *             n_candidates = n_new_candidates             # <<<<<<<<<<<<<<
@@ -3067,7 +3065,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v_n_candidates = __pyx_v_n_new_candidates;
 
-      /* "fuzzysearch/_generic_search.pyx":210
+      /* "fuzzysearch/_generic_search.pyx":209
  *             new_candidates = _tmp
  *             n_candidates = n_new_candidates
  *             n_new_candidates = 0             # <<<<<<<<<<<<<<
@@ -3076,7 +3074,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v_n_new_candidates = 0;
 
-      /* "fuzzysearch/_generic_search.pyx":212
+      /* "fuzzysearch/_generic_search.pyx":211
  *             n_new_candidates = 0
  * 
  *             if have_realloced:             # <<<<<<<<<<<<<<
@@ -3086,7 +3084,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
       __pyx_t_4 = (__pyx_v_have_realloced != 0);
       if (__pyx_t_4) {
 
-        /* "fuzzysearch/_generic_search.pyx":213
+        /* "fuzzysearch/_generic_search.pyx":212
  * 
  *             if have_realloced:
  *                 have_realloced = False             # <<<<<<<<<<<<<<
@@ -3095,7 +3093,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
         __pyx_v_have_realloced = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":214
+        /* "fuzzysearch/_generic_search.pyx":213
  *             if have_realloced:
  *                 have_realloced = False
  *                 _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))             # <<<<<<<<<<<<<<
@@ -3104,7 +3102,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
         __pyx_v__tmp = ((struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate *)realloc(__pyx_v_new_candidates, (__pyx_v_alloc_size * (sizeof(struct __pyx_t_11fuzzysearch_15_generic_search_GenericSearchCandidate)))));
 
-        /* "fuzzysearch/_generic_search.pyx":215
+        /* "fuzzysearch/_generic_search.pyx":214
  *                 have_realloced = False
  *                 _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))
  *                 if _tmp is NULL:             # <<<<<<<<<<<<<<
@@ -3114,16 +3112,16 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         __pyx_t_4 = ((__pyx_v__tmp == NULL) != 0);
         if (unlikely(__pyx_t_4)) {
 
-          /* "fuzzysearch/_generic_search.pyx":216
+          /* "fuzzysearch/_generic_search.pyx":215
  *                 _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))
  *                 if _tmp is NULL:
  *                     raise MemoryError()             # <<<<<<<<<<<<<<
  *                 new_candidates = _tmp
  * 
  */
-          PyErr_NoMemory(); __PYX_ERR(0, 216, __pyx_L6_error)
+          PyErr_NoMemory(); __PYX_ERR(0, 215, __pyx_L6_error)
 
-          /* "fuzzysearch/_generic_search.pyx":215
+          /* "fuzzysearch/_generic_search.pyx":214
  *                 have_realloced = False
  *                 _tmp = <GenericSearchCandidate *>realloc(new_candidates, alloc_size * sizeof(GenericSearchCandidate))
  *                 if _tmp is NULL:             # <<<<<<<<<<<<<<
@@ -3132,7 +3130,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
         }
 
-        /* "fuzzysearch/_generic_search.pyx":217
+        /* "fuzzysearch/_generic_search.pyx":216
  *                 if _tmp is NULL:
  *                     raise MemoryError()
  *                 new_candidates = _tmp             # <<<<<<<<<<<<<<
@@ -3141,7 +3139,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
         __pyx_v_new_candidates = __pyx_v__tmp;
 
-        /* "fuzzysearch/_generic_search.pyx":212
+        /* "fuzzysearch/_generic_search.pyx":211
  *             n_new_candidates = 0
  * 
  *             if have_realloced:             # <<<<<<<<<<<<<<
@@ -3150,7 +3148,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       }
 
-      /* "fuzzysearch/_generic_search.pyx":219
+      /* "fuzzysearch/_generic_search.pyx":218
  *                 new_candidates = _tmp
  * 
  *             index += 1             # <<<<<<<<<<<<<<
@@ -3161,7 +3159,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "fuzzysearch/_generic_search.pyx":221
+    /* "fuzzysearch/_generic_search.pyx":220
  *             index += 1
  * 
  *         for n_cand in xrange(n_candidates):             # <<<<<<<<<<<<<<
@@ -3173,7 +3171,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
     for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
       __pyx_v_n_cand = __pyx_t_2;
 
-      /* "fuzzysearch/_generic_search.pyx":222
+      /* "fuzzysearch/_generic_search.pyx":221
  * 
  *         for n_cand in xrange(n_candidates):
  *             cand = candidates[n_cand]             # <<<<<<<<<<<<<<
@@ -3182,7 +3180,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v_cand = (__pyx_v_candidates[__pyx_v_n_cand]);
 
-      /* "fuzzysearch/_generic_search.pyx":224
+      /* "fuzzysearch/_generic_search.pyx":223
  *             cand = candidates[n_cand]
  *             # note: index == length(sequence)
  *             n_skipped = subseq_len - cand.subseq_index             # <<<<<<<<<<<<<<
@@ -3191,7 +3189,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       __pyx_v_n_skipped = (__pyx_v_subseq_len - __pyx_v_cand.subseq_index);
 
-      /* "fuzzysearch/_generic_search.pyx":225
+      /* "fuzzysearch/_generic_search.pyx":224
  *             # note: index == length(sequence)
  *             n_skipped = subseq_len - cand.subseq_index
  *             if cand.n_dels + n_skipped <= max_deletions and \             # <<<<<<<<<<<<<<
@@ -3205,7 +3203,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         goto __pyx_L35_bool_binop_done;
       }
 
-      /* "fuzzysearch/_generic_search.pyx":226
+      /* "fuzzysearch/_generic_search.pyx":225
  *             n_skipped = subseq_len - cand.subseq_index
  *             if cand.n_dels + n_skipped <= max_deletions and \
  *                cand.l_dist + n_skipped <= max_l_dist:             # <<<<<<<<<<<<<<
@@ -3216,7 +3214,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
       __pyx_t_4 = __pyx_t_20;
       __pyx_L35_bool_binop_done:;
 
-      /* "fuzzysearch/_generic_search.pyx":225
+      /* "fuzzysearch/_generic_search.pyx":224
  *             # note: index == length(sequence)
  *             n_skipped = subseq_len - cand.subseq_index
  *             if cand.n_dels + n_skipped <= max_deletions and \             # <<<<<<<<<<<<<<
@@ -3225,20 +3223,20 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
       if (__pyx_t_4) {
 
-        /* "fuzzysearch/_generic_search.pyx":227
+        /* "fuzzysearch/_generic_search.pyx":226
  *             if cand.n_dels + n_skipped <= max_deletions and \
  *                cand.l_dist + n_skipped <= max_l_dist:
  *                 matches.append(Match(cand.start, index, cand.l_dist + n_skipped))             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_Match); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 227, __pyx_L6_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_Match); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 226, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_12 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 227, __pyx_L6_error)
+        __pyx_t_12 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 226, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_18 = __Pyx_PyInt_FromSize_t(__pyx_v_index); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 227, __pyx_L6_error)
+        __pyx_t_18 = __Pyx_PyInt_FromSize_t(__pyx_v_index); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 226, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_18);
-        __pyx_t_14 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 227, __pyx_L6_error)
+        __pyx_t_14 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 226, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_14);
         __pyx_t_15 = NULL;
         __pyx_t_17 = 0;
@@ -3255,7 +3253,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_11)) {
           PyObject *__pyx_temp[4] = {__pyx_t_15, __pyx_t_12, __pyx_t_18, __pyx_t_14};
-          __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 227, __pyx_L6_error)
+          __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 226, __pyx_L6_error)
           __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
@@ -3266,7 +3264,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_11)) {
           PyObject *__pyx_temp[4] = {__pyx_t_15, __pyx_t_12, __pyx_t_18, __pyx_t_14};
-          __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 227, __pyx_L6_error)
+          __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_11, __pyx_temp+1-__pyx_t_17, 3+__pyx_t_17); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 226, __pyx_L6_error)
           __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
@@ -3275,7 +3273,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
         } else
         #endif
         {
-          __pyx_t_13 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 227, __pyx_L6_error)
+          __pyx_t_13 = PyTuple_New(3+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 226, __pyx_L6_error)
           __Pyx_GOTREF(__pyx_t_13);
           if (__pyx_t_15) {
             __Pyx_GIVEREF(__pyx_t_15); PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_15); __pyx_t_15 = NULL;
@@ -3289,15 +3287,15 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
           __pyx_t_12 = 0;
           __pyx_t_18 = 0;
           __pyx_t_14 = 0;
-          __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_13, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 227, __pyx_L6_error)
+          __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_13, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 226, __pyx_L6_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         }
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_5); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 227, __pyx_L6_error)
+        __pyx_t_19 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_5); if (unlikely(__pyx_t_19 == ((int)-1))) __PYX_ERR(0, 226, __pyx_L6_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":225
+        /* "fuzzysearch/_generic_search.pyx":224
  *             # note: index == length(sequence)
  *             n_skipped = subseq_len - cand.subseq_index
  *             if cand.n_dels + n_skipped <= max_deletions and \             # <<<<<<<<<<<<<<
@@ -3308,7 +3306,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
     }
   }
 
-  /* "fuzzysearch/_generic_search.pyx":230
+  /* "fuzzysearch/_generic_search.pyx":229
  * 
  *     finally:
  *         free(candidates)             # <<<<<<<<<<<<<<
@@ -3319,7 +3317,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
     /*normal exit:*/{
       free(__pyx_v_candidates);
 
-      /* "fuzzysearch/_generic_search.pyx":231
+      /* "fuzzysearch/_generic_search.pyx":230
  *     finally:
  *         free(candidates)
  *         free(new_candidates)             # <<<<<<<<<<<<<<
@@ -3353,7 +3351,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
       __pyx_t_17 = __pyx_lineno; __pyx_t_24 = __pyx_clineno; __pyx_t_25 = __pyx_filename;
       {
 
-        /* "fuzzysearch/_generic_search.pyx":230
+        /* "fuzzysearch/_generic_search.pyx":229
  * 
  *     finally:
  *         free(candidates)             # <<<<<<<<<<<<<<
@@ -3362,7 +3360,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  */
         free(__pyx_v_candidates);
 
-        /* "fuzzysearch/_generic_search.pyx":231
+        /* "fuzzysearch/_generic_search.pyx":230
  *     finally:
  *         free(candidates)
  *         free(new_candidates)             # <<<<<<<<<<<<<<
@@ -3388,7 +3386,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
     __pyx_L7:;
   }
 
-  /* "fuzzysearch/_generic_search.pyx":233
+  /* "fuzzysearch/_generic_search.pyx":232
  *         free(new_candidates)
  * 
  *     return matches             # <<<<<<<<<<<<<<
@@ -3400,7 +3398,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
   __pyx_r = __pyx_v_matches;
   goto __pyx_L0;
 
-  /* "fuzzysearch/_generic_search.pyx":61
+  /* "fuzzysearch/_generic_search.pyx":60
  * # subsequence strings, which means if they contain null bytes the data after
  * # the first null byte will not be copied.
  * cdef _c_find_near_matches_generic_linear_programming(             # <<<<<<<<<<<<<<
@@ -3427,7 +3425,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
   return __pyx_r;
 }
 
-/* "fuzzysearch/_generic_search.pyx":237
+/* "fuzzysearch/_generic_search.pyx":236
  * 
  * 
  * def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
@@ -3471,17 +3469,17 @@ static PyObject *__pyx_pw_11fuzzysearch_15_generic_search_3c_find_near_matches_g
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sequence)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_ngrams", 1, 3, 3, 1); __PYX_ERR(0, 237, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_ngrams", 1, 3, 3, 1); __PYX_ERR(0, 236, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_search_params)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_ngrams", 1, 3, 3, 2); __PYX_ERR(0, 237, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_ngrams", 1, 3, 3, 2); __PYX_ERR(0, 236, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "c_find_near_matches_generic_ngrams") < 0)) __PYX_ERR(0, 237, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "c_find_near_matches_generic_ngrams") < 0)) __PYX_ERR(0, 236, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3496,7 +3494,7 @@ static PyObject *__pyx_pw_11fuzzysearch_15_generic_search_3c_find_near_matches_g
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_ngrams", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 237, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("c_find_near_matches_generic_ngrams", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 236, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("fuzzysearch._generic_search.c_find_near_matches_generic_ngrams", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3556,37 +3554,37 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   int __pyx_t_21;
   __Pyx_RefNannySetupContext("c_find_near_matches_generic_ngrams", 0);
 
-  /* "fuzzysearch/_generic_search.pyx":248
+  /* "fuzzysearch/_generic_search.pyx":247
  *     * the total number of substitutions, insertions and deletions
  *     """
  *     if not isinstance(sequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_sequence, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_sequence, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "fuzzysearch/_generic_search.pyx":249
+    /* "fuzzysearch/_generic_search.pyx":248
  *     """
  *     if not isinstance(sequence, ALLOWED_TYPES):
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))             # <<<<<<<<<<<<<<
  *     if not isinstance(subsequence, ALLOWED_TYPES):
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  */
-    __pyx_t_1 = __Pyx_PyString_FormatSafe(__pyx_kp_s_sequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_sequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 249, __pyx_L1_error)
+    __PYX_ERR(0, 248, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":248
+    /* "fuzzysearch/_generic_search.pyx":247
  *     * the total number of substitutions, insertions and deletions
  *     """
  *     if not isinstance(sequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
@@ -3595,37 +3593,37 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":250
+  /* "fuzzysearch/_generic_search.pyx":249
  *     if not isinstance(sequence, ALLOWED_TYPES):
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ALLOWED_TYPES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyObject_IsInstance(__pyx_v_subsequence, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_3 = PyObject_IsInstance(__pyx_v_subsequence, __pyx_t_4); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_2 = ((!(__pyx_t_3 != 0)) != 0);
   if (unlikely(__pyx_t_2)) {
 
-    /* "fuzzysearch/_generic_search.pyx":251
+    /* "fuzzysearch/_generic_search.pyx":250
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))             # <<<<<<<<<<<<<<
  * 
  *     if not subsequence:
  */
-    __pyx_t_4 = __Pyx_PyString_FormatSafe(__pyx_kp_s_subsequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_subsequence_is_of_invalid_type_s, ((PyObject *)Py_TYPE(__pyx_v_subsequence))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 251, __pyx_L1_error)
+    __PYX_ERR(0, 250, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":250
+    /* "fuzzysearch/_generic_search.pyx":249
  *     if not isinstance(sequence, ALLOWED_TYPES):
  *         raise TypeError('sequence is of invalid type %s' % type(subsequence))
  *     if not isinstance(subsequence, ALLOWED_TYPES):             # <<<<<<<<<<<<<<
@@ -3634,31 +3632,31 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":253
+  /* "fuzzysearch/_generic_search.pyx":252
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  * 
  *     if not subsequence:             # <<<<<<<<<<<<<<
  *         raise ValueError('Given subsequence is empty!')
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_subsequence); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_subsequence); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 252, __pyx_L1_error)
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "fuzzysearch/_generic_search.pyx":254
+    /* "fuzzysearch/_generic_search.pyx":253
  * 
  *     if not subsequence:
  *         raise ValueError('Given subsequence is empty!')             # <<<<<<<<<<<<<<
  * 
  *     max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 254, __pyx_L1_error)
+    __PYX_ERR(0, 253, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":253
+    /* "fuzzysearch/_generic_search.pyx":252
  *         raise TypeError('subsequence is of invalid type %s' % type(subsequence))
  * 
  *     if not subsequence:             # <<<<<<<<<<<<<<
@@ -3667,14 +3665,14 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":256
+  /* "fuzzysearch/_generic_search.pyx":255
  *         raise ValueError('Given subsequence is empty!')
  * 
  *     max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked             # <<<<<<<<<<<<<<
  * 
  *     # optimization: prepare some often used things in advance
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_search_params, __pyx_n_s_unpacked); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_search_params, __pyx_n_s_unpacked); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
     PyObject* sequence = __pyx_t_1;
@@ -3682,7 +3680,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
     if (unlikely(size != 4)) {
       if (size > 4) __Pyx_RaiseTooManyValuesError(4);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 256, __pyx_L1_error)
+      __PYX_ERR(0, 255, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -3705,7 +3703,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
       Py_ssize_t i;
       PyObject** temps[4] = {&__pyx_t_4,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7};
       for (i=0; i < 4; i++) {
-        PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 256, __pyx_L1_error)
+        PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 255, __pyx_L1_error)
         __Pyx_GOTREF(item);
         *(temps[i]) = item;
       }
@@ -3715,7 +3713,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   } else {
     Py_ssize_t index = -1;
     PyObject** temps[4] = {&__pyx_t_4,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7};
-    __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 256, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 255, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_9 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -3724,7 +3722,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
       __Pyx_GOTREF(item);
       *(temps[index]) = item;
     }
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 4) < 0) __PYX_ERR(0, 256, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_9(__pyx_t_8), 4) < 0) __PYX_ERR(0, 255, __pyx_L1_error)
     __pyx_t_9 = NULL;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     goto __pyx_L7_unpacking_done;
@@ -3732,7 +3730,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_9 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 256, __pyx_L1_error)
+    __PYX_ERR(0, 255, __pyx_L1_error)
     __pyx_L7_unpacking_done:;
   }
   __pyx_v_max_substitutions = __pyx_t_4;
@@ -3744,17 +3742,17 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   __pyx_v_max_l_dist = __pyx_t_7;
   __pyx_t_7 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":259
+  /* "fuzzysearch/_generic_search.pyx":258
  * 
  *     # optimization: prepare some often used things in advance
  *     cdef size_t _subseq_len = len(subsequence)             # <<<<<<<<<<<<<<
  *     cdef size_t _subseq_len_minus_one = _subseq_len - 1
  *     cdef size_t _seq_len = len(sequence)
  */
-  __pyx_t_10 = PyObject_Length(__pyx_v_subsequence); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_10 = PyObject_Length(__pyx_v_subsequence); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 258, __pyx_L1_error)
   __pyx_v__subseq_len = __pyx_t_10;
 
-  /* "fuzzysearch/_generic_search.pyx":260
+  /* "fuzzysearch/_generic_search.pyx":259
  *     # optimization: prepare some often used things in advance
  *     cdef size_t _subseq_len = len(subsequence)
  *     cdef size_t _subseq_len_minus_one = _subseq_len - 1             # <<<<<<<<<<<<<<
@@ -3763,17 +3761,17 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   __pyx_v__subseq_len_minus_one = (__pyx_v__subseq_len - 1);
 
-  /* "fuzzysearch/_generic_search.pyx":261
+  /* "fuzzysearch/_generic_search.pyx":260
  *     cdef size_t _subseq_len = len(subsequence)
  *     cdef size_t _subseq_len_minus_one = _subseq_len - 1
  *     cdef size_t _seq_len = len(sequence)             # <<<<<<<<<<<<<<
  * 
  *     cdef unsigned int c_max_substitutions = max_substitutions if max_substitutions is not None else (1<<29)
  */
-  __pyx_t_10 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_10 = PyObject_Length(__pyx_v_sequence); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 260, __pyx_L1_error)
   __pyx_v__seq_len = __pyx_t_10;
 
-  /* "fuzzysearch/_generic_search.pyx":263
+  /* "fuzzysearch/_generic_search.pyx":262
  *     cdef size_t _seq_len = len(sequence)
  * 
  *     cdef unsigned int c_max_substitutions = max_substitutions if max_substitutions is not None else (1<<29)             # <<<<<<<<<<<<<<
@@ -3782,14 +3780,14 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   __pyx_t_3 = (__pyx_v_max_substitutions != Py_None);
   if ((__pyx_t_3 != 0)) {
-    __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_substitutions); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_substitutions); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 262, __pyx_L1_error)
     __pyx_t_11 = __pyx_t_12;
   } else {
     __pyx_t_11 = 0x20000000;
   }
   __pyx_v_c_max_substitutions = __pyx_t_11;
 
-  /* "fuzzysearch/_generic_search.pyx":264
+  /* "fuzzysearch/_generic_search.pyx":263
  * 
  *     cdef unsigned int c_max_substitutions = max_substitutions if max_substitutions is not None else (1<<29)
  *     cdef unsigned int c_max_insertions = max_insertions if max_insertions is not None else (1<<29)             # <<<<<<<<<<<<<<
@@ -3798,14 +3796,14 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   __pyx_t_3 = (__pyx_v_max_insertions != Py_None);
   if ((__pyx_t_3 != 0)) {
-    __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_insertions); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 264, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_insertions); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 263, __pyx_L1_error)
     __pyx_t_11 = __pyx_t_12;
   } else {
     __pyx_t_11 = 0x20000000;
   }
   __pyx_v_c_max_insertions = __pyx_t_11;
 
-  /* "fuzzysearch/_generic_search.pyx":265
+  /* "fuzzysearch/_generic_search.pyx":264
  *     cdef unsigned int c_max_substitutions = max_substitutions if max_substitutions is not None else (1<<29)
  *     cdef unsigned int c_max_insertions = max_insertions if max_insertions is not None else (1<<29)
  *     cdef unsigned int c_max_deletions = max_deletions if max_deletions is not None else (1<<29)             # <<<<<<<<<<<<<<
@@ -3814,14 +3812,14 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   __pyx_t_3 = (__pyx_v_max_deletions != Py_None);
   if ((__pyx_t_3 != 0)) {
-    __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_deletions); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 265, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyInt_As_unsigned_int(__pyx_v_max_deletions); if (unlikely((__pyx_t_12 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 264, __pyx_L1_error)
     __pyx_t_11 = __pyx_t_12;
   } else {
     __pyx_t_11 = 0x20000000;
   }
   __pyx_v_c_max_deletions = __pyx_t_11;
 
-  /* "fuzzysearch/_generic_search.pyx":270
+  /* "fuzzysearch/_generic_search.pyx":269
  *     cdef unsigned int c_max_l_dist = min(
  *         max_l_dist if max_l_dist is not None else (1<<29),
  *         c_max_substitutions + c_max_insertions + c_max_deletions,             # <<<<<<<<<<<<<<
@@ -3830,7 +3828,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   __pyx_t_11 = ((__pyx_v_c_max_substitutions + __pyx_v_c_max_insertions) + __pyx_v_c_max_deletions);
 
-  /* "fuzzysearch/_generic_search.pyx":269
+  /* "fuzzysearch/_generic_search.pyx":268
  *     # TODO: write a good comment
  *     cdef unsigned int c_max_l_dist = min(
  *         max_l_dist if max_l_dist is not None else (1<<29),             # <<<<<<<<<<<<<<
@@ -3846,21 +3844,21 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
     __pyx_t_1 = __pyx_int_536870912;
   }
 
-  /* "fuzzysearch/_generic_search.pyx":270
+  /* "fuzzysearch/_generic_search.pyx":269
  *     cdef unsigned int c_max_l_dist = min(
  *         max_l_dist if max_l_dist is not None else (1<<29),
  *         c_max_substitutions + c_max_insertions + c_max_deletions,             # <<<<<<<<<<<<<<
  *     )
  * 
  */
-  __pyx_t_6 = __Pyx_PyInt_From_unsigned_int(__pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_From_unsigned_int(__pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_5 = PyObject_RichCompare(__pyx_t_6, __pyx_t_1, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_5 = PyObject_RichCompare(__pyx_t_6, __pyx_t_1, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (__pyx_t_3) {
-    __pyx_t_5 = __Pyx_PyInt_From_unsigned_int(__pyx_t_11); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 270, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_unsigned_int(__pyx_t_11); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = __pyx_t_5;
     __pyx_t_5 = 0;
@@ -3869,31 +3867,31 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
     __pyx_t_7 = __pyx_t_1;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_11 = __Pyx_PyInt_As_unsigned_int(__pyx_t_7); if (unlikely((__pyx_t_11 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyInt_As_unsigned_int(__pyx_t_7); if (unlikely((__pyx_t_11 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_v_c_max_l_dist = __pyx_t_11;
 
-  /* "fuzzysearch/_generic_search.pyx":273
+  /* "fuzzysearch/_generic_search.pyx":272
  *     )
  * 
  *     cdef const char* c_sequence = sequence             # <<<<<<<<<<<<<<
  *     cdef const char* c_subsequence = subsequence
  * 
  */
-  __pyx_t_13 = __Pyx_PyObject_AsString(__pyx_v_sequence); if (unlikely((!__pyx_t_13) && PyErr_Occurred())) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyObject_AsString(__pyx_v_sequence); if (unlikely((!__pyx_t_13) && PyErr_Occurred())) __PYX_ERR(0, 272, __pyx_L1_error)
   __pyx_v_c_sequence = __pyx_t_13;
 
-  /* "fuzzysearch/_generic_search.pyx":274
+  /* "fuzzysearch/_generic_search.pyx":273
  * 
  *     cdef const char* c_sequence = sequence
  *     cdef const char* c_subsequence = subsequence             # <<<<<<<<<<<<<<
  * 
  *     cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)
  */
-  __pyx_t_14 = __Pyx_PyObject_AsString(__pyx_v_subsequence); if (unlikely((!__pyx_t_14) && PyErr_Occurred())) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_PyObject_AsString(__pyx_v_subsequence); if (unlikely((!__pyx_t_14) && PyErr_Occurred())) __PYX_ERR(0, 273, __pyx_L1_error)
   __pyx_v_c_subsequence = __pyx_t_14;
 
-  /* "fuzzysearch/_generic_search.pyx":276
+  /* "fuzzysearch/_generic_search.pyx":275
  *     cdef const char* c_subsequence = subsequence
  * 
  *     cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)             # <<<<<<<<<<<<<<
@@ -3903,11 +3901,11 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   __pyx_t_15 = (__pyx_v_c_max_l_dist + 1);
   if (unlikely(__pyx_t_15 == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-    __PYX_ERR(0, 276, __pyx_L1_error)
+    __PYX_ERR(0, 275, __pyx_L1_error)
   }
   __pyx_v_ngram_len = (__pyx_v__subseq_len / __pyx_t_15);
 
-  /* "fuzzysearch/_generic_search.pyx":277
+  /* "fuzzysearch/_generic_search.pyx":276
  * 
  *     cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)
  *     if ngram_len == 0:             # <<<<<<<<<<<<<<
@@ -3917,20 +3915,20 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   __pyx_t_3 = ((__pyx_v_ngram_len == 0) != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "fuzzysearch/_generic_search.pyx":278
+    /* "fuzzysearch/_generic_search.pyx":277
  *     cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)
  *     if ngram_len == 0:
  *         raise ValueError('the subsequence length must be greater than max_l_dist')             # <<<<<<<<<<<<<<
  * 
  *     cdef int index, small_search_start_index
  */
-    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 278, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 277, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_Raise(__pyx_t_7, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __PYX_ERR(0, 278, __pyx_L1_error)
+    __PYX_ERR(0, 277, __pyx_L1_error)
 
-    /* "fuzzysearch/_generic_search.pyx":277
+    /* "fuzzysearch/_generic_search.pyx":276
  * 
  *     cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)
  *     if ngram_len == 0:             # <<<<<<<<<<<<<<
@@ -3939,30 +3937,30 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
   }
 
-  /* "fuzzysearch/_generic_search.pyx":286
+  /* "fuzzysearch/_generic_search.pyx":285
  *     cdef int subseq_sum
  * 
  *     matches = []             # <<<<<<<<<<<<<<
  *     for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
  *         subseq_sum = calc_sum(c_subsequence + ngram_start, ngram_len)
  */
-  __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 286, __pyx_L1_error)
+  __pyx_t_7 = PyList_New(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 285, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_v_matches = ((PyObject*)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":287
+  /* "fuzzysearch/_generic_search.pyx":286
  * 
  *     matches = []
  *     for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):             # <<<<<<<<<<<<<<
  *         subseq_sum = calc_sum(c_subsequence + ngram_start, ngram_len)
  * 
  */
-  __pyx_t_7 = __Pyx_PyInt_FromSize_t(((__pyx_v__subseq_len - __pyx_v_ngram_len) + 1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_FromSize_t(((__pyx_v__subseq_len - __pyx_v_ngram_len) + 1)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ngram_len); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ngram_len); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_int_0);
   __Pyx_GIVEREF(__pyx_int_0);
@@ -3973,16 +3971,16 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_t_1);
   __pyx_t_7 = 0;
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_xrange, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_xrange, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_5 = __pyx_t_1; __Pyx_INCREF(__pyx_t_5); __pyx_t_10 = 0;
     __pyx_t_16 = NULL;
   } else {
-    __pyx_t_10 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 287, __pyx_L1_error)
+    __pyx_t_10 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 286, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_16 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 287, __pyx_L1_error)
+    __pyx_t_16 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 286, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -3990,17 +3988,17 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
       if (likely(PyList_CheckExact(__pyx_t_5))) {
         if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_5)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_1); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_1); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 286, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_1); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_10); __Pyx_INCREF(__pyx_t_1); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 286, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_5, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -4010,17 +4008,17 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 287, __pyx_L1_error)
+          else __PYX_ERR(0, 286, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_1);
     }
-    __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_t_1); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 287, __pyx_L1_error)
+    __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_t_1); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 286, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_ngram_start = __pyx_t_17;
 
-    /* "fuzzysearch/_generic_search.pyx":288
+    /* "fuzzysearch/_generic_search.pyx":287
  *     matches = []
  *     for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):
  *         subseq_sum = calc_sum(c_subsequence + ngram_start, ngram_len)             # <<<<<<<<<<<<<<
@@ -4029,7 +4027,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
     __pyx_v_subseq_sum = calc_sum((__pyx_v_c_subsequence + __pyx_v_ngram_start), __pyx_v_ngram_len);
 
-    /* "fuzzysearch/_generic_search.pyx":290
+    /* "fuzzysearch/_generic_search.pyx":289
  *         subseq_sum = calc_sum(c_subsequence + ngram_start, ngram_len)
  * 
  *         match_ptr = <char *>simple_memmem_with_needle_sum(             # <<<<<<<<<<<<<<
@@ -4038,7 +4036,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
     __pyx_v_match_ptr = ((char *)simple_memmem_with_needle_sum((((char *)__pyx_v_c_sequence) + __pyx_v_ngram_start), (__pyx_v__seq_len - __pyx_v_ngram_start), (((char *)__pyx_v_c_subsequence) + __pyx_v_ngram_start), __pyx_v_ngram_len, __pyx_v_subseq_sum));
 
-    /* "fuzzysearch/_generic_search.pyx":297
+    /* "fuzzysearch/_generic_search.pyx":296
  *             subseq_sum)
  * 
  *         while match_ptr != NULL:             # <<<<<<<<<<<<<<
@@ -4049,7 +4047,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
       __pyx_t_3 = ((__pyx_v_match_ptr != NULL) != 0);
       if (!__pyx_t_3) break;
 
-      /* "fuzzysearch/_generic_search.pyx":298
+      /* "fuzzysearch/_generic_search.pyx":297
  * 
  *         while match_ptr != NULL:
  *             small_search_start_index = (match_ptr - c_sequence) - ngram_start - c_max_l_dist             # <<<<<<<<<<<<<<
@@ -4058,19 +4056,19 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
       __pyx_v_small_search_start_index = (((__pyx_v_match_ptr - __pyx_v_c_sequence) - __pyx_v_ngram_start) - __pyx_v_c_max_l_dist);
 
-      /* "fuzzysearch/_generic_search.pyx":299
+      /* "fuzzysearch/_generic_search.pyx":298
  *         while match_ptr != NULL:
  *             small_search_start_index = (match_ptr - c_sequence) - ngram_start - c_max_l_dist
  *             small_search_length = _subseq_len + (2 * c_max_l_dist)             # <<<<<<<<<<<<<<
  *             if small_search_start_index < 0:
  *                 small_search_length += small_search_start_index
  */
-      __pyx_t_1 = __Pyx_PyInt_FromSize_t((__pyx_v__subseq_len + (2 * __pyx_v_c_max_l_dist))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 299, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyInt_FromSize_t((__pyx_v__subseq_len + (2 * __pyx_v_c_max_l_dist))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_XDECREF_SET(__pyx_v_small_search_length, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "fuzzysearch/_generic_search.pyx":300
+      /* "fuzzysearch/_generic_search.pyx":299
  *             small_search_start_index = (match_ptr - c_sequence) - ngram_start - c_max_l_dist
  *             small_search_length = _subseq_len + (2 * c_max_l_dist)
  *             if small_search_start_index < 0:             # <<<<<<<<<<<<<<
@@ -4080,22 +4078,22 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
       __pyx_t_3 = ((__pyx_v_small_search_start_index < 0) != 0);
       if (__pyx_t_3) {
 
-        /* "fuzzysearch/_generic_search.pyx":301
+        /* "fuzzysearch/_generic_search.pyx":300
  *             small_search_length = _subseq_len + (2 * c_max_l_dist)
  *             if small_search_start_index < 0:
  *                 small_search_length += small_search_start_index             # <<<<<<<<<<<<<<
  *                 small_search_start_index = 0
  *             if small_search_start_index + small_search_length > _seq_len:
  */
-        __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 300, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_v_small_search_length, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 301, __pyx_L1_error)
+        __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_v_small_search_length, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 300, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF_SET(__pyx_v_small_search_length, __pyx_t_7);
         __pyx_t_7 = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":302
+        /* "fuzzysearch/_generic_search.pyx":301
  *             if small_search_start_index < 0:
  *                 small_search_length += small_search_start_index
  *                 small_search_start_index = 0             # <<<<<<<<<<<<<<
@@ -4104,7 +4102,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
         __pyx_v_small_search_start_index = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":300
+        /* "fuzzysearch/_generic_search.pyx":299
  *             small_search_start_index = (match_ptr - c_sequence) - ngram_start - c_max_l_dist
  *             small_search_length = _subseq_len + (2 * c_max_l_dist)
  *             if small_search_start_index < 0:             # <<<<<<<<<<<<<<
@@ -4113,40 +4111,40 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
       }
 
-      /* "fuzzysearch/_generic_search.pyx":303
+      /* "fuzzysearch/_generic_search.pyx":302
  *                 small_search_length += small_search_start_index
  *                 small_search_start_index = 0
  *             if small_search_start_index + small_search_length > _seq_len:             # <<<<<<<<<<<<<<
  *                 small_search_length = _seq_len - small_search_start_index
  *             # try to expand left and/or right according to n_ngram
  */
-      __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 302, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_1 = PyNumber_Add(__pyx_t_7, __pyx_v_small_search_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_1 = PyNumber_Add(__pyx_t_7, __pyx_v_small_search_length); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyInt_FromSize_t(__pyx_v__seq_len); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyInt_FromSize_t(__pyx_v__seq_len); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 302, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_7, Py_GT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_t_7, Py_GT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 302, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 303, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 302, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (__pyx_t_3) {
 
-        /* "fuzzysearch/_generic_search.pyx":304
+        /* "fuzzysearch/_generic_search.pyx":303
  *                 small_search_start_index = 0
  *             if small_search_start_index + small_search_length > _seq_len:
  *                 small_search_length = _seq_len - small_search_start_index             # <<<<<<<<<<<<<<
  *             # try to expand left and/or right according to n_ngram
  *             for match in _c_find_near_matches_generic_linear_programming(
  */
-        __pyx_t_6 = __Pyx_PyInt_FromSize_t((__pyx_v__seq_len - __pyx_v_small_search_start_index)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 304, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyInt_FromSize_t((__pyx_v__seq_len - __pyx_v_small_search_start_index)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF_SET(__pyx_v_small_search_length, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":303
+        /* "fuzzysearch/_generic_search.pyx":302
  *                 small_search_length += small_search_start_index
  *                 small_search_start_index = 0
  *             if small_search_start_index + small_search_length > _seq_len:             # <<<<<<<<<<<<<<
@@ -4155,31 +4153,31 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
  */
       }
 
-      /* "fuzzysearch/_generic_search.pyx":309
+      /* "fuzzysearch/_generic_search.pyx":308
  *                 c_subsequence, _subseq_len,
  *                 c_sequence + small_search_start_index,
  *                 small_search_length,             # <<<<<<<<<<<<<<
  *                 c_max_substitutions, c_max_insertions, c_max_deletions, c_max_l_dist,
  *             ):
  */
-      __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_v_small_search_length); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 309, __pyx_L1_error)
+      __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_v_small_search_length); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 308, __pyx_L1_error)
 
-      /* "fuzzysearch/_generic_search.pyx":306
+      /* "fuzzysearch/_generic_search.pyx":305
  *                 small_search_length = _seq_len - small_search_start_index
  *             # try to expand left and/or right according to n_ngram
  *             for match in _c_find_near_matches_generic_linear_programming(             # <<<<<<<<<<<<<<
  *                 c_subsequence, _subseq_len,
  *                 c_sequence + small_search_start_index,
  */
-      __pyx_t_6 = __pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_generic_linear_programming(__pyx_v_c_subsequence, __pyx_v__subseq_len, (__pyx_v_c_sequence + __pyx_v_small_search_start_index), __pyx_t_17, __pyx_v_c_max_substitutions, __pyx_v_c_max_insertions, __pyx_v_c_max_deletions, __pyx_v_c_max_l_dist); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 306, __pyx_L1_error)
+      __pyx_t_6 = __pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_generic_linear_programming(__pyx_v_c_subsequence, __pyx_v__subseq_len, (__pyx_v_c_sequence + __pyx_v_small_search_start_index), __pyx_t_17, __pyx_v_c_max_substitutions, __pyx_v_c_max_insertions, __pyx_v_c_max_deletions, __pyx_v_c_max_l_dist); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 305, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       if (likely(PyList_CheckExact(__pyx_t_6)) || PyTuple_CheckExact(__pyx_t_6)) {
         __pyx_t_7 = __pyx_t_6; __Pyx_INCREF(__pyx_t_7); __pyx_t_18 = 0;
         __pyx_t_19 = NULL;
       } else {
-        __pyx_t_18 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 306, __pyx_L1_error)
+        __pyx_t_18 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 305, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_19 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 306, __pyx_L1_error)
+        __pyx_t_19 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 305, __pyx_L1_error)
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       for (;;) {
@@ -4187,17 +4185,17 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
           if (likely(PyList_CheckExact(__pyx_t_7))) {
             if (__pyx_t_18 >= PyList_GET_SIZE(__pyx_t_7)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_18); __Pyx_INCREF(__pyx_t_6); __pyx_t_18++; if (unlikely(0 < 0)) __PYX_ERR(0, 306, __pyx_L1_error)
+            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_18); __Pyx_INCREF(__pyx_t_6); __pyx_t_18++; if (unlikely(0 < 0)) __PYX_ERR(0, 305, __pyx_L1_error)
             #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_7, __pyx_t_18); __pyx_t_18++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 306, __pyx_L1_error)
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_7, __pyx_t_18); __pyx_t_18++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 305, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             #endif
           } else {
             if (__pyx_t_18 >= PyTuple_GET_SIZE(__pyx_t_7)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_18); __Pyx_INCREF(__pyx_t_6); __pyx_t_18++; if (unlikely(0 < 0)) __PYX_ERR(0, 306, __pyx_L1_error)
+            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_18); __Pyx_INCREF(__pyx_t_6); __pyx_t_18++; if (unlikely(0 < 0)) __PYX_ERR(0, 305, __pyx_L1_error)
             #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_7, __pyx_t_18); __pyx_t_18++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 306, __pyx_L1_error)
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_7, __pyx_t_18); __pyx_t_18++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 305, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             #endif
           }
@@ -4207,7 +4205,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 306, __pyx_L1_error)
+              else __PYX_ERR(0, 305, __pyx_L1_error)
             }
             break;
           }
@@ -4216,69 +4214,69 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
         __Pyx_XDECREF_SET(__pyx_v_match, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":312
+        /* "fuzzysearch/_generic_search.pyx":311
  *                 c_max_substitutions, c_max_insertions, c_max_deletions, c_max_l_dist,
  *             ):
  *                 matches.append(match._replace(             # <<<<<<<<<<<<<<
  *                     start=match.start + small_search_start_index,
  *                     end=match.end + small_search_start_index,
  */
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_match, __pyx_n_s_replace); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 312, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_match, __pyx_n_s_replace); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 311, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
 
-        /* "fuzzysearch/_generic_search.pyx":313
+        /* "fuzzysearch/_generic_search.pyx":312
  *             ):
  *                 matches.append(match._replace(
  *                     start=match.start + small_search_start_index,             # <<<<<<<<<<<<<<
  *                     end=match.end + small_search_start_index,
  *                 ))
  */
-        __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 312, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_match, __pyx_n_s_start); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_match, __pyx_n_s_start); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 312, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_20 = PyNumber_Add(__pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_20 = PyNumber_Add(__pyx_t_4, __pyx_t_8); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 312, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_20);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_start, __pyx_t_20) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
+        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_start, __pyx_t_20) < 0) __PYX_ERR(0, 312, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":314
+        /* "fuzzysearch/_generic_search.pyx":313
  *                 matches.append(match._replace(
  *                     start=match.start + small_search_start_index,
  *                     end=match.end + small_search_start_index,             # <<<<<<<<<<<<<<
  *                 ))
  *             match_ptr = <char *>simple_memmem_with_needle_sum(
  */
-        __pyx_t_20 = __Pyx_PyObject_GetAttrStr(__pyx_v_match, __pyx_n_s_end); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 314, __pyx_L1_error)
+        __pyx_t_20 = __Pyx_PyObject_GetAttrStr(__pyx_v_match, __pyx_n_s_end); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 313, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_20);
-        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 314, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_small_search_start_index); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 313, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_4 = PyNumber_Add(__pyx_t_20, __pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 314, __pyx_L1_error)
+        __pyx_t_4 = PyNumber_Add(__pyx_t_20, __pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 313, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_end, __pyx_t_4) < 0) __PYX_ERR(0, 313, __pyx_L1_error)
+        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_end, __pyx_t_4) < 0) __PYX_ERR(0, 312, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":312
+        /* "fuzzysearch/_generic_search.pyx":311
  *                 c_max_substitutions, c_max_insertions, c_max_deletions, c_max_l_dist,
  *             ):
  *                 matches.append(match._replace(             # <<<<<<<<<<<<<<
  *                     start=match.start + small_search_start_index,
  *                     end=match.end + small_search_start_index,
  */
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 311, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_4); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 312, __pyx_L1_error)
+        __pyx_t_21 = __Pyx_PyList_Append(__pyx_v_matches, __pyx_t_4); if (unlikely(__pyx_t_21 == ((int)-1))) __PYX_ERR(0, 311, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "fuzzysearch/_generic_search.pyx":306
+        /* "fuzzysearch/_generic_search.pyx":305
  *                 small_search_length = _seq_len - small_search_start_index
  *             # try to expand left and/or right according to n_ngram
  *             for match in _c_find_near_matches_generic_linear_programming(             # <<<<<<<<<<<<<<
@@ -4288,7 +4286,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
       }
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "fuzzysearch/_generic_search.pyx":316
+      /* "fuzzysearch/_generic_search.pyx":315
  *                     end=match.end + small_search_start_index,
  *                 ))
  *             match_ptr = <char *>simple_memmem_with_needle_sum(             # <<<<<<<<<<<<<<
@@ -4298,7 +4296,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
       __pyx_v_match_ptr = ((char *)simple_memmem_with_needle_sum((((char *)__pyx_v_match_ptr) + 1), ((__pyx_v__seq_len - (__pyx_v_match_ptr - __pyx_v_c_sequence)) - 1), (((char *)__pyx_v_c_subsequence) + __pyx_v_ngram_start), __pyx_v_ngram_len, __pyx_v_subseq_sum));
     }
 
-    /* "fuzzysearch/_generic_search.pyx":287
+    /* "fuzzysearch/_generic_search.pyx":286
  * 
  *     matches = []
  *     for ngram_start in xrange(0, _subseq_len - ngram_len + 1, ngram_len):             # <<<<<<<<<<<<<<
@@ -4308,7 +4306,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":321
+  /* "fuzzysearch/_generic_search.pyx":320
  *                 subseq_sum)
  * 
  *     return matches             # <<<<<<<<<<<<<<
@@ -4318,7 +4316,7 @@ static PyObject *__pyx_pf_11fuzzysearch_15_generic_search_2c_find_near_matches_g
   __pyx_r = __pyx_v_matches;
   goto __pyx_L0;
 
-  /* "fuzzysearch/_generic_search.pyx":237
+  /* "fuzzysearch/_generic_search.pyx":236
  * 
  * 
  * def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
@@ -4397,15 +4395,16 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ALLOWED_TYPES, __pyx_k_ALLOWED_TYPES, sizeof(__pyx_k_ALLOWED_TYPES), 0, 0, 1, 1},
-  {&__pyx_kp_s_Given_subsequence_is_empty, __pyx_k_Given_subsequence_is_empty, sizeof(__pyx_k_Given_subsequence_is_empty), 0, 0, 1, 0},
+  {&__pyx_kp_u_Given_subsequence_is_empty, __pyx_k_Given_subsequence_is_empty, sizeof(__pyx_k_Given_subsequence_is_empty), 0, 1, 0, 0},
   {&__pyx_n_s_Match, __pyx_k_Match, sizeof(__pyx_k_Match), 0, 0, 1, 1},
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
-  {&__pyx_n_s_binary_type, __pyx_k_binary_type, sizeof(__pyx_k_binary_type), 0, 0, 1, 1},
   {&__pyx_n_s_c_find_near_matches_generic_line, __pyx_k_c_find_near_matches_generic_line, sizeof(__pyx_k_c_find_near_matches_generic_line), 0, 0, 1, 1},
+  {&__pyx_n_u_c_find_near_matches_generic_line, __pyx_k_c_find_near_matches_generic_line, sizeof(__pyx_k_c_find_near_matches_generic_line), 0, 1, 0, 1},
   {&__pyx_n_s_c_find_near_matches_generic_ngra, __pyx_k_c_find_near_matches_generic_ngra, sizeof(__pyx_k_c_find_near_matches_generic_ngra), 0, 0, 1, 1},
+  {&__pyx_n_u_c_find_near_matches_generic_ngra, __pyx_k_c_find_near_matches_generic_ngra, sizeof(__pyx_k_c_find_near_matches_generic_ngra), 0, 1, 0, 1},
   {&__pyx_n_s_c_max_deletions, __pyx_k_c_max_deletions, sizeof(__pyx_k_c_max_deletions), 0, 0, 1, 1},
   {&__pyx_n_s_c_max_insertions, __pyx_k_c_max_insertions, sizeof(__pyx_k_c_max_insertions), 0, 0, 1, 1},
   {&__pyx_n_s_c_max_l_dist, __pyx_k_c_max_l_dist, sizeof(__pyx_k_c_max_l_dist), 0, 0, 1, 1},
@@ -4438,8 +4437,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_search_params, __pyx_k_search_params, sizeof(__pyx_k_search_params), 0, 0, 1, 1},
   {&__pyx_n_s_seq_len, __pyx_k_seq_len, sizeof(__pyx_k_seq_len), 0, 0, 1, 1},
   {&__pyx_n_s_sequence, __pyx_k_sequence, sizeof(__pyx_k_sequence), 0, 0, 1, 1},
-  {&__pyx_kp_s_sequence_is_of_invalid_type_s, __pyx_k_sequence_is_of_invalid_type_s, sizeof(__pyx_k_sequence_is_of_invalid_type_s), 0, 0, 1, 0},
-  {&__pyx_n_s_six, __pyx_k_six, sizeof(__pyx_k_six), 0, 0, 1, 1},
+  {&__pyx_kp_u_sequence_is_of_invalid_type_s, __pyx_k_sequence_is_of_invalid_type_s, sizeof(__pyx_k_sequence_is_of_invalid_type_s), 0, 1, 0, 0},
   {&__pyx_n_s_small_search_length, __pyx_k_small_search_length, sizeof(__pyx_k_small_search_length), 0, 0, 1, 1},
   {&__pyx_n_s_small_search_start_index, __pyx_k_small_search_start_index, sizeof(__pyx_k_small_search_start_index), 0, 0, 1, 1},
   {&__pyx_kp_s_src_fuzzysearch__generic_search, __pyx_k_src_fuzzysearch__generic_search, sizeof(__pyx_k_src_fuzzysearch__generic_search), 0, 0, 1, 0},
@@ -4449,21 +4447,21 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_subseq_len_minus_one, __pyx_k_subseq_len_minus_one, sizeof(__pyx_k_subseq_len_minus_one), 0, 0, 1, 1},
   {&__pyx_n_s_subseq_sum, __pyx_k_subseq_sum, sizeof(__pyx_k_subseq_sum), 0, 0, 1, 1},
   {&__pyx_n_s_subsequence, __pyx_k_subsequence, sizeof(__pyx_k_subsequence), 0, 0, 1, 1},
-  {&__pyx_kp_s_subsequence_is_of_invalid_type_s, __pyx_k_subsequence_is_of_invalid_type_s, sizeof(__pyx_k_subsequence_is_of_invalid_type_s), 0, 0, 1, 0},
+  {&__pyx_kp_u_subsequence_is_of_invalid_type_s, __pyx_k_subsequence_is_of_invalid_type_s, sizeof(__pyx_k_subsequence_is_of_invalid_type_s), 0, 1, 0, 0},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_kp_s_the_subsequence_length_must_be_g, __pyx_k_the_subsequence_length_must_be_g, sizeof(__pyx_k_the_subsequence_length_must_be_g), 0, 0, 1, 0},
+  {&__pyx_kp_u_the_subsequence_length_must_be_g, __pyx_k_the_subsequence_length_must_be_g, sizeof(__pyx_k_the_subsequence_length_must_be_g), 0, 1, 0, 0},
   {&__pyx_n_s_unpacked, __pyx_k_unpacked, sizeof(__pyx_k_unpacked), 0, 0, 1, 1},
   {&__pyx_n_s_xrange, __pyx_k_xrange, sizeof(__pyx_k_xrange), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 37, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 42, __pyx_L1_error)
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 82, __pyx_L1_error)
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) __PYX_ERR(0, 101, __pyx_L1_error)
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) __PYX_ERR(0, 101, __pyx_L1_error)
   #endif
   return 0;
   __pyx_L1_error:;
@@ -4474,62 +4472,62 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "fuzzysearch/_generic_search.pyx":42
+  /* "fuzzysearch/_generic_search.pyx":41
  * 
  *     if not subsequence:
  *         raise ValueError('Given subsequence is empty!')             # <<<<<<<<<<<<<<
  * 
  *     max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_Given_subsequence_is_empty); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Given_subsequence_is_empty); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "fuzzysearch/_generic_search.pyx":254
+  /* "fuzzysearch/_generic_search.pyx":253
  * 
  *     if not subsequence:
  *         raise ValueError('Given subsequence is empty!')             # <<<<<<<<<<<<<<
  * 
  *     max_substitutions, max_insertions, max_deletions, max_l_dist = search_params.unpacked
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_Given_subsequence_is_empty); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 254, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Given_subsequence_is_empty); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 253, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "fuzzysearch/_generic_search.pyx":278
+  /* "fuzzysearch/_generic_search.pyx":277
  *     cdef size_t ngram_len = _subseq_len // (c_max_l_dist + 1)
  *     if ngram_len == 0:
  *         raise ValueError('the subsequence length must be greater than max_l_dist')             # <<<<<<<<<<<<<<
  * 
  *     cdef int index, small_search_start_index
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_the_subsequence_length_must_be_g); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_the_subsequence_length_must_be_g); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 277, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "fuzzysearch/_generic_search.pyx":25
+  /* "fuzzysearch/_generic_search.pyx":24
  * 
  * 
  * def c_find_near_matches_generic_linear_programming(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
  *     """search for near-matches of subsequence in sequence
  * 
  */
-  __pyx_tuple__3 = PyTuple_Pack(9, __pyx_n_s_subsequence, __pyx_n_s_sequence, __pyx_n_s_search_params, __pyx_n_s_max_substitutions, __pyx_n_s_max_insertions, __pyx_n_s_max_deletions, __pyx_n_s_max_l_dist, __pyx_n_s_c_subsequence, __pyx_n_s_c_sequence); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(9, __pyx_n_s_subsequence, __pyx_n_s_sequence, __pyx_n_s_search_params, __pyx_n_s_max_substitutions, __pyx_n_s_max_insertions, __pyx_n_s_max_deletions, __pyx_n_s_max_l_dist, __pyx_n_s_c_subsequence, __pyx_n_s_c_sequence); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_fuzzysearch__generic_search, __pyx_n_s_c_find_near_matches_generic_line, 25, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(3, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_fuzzysearch__generic_search, __pyx_n_s_c_find_near_matches_generic_line, 24, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 24, __pyx_L1_error)
 
-  /* "fuzzysearch/_generic_search.pyx":237
+  /* "fuzzysearch/_generic_search.pyx":236
  * 
  * 
  * def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
  *     """search for near-matches of subsequence in sequence
  * 
  */
-  __pyx_tuple__5 = PyTuple_Pack(25, __pyx_n_s_subsequence, __pyx_n_s_sequence, __pyx_n_s_search_params, __pyx_n_s_max_substitutions, __pyx_n_s_max_insertions, __pyx_n_s_max_deletions, __pyx_n_s_max_l_dist, __pyx_n_s_subseq_len, __pyx_n_s_subseq_len_minus_one, __pyx_n_s_seq_len, __pyx_n_s_c_max_substitutions, __pyx_n_s_c_max_insertions, __pyx_n_s_c_max_deletions, __pyx_n_s_c_max_l_dist, __pyx_n_s_c_sequence, __pyx_n_s_c_subsequence, __pyx_n_s_ngram_len, __pyx_n_s_index, __pyx_n_s_small_search_start_index, __pyx_n_s_ngram_start, __pyx_n_s_match_ptr, __pyx_n_s_subseq_sum, __pyx_n_s_matches, __pyx_n_s_small_search_length, __pyx_n_s_match); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 237, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(25, __pyx_n_s_subsequence, __pyx_n_s_sequence, __pyx_n_s_search_params, __pyx_n_s_max_substitutions, __pyx_n_s_max_insertions, __pyx_n_s_max_deletions, __pyx_n_s_max_l_dist, __pyx_n_s_subseq_len, __pyx_n_s_subseq_len_minus_one, __pyx_n_s_seq_len, __pyx_n_s_c_max_substitutions, __pyx_n_s_c_max_insertions, __pyx_n_s_c_max_deletions, __pyx_n_s_c_max_l_dist, __pyx_n_s_c_sequence, __pyx_n_s_c_subsequence, __pyx_n_s_ngram_len, __pyx_n_s_index, __pyx_n_s_small_search_start_index, __pyx_n_s_ngram_start, __pyx_n_s_match_ptr, __pyx_n_s_subseq_sum, __pyx_n_s_matches, __pyx_n_s_small_search_length, __pyx_n_s_match); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(3, 0, 25, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_fuzzysearch__generic_search, __pyx_n_s_c_find_near_matches_generic_ngra, 237, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 237, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(3, 0, 25, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_src_fuzzysearch__generic_search, __pyx_n_s_c_find_near_matches_generic_ngra, 236, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4810,104 +4808,88 @@ if (!__Pyx_RefNanny) {
   #endif
 
   /* "fuzzysearch/_generic_search.pyx":1
- * import six             # <<<<<<<<<<<<<<
- * from fuzzysearch.common import Match
- * from libc.stdlib cimport malloc, free, realloc
- */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_six, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_six, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "fuzzysearch/_generic_search.pyx":2
- * import six
  * from fuzzysearch.common import Match             # <<<<<<<<<<<<<<
  * from libc.stdlib cimport malloc, free, realloc
  * 
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Match);
   __Pyx_GIVEREF(__pyx_n_s_Match);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Match);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_fuzzysearch_common, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_fuzzysearch_common, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Match); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Match); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Match, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Match, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":11
+  /* "fuzzysearch/_generic_search.pyx":10
  *                                         int needle_sum)
  * 
  * __all__ = [             # <<<<<<<<<<<<<<
  *     'c_find_near_matches_generic_linear_programming',
  *     'c_find_near_matches_generic_ngrams',
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(__pyx_n_s_c_find_near_matches_generic_line);
-  __Pyx_GIVEREF(__pyx_n_s_c_find_near_matches_generic_line);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_c_find_near_matches_generic_line);
-  __Pyx_INCREF(__pyx_n_s_c_find_near_matches_generic_ngra);
-  __Pyx_GIVEREF(__pyx_n_s_c_find_near_matches_generic_ngra);
-  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_c_find_near_matches_generic_ngra);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_2) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_INCREF(__pyx_n_u_c_find_near_matches_generic_line);
+  __Pyx_GIVEREF(__pyx_n_u_c_find_near_matches_generic_line);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_u_c_find_near_matches_generic_line);
+  __Pyx_INCREF(__pyx_n_u_c_find_near_matches_generic_ngra);
+  __Pyx_GIVEREF(__pyx_n_u_c_find_near_matches_generic_ngra);
+  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_u_c_find_near_matches_generic_ngra);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_2) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":22
+  /* "fuzzysearch/_generic_search.pyx":21
  * 
  * 
- * ALLOWED_TYPES = (six.binary_type, bytearray)             # <<<<<<<<<<<<<<
+ * ALLOWED_TYPES = (bytes, bytearray)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_six); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_binary_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __Pyx_INCREF(((PyObject *)(&PyBytes_Type)));
+  __Pyx_GIVEREF(((PyObject *)(&PyBytes_Type)));
+  PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)(&PyBytes_Type)));
   __Pyx_INCREF(((PyObject *)(&PyByteArray_Type)));
   __Pyx_GIVEREF(((PyObject *)(&PyByteArray_Type)));
   PyTuple_SET_ITEM(__pyx_t_2, 1, ((PyObject *)(&PyByteArray_Type)));
-  __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ALLOWED_TYPES, __pyx_t_2) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ALLOWED_TYPES, __pyx_t_2) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":25
+  /* "fuzzysearch/_generic_search.pyx":24
  * 
  * 
  * def c_find_near_matches_generic_linear_programming(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
  *     """search for near-matches of subsequence in sequence
  * 
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_11fuzzysearch_15_generic_search_1c_find_near_matches_generic_linear_programming, NULL, __pyx_n_s_fuzzysearch__generic_search); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_11fuzzysearch_15_generic_search_1c_find_near_matches_generic_linear_programming, NULL, __pyx_n_s_fuzzysearch__generic_search); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_c_find_near_matches_generic_line, __pyx_t_2) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_c_find_near_matches_generic_line, __pyx_t_2) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "fuzzysearch/_generic_search.pyx":237
+  /* "fuzzysearch/_generic_search.pyx":236
  * 
  * 
  * def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):             # <<<<<<<<<<<<<<
  *     """search for near-matches of subsequence in sequence
  * 
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_11fuzzysearch_15_generic_search_3c_find_near_matches_generic_ngrams, NULL, __pyx_n_s_fuzzysearch__generic_search); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 237, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_11fuzzysearch_15_generic_search_3c_find_near_matches_generic_ngrams, NULL, __pyx_n_s_fuzzysearch__generic_search); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_c_find_near_matches_generic_ngra, __pyx_t_2) < 0) __PYX_ERR(0, 237, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_c_find_near_matches_generic_ngra, __pyx_t_2) < 0) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "fuzzysearch/_generic_search.pyx":1
- * import six             # <<<<<<<<<<<<<<
- * from fuzzysearch.common import Match
+ * from fuzzysearch.common import Match             # <<<<<<<<<<<<<<
  * from libc.stdlib cimport malloc, free, realloc
+ * 
  */
   __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);

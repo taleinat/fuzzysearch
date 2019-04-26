@@ -8,10 +8,8 @@ from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_ngrams as fnm_subs_ngrams, \
     has_near_match_substitutions_ngrams as hnm_subs_ngrams
 
-from tests.compat import unittest
+from tests.compat import b, u, unittest
 from tests.utils import skip_if_arguments_arent_byteslike
-
-from six import b, u
 
 
 class TestSubstitionsOnlyBase(object):

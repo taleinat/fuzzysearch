@@ -1,4 +1,3 @@
-import six
 from fuzzysearch.common import Match
 from libc.stdlib cimport malloc, free, realloc
 
@@ -19,7 +18,7 @@ cdef struct GenericSearchCandidate:
     unsigned int l_dist, n_subs, n_ins, n_dels
 
 
-ALLOWED_TYPES = (six.binary_type, bytearray)
+ALLOWED_TYPES = (bytes, bytearray)
 
 
 def c_find_near_matches_generic_linear_programming(subsequence, sequence, search_params):

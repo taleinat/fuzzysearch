@@ -2,11 +2,9 @@ from collections import deque, defaultdict
 from itertools import islice
 from functools import wraps
 
-import six
-
-
 from fuzzysearch.common import Match, search_exact, \
     count_differences_with_maximum, get_best_match_in_group, group_matches
+from fuzzysearch.compat import text_type
 
 
 def _check_arguments(subsequence, sequence, max_substitutions):
@@ -241,8 +239,8 @@ else:
     def has_near_match_substitutions_ngrams(subsequence, sequence,
                                             max_substitutions):
         if not (
-            isinstance(subsequence, six.text_type) or
-            isinstance(sequence, six.text_type)
+            isinstance(subsequence, text_type) or
+            isinstance(sequence, text_type)
         ):
             try:
                 return substitutions_only_has_near_matches_ngrams_byteslike(
@@ -259,8 +257,8 @@ else:
     def find_near_matches_substitutions_ngrams(subsequence, sequence,
                                                max_substitutions):
         if not (
-            isinstance(subsequence, six.text_type) or
-            isinstance(sequence, six.text_type)
+            isinstance(subsequence, text_type) or
+            isinstance(sequence, text_type)
         ):
             try:
                 results = _subs_only_fnm_ngram_byteslike(
