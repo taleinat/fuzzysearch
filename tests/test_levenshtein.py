@@ -305,7 +305,7 @@ class TestFindNearMatchesLevenshteinBase(object):
                 for max_l_dist, expected_matches in max_l_dist2expected_matches:
                     self.assertEqual(
                         self.search(substring, text, max_l_dist=max_l_dist),
-                        expected_matches
+                        [Match(*x) for x in expected_matches],
                     )
 
     def test_empty_sequence(self):

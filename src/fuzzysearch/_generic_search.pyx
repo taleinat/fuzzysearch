@@ -1,3 +1,4 @@
+import attr
 from fuzzysearch.common import Match
 from libc.stdlib cimport malloc, free, realloc
 
@@ -308,7 +309,7 @@ def c_find_near_matches_generic_ngrams(subsequence, sequence, search_params):
                 small_search_length,
                 c_max_substitutions, c_max_insertions, c_max_deletions, c_max_l_dist,
             ):
-                matches.append(match._replace(
+                matches.append(attr.evolve(match,
                     start=match.start + small_search_start_index,
                     end=match.end + small_search_start_index,
                 ))

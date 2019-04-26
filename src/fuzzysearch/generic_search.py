@@ -1,5 +1,7 @@
 from collections import namedtuple
 
+import attr
+
 from fuzzysearch.common import Match, search_exact, \
     group_matches, get_best_match_in_group
 from fuzzysearch.compat import text_type, xrange
@@ -241,7 +243,7 @@ def _find_near_matches_generic_ngrams(subsequence, sequence, search_params):
                 subsequence, sequence[max(0, index - ngram_start - max_l_dist):index - ngram_start + subseq_len + max_l_dist],
                 search_params,
             ):
-                yield match._replace(
+                yield attr.evolve(match,
                     start=match.start + max(0, index - ngram_start - max_l_dist),
                     end=match.end + max(0, index - ngram_start - max_l_dist),
                 )

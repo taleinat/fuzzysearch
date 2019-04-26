@@ -6,7 +6,7 @@ __all__ = [
 
 import array
 
-from fuzzysearch.common import Ngram, search_exact, Match
+from fuzzysearch.common import search_exact, Match
 
 
 def _expand(subsequence, sequence, max_substitutions, max_insertions,

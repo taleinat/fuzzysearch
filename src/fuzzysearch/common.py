@@ -1,11 +1,12 @@
-from collections import namedtuple
 from functools import wraps
 
-from fuzzysearch.compat import text_type, xrange
+from fuzzysearch.compat import int_types, text_type, xrange
+
+from attr import attrs, attrib
 
 
 __all__ = [
-    'Match', 'Ngram', 'LevenshteinSearchParams',
+    'Match', 'LevenshteinSearchParams',
     'search_exact', 'count_differences_with_maximum',
     'group_matches', 'get_best_match_in_group',
 ]
@@ -22,69 +23,76 @@ else:
     CLASSES_WITH_FIND += (Seq,)
 
 
-Match = namedtuple('Match', ['start', 'end', 'dist'])
-Ngram = namedtuple('Ngram', ['start', 'end'])
+@attrs(frozen=True, slots=True)
+class Match(object):
+    start = attrib(type=int)
+    end = attrib(type=int)
+    dist = attrib(type=int)
+
+    if __debug__:
+        def __attrs_post_init__(self):
+            if not (isinstance(self.start, int_types) and self.start >= 0):
+                raise ValueError('start must be a non-negative integer')
+            if not (isinstance(self.end, int_types) and self.end >= self.start):
+                raise ValueError('end must be an integer no smaller than start')
+            if not (isinstance(self.dist, int_types) and self.dist >= 0):
+                print(self.dist)
+                raise ValueError('dist must be a non-negative integer')
 
 
+@attrs(frozen=True, slots=True)
 class LevenshteinSearchParams(object):
-    def __init__(self,
-                 max_substitutions=None,
-                 max_insertions=None,
-                 max_deletions=None,
-                 max_l_dist=None):
-        self.check_params_valid(max_substitutions, max_insertions,
-                                max_deletions, max_l_dist)
+    max_substitutions = attrib(default=None)
+    max_insertions = attrib(default=None)
+    max_deletions = attrib(default=None)
+    max_l_dist = attrib(default=None)
 
-        self.max_substitutions = max_substitutions
-        self.max_insertions = max_insertions
-        self.max_deletions = max_deletions
-        self.max_l_dist = self._get_max_l_dist(
-            max_substitutions, max_insertions,
-            max_deletions, max_l_dist,
-        )
+    def __attrs_post_init__(self):
+        self._check_params_valid()
+        object.__setattr__(self, 'max_l_dist', self._normalize_max_l_dist())
 
     @property
     def unpacked(self):
         return self.max_substitutions, self.max_insertions, self.max_deletions, self.max_l_dist
 
-    @classmethod
-    def check_params_valid(cls,
-                           max_substitutions, max_insertions,
-                           max_deletions, max_l_dist):
+    def _check_params_valid(self):
         if not all(x is None or (isinstance(x, int) and x >= 0)
-                   for x in
-                   [max_substitutions, max_insertions, max_deletions, max_l_dist]):
+                   for x in [
+                       self.max_substitutions,
+                       self.max_insertions,
+                       self.max_deletions,
+                       self.max_l_dist
+                   ]):
             raise TypeError("All limits must be positive integers or None.")
 
-        if max_l_dist is None:
+        if self.max_l_dist is None:
             n_limits = (
-                (1 if max_substitutions is not None else 0) +
-                (1 if max_insertions is not None else 0) +
-                (1 if max_deletions is not None else 0)
+                (1 if self.max_substitutions is not None else 0) +
+                (1 if self.max_insertions is not None else 0) +
+                (1 if self.max_deletions is not None else 0)
             )
             if n_limits < 3:
                 if n_limits == 0:
                     raise ValueError('No limitations given!')
-                elif max_substitutions is None:
+                elif self.max_substitutions is None:
                     raise ValueError('# substitutions must be limited!')
-                elif max_insertions is None:
+                elif self.max_insertions is None:
                     raise ValueError('# insertions must be limited!')
-                elif max_deletions is None:
+                elif self.max_deletions is None:
                     raise ValueError('# deletions must be limited!')
 
-    @classmethod
-    def _get_max_l_dist(cls,
-                        max_substitutions, max_insertions,
-                        max_deletions, max_l_dist):
-        bignum = 1 << 29
-        maxes_sum = (
-            (max_substitutions if max_substitutions is not None else bignum) +
-            (max_insertions if max_insertions is not None else bignum) +
-            (max_deletions if max_deletions is not None else bignum)
+    def _normalize_max_l_dist(self):
+        maxes_sum = sum(
+            x if x is not None else 1 << 29
+            for x in [
+                self.max_substitutions,
+                self.max_insertions,
+                self.max_deletions,
+            ]
         )
         return (
-            max_l_dist
-            if max_l_dist is not None and max_l_dist <= maxes_sum
+            self.max_l_dist
+            if self.max_l_dist is not None and self.max_l_dist <= maxes_sum
             else maxes_sum
         )
 
