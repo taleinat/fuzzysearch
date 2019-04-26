@@ -56,20 +56,14 @@ def choose_search_func(search_params):
 
     # if the limitations are so strict that only exact matches are allowed,
     # use search_exact()
-    if search_params.max_l_dist == 0:
+    if max_l_dist == 0:
         return lambda subsequence, sequence, search_params: [
             Match(index, index + len(subsequence), 0)
             for index in search_exact(subsequence, sequence)
         ]
-        # return [
-        #     Match(start_index, start_index + len(subsequence), 0)
-        #     for start_index in search_exact(subsequence, sequence)
-        # ]
 
     # if only substitutions are allowed, use find_near_matches_substitutions()
     elif max_insertions == 0 and max_deletions == 0:
-        # max_subs = \
-        #     min([x for x in [max_l_dist, max_substitutions] if x is not None])
         return lambda subsequence, sequence, search_params:\
             find_near_matches_substitutions(
                 subsequence, sequence,
