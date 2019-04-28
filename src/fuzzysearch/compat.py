@@ -2,6 +2,7 @@ import sys
 
 
 __all__ = [
+    'int_types',
     'izip',
     'text_type',
     'xrange',
