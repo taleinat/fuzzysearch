@@ -2,9 +2,10 @@ from collections import deque, defaultdict
 from itertools import islice
 from functools import wraps
 
-from fuzzysearch.common import Match, search_exact, \
+from fuzzysearch.common import FuzzySearchBase, Match, \
     count_differences_with_maximum, get_best_match_in_group, group_matches
 from fuzzysearch.compat import text_type
+from fuzzysearch.search_exact import search_exact
 
 
 def _check_arguments(subsequence, sequence, max_substitutions):
@@ -285,3 +286,19 @@ else:
 
         return py_find_near_matches_substitutions_ngrams(
             subsequence, sequence, max_substitutions)
+
+
+class SubstitutionsOnlySearch(FuzzySearchBase):
+    @classmethod
+    def search(cls, subsequence, sequence, search_params):
+        actual_max_subs = min(
+            x for x in [search_params.max_l_dist,
+                        search_params.max_substitutions]
+            if x is not None
+        )
+        return find_near_matches_substitutions(subsequence, sequence,
+                                               actual_max_subs)
+
+    @classmethod
+    def file_search_extra_bytes(cls, subsequence, search_params):
+        return 0

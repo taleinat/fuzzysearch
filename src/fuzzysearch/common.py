@@ -1,26 +1,15 @@
 from functools import wraps
 
-from fuzzysearch.compat import int_types, text_type, xrange
+from fuzzysearch.compat import int_types
 
 from attr import attrs, attrib
 
 
 __all__ = [
     'Match', 'LevenshteinSearchParams',
-    'search_exact', 'count_differences_with_maximum',
+    'count_differences_with_maximum',
     'group_matches', 'get_best_match_in_group',
 ]
-
-
-CLASSES_WITH_INDEX = (list, tuple)
-CLASSES_WITH_FIND = (bytes, text_type)
-
-try:
-    from Bio.Seq import Seq
-except ImportError:
-    pass
-else:
-    CLASSES_WITH_FIND += (Seq,)
 
 
 @attrs(frozen=True, slots=True)
@@ -97,40 +86,6 @@ class LevenshteinSearchParams(object):
         )
 
 
-def search_exact(subsequence, sequence, start_index=0, end_index=None):
-    if not subsequence:
-        raise ValueError('subsequence must not be empty')
-
-    if end_index is None:
-        end_index = len(sequence)
-
-    if isinstance(sequence, CLASSES_WITH_FIND):
-        def find_in_index_range(start_index):
-            return sequence.find(subsequence, start_index, end_index)
-    elif isinstance(sequence, CLASSES_WITH_INDEX):
-        first_item = subsequence[0]
-        first_item_last_index = end_index - (len(subsequence) - 1)
-        def find_in_index_range(start_index):
-            while True:
-                try:
-                    first_index = sequence.index(first_item, start_index, first_item_last_index)
-                    start_index = first_index + 1
-                except ValueError:
-                    return -1
-                for subseq_index in xrange(1, len(subsequence)):
-                    if sequence[first_index + subseq_index] != subsequence[subseq_index]:
-                        break
-                else:
-                    return first_index
-    else:
-        raise TypeError('unsupported sequence type: %s' % type(sequence))
-
-    index = find_in_index_range(start_index)
-    while index >= 0:
-        yield index
-        index = find_in_index_range(index + 1)
-
-
 def count_differences_with_maximum(sequence1, sequence2, max_differences):
     n_different = 0
     for item1, item2 in zip(sequence1, sequence2):
@@ -141,8 +96,7 @@ def count_differences_with_maximum(sequence1, sequence2, max_differences):
     return n_different
 
 try:
-    from fuzzysearch._common import count_differences_with_maximum_byteslike, \
-        search_exact_byteslike
+    from fuzzysearch._common import count_differences_with_maximum_byteslike
 except ImportError:
     pass
 else:
@@ -156,18 +110,6 @@ else:
         except TypeError:
             return _count_differences_with_maximum(sequence1, sequence2,
                                                    max_differences)
-
-    _search_exact = search_exact
-    @wraps(_search_exact)
-    def search_exact(subsequence, sequence, start_index=0, end_index=None):
-        if end_index is None:
-            end_index = len(sequence)
-
-        try:
-            return search_exact_byteslike(subsequence, sequence,
-                                          start_index, end_index)
-        except (TypeError, UnicodeEncodeError):
-            return _search_exact(subsequence, sequence, start_index, end_index)
 
 
 class GroupOfMatches(object):
@@ -208,3 +150,23 @@ def group_matches(matches):
 def get_best_match_in_group(group):
     # return longest match amongst those with the shortest distance
     return min(group, key=lambda match: (match.dist, -(match.end - match.start)))
+
+
+class FuzzySearchBase(object):
+    """Abstract base class for fuzzy search classes"""
+    @classmethod
+    def search(cls, subsequence, sequence, search_params):
+        raise NotImplementedError
+
+    @classmethod
+    def consolidate_matches(cls, subsequence, matches):
+        try:
+            len(matches)
+        except TypeError:
+            return list(matches)
+        else:
+            return matches
+
+    @classmethod
+    def file_search_extra_bytes(cls, subsequence, search_params):
+        raise NotImplementedError

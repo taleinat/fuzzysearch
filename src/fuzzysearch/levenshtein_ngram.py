@@ -1,6 +1,7 @@
 from fuzzysearch.common import Match, \
-    group_matches, get_best_match_in_group, search_exact
+    group_matches, get_best_match_in_group
 from fuzzysearch.compat import xrange
+from fuzzysearch.search_exact import search_exact
 
 
 __all__ = ['find_near_matches_levenshtein_ngrams']

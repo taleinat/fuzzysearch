@@ -2,9 +2,10 @@ from collections import namedtuple
 
 import attr
 
-from fuzzysearch.common import Match, search_exact, \
+from fuzzysearch.common import FuzzySearchBase, Match, \
     group_matches, get_best_match_in_group
 from fuzzysearch.compat import text_type, xrange
+from fuzzysearch.search_exact import search_exact
 
 
 __all__ = [
@@ -266,3 +267,19 @@ def has_near_match_generic_ngrams(subsequence, sequence, search_params):
     for match in _find_near_matches_generic_ngrams(subsequence, sequence, search_params):
         return True
     return False
+
+
+class GenericSearch(FuzzySearchBase):
+    @classmethod
+    def search(cls, subsequence, sequence, search_params):
+        for match in find_near_matches_generic(subsequence, sequence,
+                                               search_params):
+            yield match
+
+    @classmethod
+    def file_search_extra_bytes(cls, subsequence, search_params):
+        return max(
+            x for x in [search_params.max_l_dist,
+                        search_params.max_insertions]
+            if x is not None
+        )

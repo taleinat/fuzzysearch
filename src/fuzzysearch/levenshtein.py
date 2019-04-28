@@ -1,9 +1,10 @@
 from collections import namedtuple
 
 from fuzzysearch.common import Match, group_matches, get_best_match_in_group, \
-    search_exact
+    FuzzySearchBase
 from fuzzysearch.compat import xrange
 from fuzzysearch.levenshtein_ngram import find_near_matches_levenshtein_ngrams
+from fuzzysearch.search_exact import search_exact
 
 
 def find_near_matches_levenshtein(subsequence, sequence, max_l_dist):
@@ -144,3 +145,15 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
         dist = cand.dist + subseq_len - cand.subseq_index
         if dist <= max_l_dist:
             yield Match(cand.start, len(sequence), dist)
+
+
+class LevenshteinSearch(FuzzySearchBase):
+    @classmethod
+    def search(cls, subsequence, sequence, search_params):
+        for match in find_near_matches_levenshtein(subsequence, sequence,
+                                                   search_params.max_l_dist):
+            yield match
+
+    @classmethod
+    def file_search_extra_bytes(cls, subsequence, search_params):
+        return search_params.max_l_dist
