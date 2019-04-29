@@ -1,5 +1,5 @@
 from fuzzysearch.common import group_matches, Match, get_best_match_in_group, \
-    count_differences_with_maximum
+    count_differences_with_maximum, consolidate_overlapping_matches
 from fuzzysearch.substitutions_only import \
     has_near_match_substitutions as hnm_subs, \
     find_near_matches_substitutions as fnm_subs, \
@@ -287,17 +287,10 @@ class TestFindNearMatchesSubstitionsNgrams(TestSubstitionsOnlyBase,
         return fnm_subs_ngrams(subsequence, sequence, max_subs)
 
     def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
-        best_from_grouped_results = [
-            get_best_match_in_group(group)
-            for group in group_matches(search_results)
-        ]
-        best_from_grouped_exepected_outcomes = [
-            get_best_match_in_group(group)
-            for group in group_matches(expected_outcomes)
-        ]
-        return self.assertEqual(best_from_grouped_results,
-                                best_from_grouped_exepected_outcomes,
-                                *args, **kwargs)
+        return self.assertEqual(
+            consolidate_overlapping_matches(search_results),
+            consolidate_overlapping_matches(expected_outcomes),
+            *args, **kwargs)
 
 
 class TestHasNearMatchSubstitionsOnlyBase(TestSubstitionsOnlyBase):
@@ -417,14 +410,8 @@ else:
                 for group in group_matches(matches)
             ]
 
-        def expectedOutcomes(self, search_results, expected_outcomes):
-            best_from_grouped_results = [
-                get_best_match_in_group(group)
-                for group in group_matches(search_results)
-            ]
-            best_from_grouped_exepected_outcomes = [
-                get_best_match_in_group(group)
-                for group in group_matches(expected_outcomes)
-            ]
-            return self.assertEqual(best_from_grouped_results,
-                                    best_from_grouped_exepected_outcomes)
+        def expectedOutcomes(self, search_results, expected_outcomes, *args, **kwargs):
+            return self.assertEqual(
+                consolidate_overlapping_matches(search_results),
+                consolidate_overlapping_matches(expected_outcomes),
+                *args, **kwargs)

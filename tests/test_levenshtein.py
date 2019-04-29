@@ -2,7 +2,7 @@ import re
 
 from tests.compat import unittest
 
-from fuzzysearch.common import Match, get_best_match_in_group, group_matches
+from fuzzysearch.common import Match, get_best_match_in_group, group_matches, consolidate_overlapping_matches
 from fuzzysearch.levenshtein import find_near_matches_levenshtein, \
     find_near_matches_levenshtein_linear_programming as fnm_levenshtein_lp
 from fuzzysearch.levenshtein_ngram import \
@@ -36,7 +36,6 @@ class TestFuzzySearch(unittest.TestCase):
         matches = \
             list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=4, end=7, dist=0), matches)
-        #self.assertEqual([Match(start=4, end=7, dist=0)], matches)
 
     def test_missing_second_item(self):
         sequence = 'abcdefg'
@@ -44,7 +43,6 @@ class TestFuzzySearch(unittest.TestCase):
         matches = \
             list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
         self.assertIn(Match(start=1, end=5, dist=1), matches)
-        #self.assertEqual([Match(start=1, end=5, dist=1)], matches)
 
     def test_dna_search(self):
         # see: http://stackoverflow.com/questions/19725127/
@@ -333,21 +331,22 @@ class TestFindNearMatchesLevenshteinNgrams(TestFindNearMatchesLevenshteinBase,
         if max_l_dist >= len(subsequence):
             self.skipTest(
                 'skipping ngram search with max_l_dist >= len(subsequence)')
-        return fnm_levenshtein_ngrams(subsequence, sequence, max_l_dist)
+        return consolidate_overlapping_matches(
+            fnm_levenshtein_ngrams(subsequence, sequence, max_l_dist)
+        )
 
 
 class TestFindNearMatchesLevenshteinLP(TestFindNearMatchesLevenshteinBase,
                                        unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
-        return [
-            get_best_match_in_group(group)
-            for group in group_matches(
-                fnm_levenshtein_lp(subsequence, sequence, max_l_dist)
-            )
-        ]
+        return consolidate_overlapping_matches(
+            fnm_levenshtein_lp(subsequence, sequence, max_l_dist)
+        )
 
 
 class TestFindNearMatchesLevenshtein(TestFindNearMatchesLevenshteinBase,
                                      unittest.TestCase):
     def search(self, subsequence, sequence, max_l_dist):
-        return find_near_matches_levenshtein(subsequence, sequence, max_l_dist)
+        return consolidate_overlapping_matches(
+            find_near_matches_levenshtein(subsequence, sequence, max_l_dist)
+        )

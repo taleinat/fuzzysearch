@@ -50,7 +50,7 @@ def find_near_matches(subsequence, sequence,
                                             max_l_dist)
     search_class = choose_search_class(search_params)
     matches = search_class.search(subsequence, sequence, search_params)
-    return search_class.consolidate_matches(subsequence, matches)
+    return search_class.consolidate_matches(matches)
 
 
 def choose_search_class(search_params):

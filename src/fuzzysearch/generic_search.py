@@ -3,7 +3,7 @@ from collections import namedtuple
 import attr
 
 from fuzzysearch.common import FuzzySearchBase, Match, \
-    group_matches, get_best_match_in_group
+    consolidate_overlapping_matches
 from fuzzysearch.compat import text_type, xrange
 from fuzzysearch.search_exact import search_exact
 
@@ -50,11 +50,7 @@ def find_near_matches_generic(subsequence, sequence, search_params):
 
     # use the linear programming search method
     else:
-        matches = find_near_matches_generic_linear_programming(subsequence, sequence, search_params)
-
-        match_groups = group_matches(matches)
-        best_matches = [get_best_match_in_group(group) for group in match_groups]
-        return sorted(best_matches)
+        return find_near_matches_generic_linear_programming(subsequence, sequence, search_params)
 
 
 def _find_near_matches_generic_linear_programming(subsequence, sequence, search_params):
@@ -214,16 +210,6 @@ def find_near_matches_generic_ngrams(subsequence, sequence, search_params):
     if not subsequence:
         raise ValueError('Given subsequence is empty!')
 
-    matches = list(_find_near_matches_generic_ngrams(subsequence, sequence, search_params))
-
-    # don't return overlapping matches; instead, group overlapping matches
-    # together and return the best match from each group
-    match_groups = group_matches(matches)
-    best_matches = [get_best_match_in_group(group) for group in match_groups]
-    return sorted(best_matches)
-
-
-def _find_near_matches_generic_ngrams(subsequence, sequence, search_params):
     max_l_dist = search_params.max_l_dist
 
     # optimization: prepare some often used things in advance
@@ -261,10 +247,7 @@ def has_near_match_generic_ngrams(subsequence, sequence, search_params):
     * and the maximum allowed number of character deletions
     * the total number of substitutions, insertions and deletions
     """
-    if not subsequence:
-        raise ValueError('Given subsequence is empty!')
-
-    for match in _find_near_matches_generic_ngrams(subsequence, sequence, search_params):
+    for match in find_near_matches_generic_ngrams(subsequence, sequence, search_params):
         return True
     return False
 
@@ -275,6 +258,10 @@ class GenericSearch(FuzzySearchBase):
         for match in find_near_matches_generic(subsequence, sequence,
                                                search_params):
             yield match
+
+    @classmethod
+    def consolidate_matches(cls, matches):
+        return consolidate_overlapping_matches(matches)
 
     @classmethod
     def file_search_extra_bytes(cls, subsequence, search_params):

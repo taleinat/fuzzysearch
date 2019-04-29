@@ -1,5 +1,4 @@
-from fuzzysearch.common import Match, \
-    group_matches, get_best_match_in_group
+from fuzzysearch.common import Match
 from fuzzysearch.compat import xrange
 from fuzzysearch.search_exact import search_exact
 
@@ -166,7 +165,6 @@ def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
     if ngram_len == 0:
         raise ValueError('the subsequence length must be greater than max_l_dist')
 
-    matches = []
     for ngram_start in xrange(0, subseq_len - ngram_len + 1, ngram_len):
         ngram_end = ngram_start + ngram_len
         subseq_before_reversed = subsequence[:ngram_start][::-1]
@@ -191,14 +189,8 @@ def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
                 continue
             assert dist_left + dist_right <= max_l_dist
 
-            matches.append(Match(
+            yield Match(
                 start=index - left_expand_size,
                 end=index + ngram_len + right_expand_size,
                 dist=dist_left + dist_right,
-            ))
-
-    # don't return overlapping matches; instead, group overlapping matches
-    # together and return the best match from each group
-    match_groups = group_matches(matches)
-    best_matches = [get_best_match_in_group(group) for group in match_groups]
-    return sorted(best_matches)
+            )

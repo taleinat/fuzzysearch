@@ -9,6 +9,7 @@ __all__ = [
     'Match', 'LevenshteinSearchParams',
     'count_differences_with_maximum',
     'group_matches', 'get_best_match_in_group',
+    'consolidate_overlapping_matches',
 ]
 
 
@@ -148,8 +149,15 @@ def group_matches(matches):
 
 
 def get_best_match_in_group(group):
-    # return longest match amongst those with the shortest distance
+    """Get the longest match of those with the smallest distance."""
     return min(group, key=lambda match: (match.dist, -(match.end - match.start)))
+
+
+def consolidate_overlapping_matches(matches):
+    """Replace overlapping matches with a single, "best" match."""
+    groups = group_matches(matches)
+    best_matches = [get_best_match_in_group(group) for group in groups]
+    return sorted(best_matches)
 
 
 class FuzzySearchBase(object):
@@ -159,7 +167,7 @@ class FuzzySearchBase(object):
         raise NotImplementedError
 
     @classmethod
-    def consolidate_matches(cls, subsequence, matches):
+    def consolidate_matches(cls, matches):
         try:
             len(matches)
         except TypeError:

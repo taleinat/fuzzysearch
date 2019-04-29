@@ -1,7 +1,7 @@
 from collections import namedtuple
 
-from fuzzysearch.common import Match, group_matches, get_best_match_in_group, \
-    FuzzySearchBase
+from fuzzysearch.common import FuzzySearchBase, Match, \
+    consolidate_overlapping_matches
 from fuzzysearch.compat import xrange
 from fuzzysearch.levenshtein_ngram import find_near_matches_levenshtein_ngrams
 from fuzzysearch.search_exact import search_exact
@@ -33,12 +33,9 @@ def find_near_matches_levenshtein(subsequence, sequence, max_l_dist):
                                                     max_l_dist)
 
     else:
-        matches = find_near_matches_levenshtein_linear_programming(subsequence,
-                                                                   sequence,
-                                                                   max_l_dist)
-        match_groups = group_matches(matches)
-        best_matches = [get_best_match_in_group(group) for group in match_groups]
-        return sorted(best_matches)
+        return find_near_matches_levenshtein_linear_programming(subsequence,
+                                                                sequence,
+                                                                max_l_dist)
 
 
 Candidate = namedtuple('Candidate', ['start', 'subseq_index', 'dist'])
@@ -153,6 +150,10 @@ class LevenshteinSearch(FuzzySearchBase):
         for match in find_near_matches_levenshtein(subsequence, sequence,
                                                    search_params.max_l_dist):
             yield match
+
+    @classmethod
+    def consolidate_matches(cls, matches):
+        return consolidate_overlapping_matches(matches)
 
     @classmethod
     def file_search_extra_bytes(cls, subsequence, search_params):
