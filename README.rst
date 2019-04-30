@@ -34,7 +34,7 @@ fuzzysearch
     :target: https://pypi.python.org/pypi/fuzzysearch/
     :alt: License
 
-**Easy fuzzy search that just works, fast!**
+**Easy Python fuzzy search that just works, fast!**
 
 .. code:: python
 
@@ -43,16 +43,18 @@ fuzzysearch
 
 * Approximate sub-string searches
 
-* A single, simple function to use
+* Two simple functions to use: one for in-memory data and one for files
 
-  * Chooses the fastest available search mechanism based on the given input
+  * Fastest search algorithm is chosen automatically
 
-* Uses the Levenshtein Distance metric with configurable parameters
+* Levenshtein Distance metric with configurable parameters
 
   * Separately configure the max. allowed distance, substitutions, deletions
     and insertions
 
 * Advanced algorithms with optional C and Cython optimizations
+
+* Properly handles Unicode; special optimizations for binary data
 
 * Extensively tested
 
@@ -93,12 +95,22 @@ the sequence to search, and the matching parameters:
     >>> find_near_matches(subsequence, sequence, max_l_dist=2)
     [Match(start=3, end=24, dist=1)]
 
+To search in a file, use ``find_near_matches_in_file()`` similarly:
+
+.. code:: python
+
+    >>> from fuzzysearch import find_near_matches_in_file
+    >>> with open('data_file', 'rb') as f:
+    ...     find_near_matches_in_file(b'PATTERN', f, max_l_dist=1)
+    [Match(start=3, end=9, dist=1)]
+
+
 Matching Criteria
 -----------------
 The search function supports four possible match criteria, which may be
 supplied in any combination:
 
-* maximum Levenshtein distance (*max_l_dist*)
+* maximum Levenshtein distance (``max_l_dist``)
 
 * maximum # of subsitutions
 
@@ -107,7 +119,7 @@ supplied in any combination:
 * maximum # of insertions ("insert" = skip a character in the sequence)
 
 Not supplying a criterion means that there is no limit for it. For this reason,
-one must always supply *max_l_dist* and/or all other criteria.
+one must always supply ``max_l_dist`` and/or all other criteria.
 
 .. code:: python
 

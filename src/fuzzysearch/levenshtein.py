@@ -156,5 +156,5 @@ class LevenshteinSearch(FuzzySearchBase):
         return consolidate_overlapping_matches(matches)
 
     @classmethod
-    def file_search_extra_bytes(cls, subsequence, search_params):
+    def extra_items_for_chunked_search(cls, subsequence, search_params):
         return search_params.max_l_dist

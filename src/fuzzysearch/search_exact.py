@@ -11,7 +11,7 @@ __all__ = [
 
 
 CLASSES_WITH_INDEX = (list, tuple)
-CLASSES_WITH_FIND = (bytes, text_type)
+CLASSES_WITH_FIND = (bytes, bytearray, text_type)
 
 try:
     from Bio.Seq import Seq
@@ -80,5 +80,5 @@ class ExactSearch(FuzzySearchBase):
             yield Match(index, index + len(subsequence), 0)
 
     @classmethod
-    def file_search_extra_bytes(cls, subsequence, search_params):
+    def extra_items_for_chunked_search(cls, subsequence, search_params):
         return 0

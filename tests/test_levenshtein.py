@@ -228,16 +228,12 @@ class TestFindNearMatchesLevenshteinBase(object):
             (1, [(10, 18, 1)]),
             (2, [(10, 18, 1)]),
         ]),
-        'one extra repeating in middle': ('PATTERN',
-                                          '----------PATTTERN---------',
-                                          [
+        'one extra repeating in middle': ('PATTERN', '----------PATTTERN---------', [
             (0, []),
             (1, [(10, 18, 1)]),
             (2, [(10, 18, 1)]),
         ]),
-        'one extra repeating at end': ('PATTERN',
-                                          '----------PATTERNN---------',
-                                          [
+        'one extra repeating at end': ('PATTERN', '----------PATTERNN---------', [
             (0, [(10, 17, 0)]),
             (1, [(10, 17, 0)]),
             (2, [(10, 17, 0)]),

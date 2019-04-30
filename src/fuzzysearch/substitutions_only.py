@@ -300,5 +300,5 @@ class SubstitutionsOnlySearch(FuzzySearchBase):
                                                actual_max_subs)
 
     @classmethod
-    def file_search_extra_bytes(cls, subsequence, search_params):
+    def extra_items_for_chunked_search(cls, subsequence, search_params):
         return 0

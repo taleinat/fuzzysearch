@@ -35,7 +35,7 @@ def _py_expand_short(subsequence, sequence, max_l_dist):
     # |   \      |
     # +1  +1?    +1
     # |      \   |
-    # v       ⌟  v
+    # v       \  v
     #
     # b -- +1 -> scores[subseq_index]
 

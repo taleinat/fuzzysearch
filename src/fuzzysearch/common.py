@@ -32,6 +32,7 @@ class Match(object):
 
 @attrs(frozen=True, slots=True)
 class LevenshteinSearchParams(object):
+    """Parameter data-class for Levenshtein-distance fuzzy searches."""
     max_substitutions = attrib(default=None)
     max_insertions = attrib(default=None)
     max_deletions = attrib(default=None)
@@ -176,5 +177,5 @@ class FuzzySearchBase(object):
             return matches
 
     @classmethod
-    def file_search_extra_bytes(cls, subsequence, search_params):
+    def extra_items_for_chunked_search(cls, subsequence, search_params):
         raise NotImplementedError
