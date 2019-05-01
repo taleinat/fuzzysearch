@@ -2,14 +2,13 @@ import io
 from itertools import product
 import os
 import re
-import sys
 import tempfile
 
 import attr
 
 from fuzzysearch import find_near_matches_in_file
 from fuzzysearch.common import Match
-from fuzzysearch.compat import text_type
+from fuzzysearch.compat import text_type, PY2
 
 from tests.compat import b, u, mock, unittest
 import tests.test_find_near_matches
@@ -40,7 +39,7 @@ class TestSearchFile(unittest.TestCase):
             test_file_bytes(f)
 
         with open(filename, 'r') as f:
-            if sys.version_info < (3,):
+            if PY2:
                 test_file_bytes(f)
             else:
                 test_file_unicode(f)
@@ -121,7 +120,7 @@ class TestSearchFile(unittest.TestCase):
                         )
 
                     with open(filename, 'r') as f:
-                        _needle = needle if sys.version_info < (3,) else needle.decode('utf-8')
+                        _needle = needle if PY2 else needle.decode('utf-8')
                         self.assertEqual(
                             find_near_matches_in_file(_needle, f, max_l_dist=max_l_dist, _chunk_size=chunk_size),
                             [attr.evolve(match,
