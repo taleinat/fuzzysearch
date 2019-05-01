@@ -159,7 +159,6 @@ class TestSearchFile(unittest.TestCase):
 #
 # TODO: replace this with something less magical
 
-this_module = sys.modules[__name__]
 for class_name in filter(
     lambda x: re.match(r'^TestFindNearMatchesAs[a-zA-Z0-9_]+$', x),
     dir(tests.test_find_near_matches)
@@ -202,4 +201,4 @@ for class_name in filter(
         patcher.start()
 
     new_class = type(new_class_name, (orig_class,), {'setUp': setUp})
-    setattr(this_module, new_class_name, new_class)
+    globals()[new_class_name] = new_class
