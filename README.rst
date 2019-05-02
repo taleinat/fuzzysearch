@@ -62,6 +62,7 @@ fuzzysearch
 
 For more info, see the `documentation <http://fuzzysearch.rtfd.org>`_.
 
+
 Installation
 ------------
 
@@ -71,6 +72,7 @@ Installation
 
 This will work even if installing the C and Cython extensions fails, using
 pure-Python fallbacks.
+
 
 Usage
 -----
@@ -84,6 +86,23 @@ the sequence to search, and the matching parameters:
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
     [Match(start=3, end=9, dist=1)]
 
+To search in a file, use ``find_near_matches_in_file()`` similarly:
+
+.. code:: python
+
+    >>> from fuzzysearch import find_near_matches_in_file
+    >>> with open('data_file', 'rb') as f:
+    ...     find_near_matches_in_file(b'PATTERN', f, max_l_dist=1)
+    [Match(start=3, end=9, dist=1)]
+
+
+Examples
+--------
+
+*fuzzysearch* is great for ad-hoc searches of genetic data, such as DNA or
+protein sequences, before reaching for "heavier", domain-specific tools like
+BioPython:
+
 .. code:: python
 
     >>> sequence = '''\
@@ -95,14 +114,20 @@ the sequence to search, and the matching parameters:
     >>> find_near_matches(subsequence, sequence, max_l_dist=2)
     [Match(start=3, end=24, dist=1)]
 
-To search in a file, use ``find_near_matches_in_file()`` similarly:
+BioPython sequences are also supported:
 
 .. code:: python
 
-    >>> from fuzzysearch import find_near_matches_in_file
-    >>> with open('data_file', 'rb') as f:
-    ...     find_near_matches_in_file(b'PATTERN', f, max_l_dist=1)
-    [Match(start=3, end=9, dist=1)]
+    >>> from Bio.Seq import Seq
+    >>> from Bio.Alphabet import IUPAC
+    >>> sequence = Seq('''\
+    GACTAGCACTGTAGGGATAACAATTTCACACAGGTGGACAATTACATTGAAAATCACAGATTGGTCACACACACA
+    TTGGACATACATAGAAACACACACACATACATTAGATACGAACATAGAAACACACATTAGACGCGTACATAGACA
+    CAAACACATTGACAGGCAGTTCAGATGATGACGCCCGACTGATACTCGCGTAGTCGTGGGAGGCAAGGCACACAG
+    GGGATAGG''', IUPAC.unambiguous_dna)
+    >>> subsequence = Seq('TGCACTGTAGGGATAACAAT', IUPAC.unambiguous_dna)
+    >>> find_near_matches(subsequence, sequence, max_l_dist=2)
+    [Match(start=3, end=24, dist=1)]
 
 
 Matching Criteria
@@ -125,11 +150,11 @@ one must always supply ``max_l_dist`` and/or all other criteria.
 
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
     [Match(start=3, end=9, dist=1)]
-    
+
     # this will not match since max-deletions is set to zero
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1, max_deletions=0)
     []
-    
+
     # note that a deletion + insertion may be combined to match a substution
     >>> find_near_matches('PATTERN', '---PAT-ERN---', max_deletions=1, max_insertions=1, max_substitutions=0)
     [Match(start=3, end=10, dist=1)] # the Levenshtein distance is still 1
@@ -137,3 +162,13 @@ one must always supply ``max_l_dist`` and/or all other criteria.
     # ... but deletion + insertion may also match other, non-substitution differences
     >>> find_near_matches('PATTERN', '---PATERRN---', max_deletions=1, max_insertions=1, max_substitutions=0)
     [Match(start=3, end=10, dist=2)]
+
+
+When to Use Other Tools
+-----------------------
+
+* Use case: Search through a list of strings for almost-exactly matching
+  strings. For example, searching through a list of names for possible slight
+  variations of a certain name.
+
+  Suggestion: Consider using `fuzzywuzzy <https://github.com/seatgeek/fuzzywuzzy>`_.
