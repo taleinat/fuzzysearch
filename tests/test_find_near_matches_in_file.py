@@ -29,11 +29,11 @@ class TestSearchFile(unittest.TestCase):
 
         def test_file_bytes(f):
             self.assertEqual(find_near_matches_in_file(b(needle), f, max_l_dist=1),
-                             [Match(3, 9, 1)])
+                             [Match(3, 9, 1, b('PATERN'))])
 
         def test_file_unicode(f):
             self.assertEqual(find_near_matches_in_file(u(needle), f, max_l_dist=1),
-                             [Match(3, 9, 1)])
+                             [Match(3, 9, 1, u('PATERN'))])
 
         with open(filename, 'rb') as f:
             test_file_bytes(f)
@@ -69,7 +69,7 @@ class TestSearchFile(unittest.TestCase):
                 with io.open(filename, 'r', encoding=encoding) as f:
                     self.assertEqual(
                         find_near_matches_in_file(needle, f, max_l_dist=1),
-                        [Match(3, 9, 1)],
+                        [Match(3, 9, 1, u('PATERN'))],
                     )
 
     def test_subsequence_split_between_chunks(self):
@@ -79,9 +79,9 @@ class TestSearchFile(unittest.TestCase):
 
         for needle, haystack_match, max_l_dist, expected_matches in [
             (b('PATTERN'), b('PATERN'), 0, []),
-            (b('PATTERN'), b('PATERN'), 1, [Match(0, 6, 1)]),
-            (b('PATTERN'), b('PATERN'), 2, [Match(0, 6, 1)]),
-            (b('PATTERN'), b('PATTERN'), 0, [Match(0, 7, 0)]),
+            (b('PATTERN'), b('PATERN'), 1, [Match(0, 6, 1, b('PATERN'))]),
+            (b('PATTERN'), b('PATERN'), 2, [Match(0, 6, 1, b('PATERN'))]),
+            (b('PATTERN'), b('PATTERN'), 0, [Match(0, 7, 0, b('PATERN'))]),
         ]:
             for chunk_size, delta in product(
                     [100, 2**10, 2**12, 2**18, 2**20],
@@ -105,7 +105,8 @@ class TestSearchFile(unittest.TestCase):
                             find_near_matches_in_file(needle, f, max_l_dist=max_l_dist, _chunk_size=chunk_size),
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
-                                         end=match.end + chunk_size + delta)
+                                         end=match.end + chunk_size + delta,
+                                         matched=haystack_match)
                              for match in expected_matches]
                         )
 
@@ -115,7 +116,8 @@ class TestSearchFile(unittest.TestCase):
                             find_near_matches_in_file(needle, f, max_l_dist=max_l_dist, _chunk_size=chunk_size // 2),
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
-                                         end=match.end + chunk_size + delta)
+                                         end=match.end + chunk_size + delta,
+                                         matched=haystack_match)
                              for match in expected_matches]
                         )
 
@@ -125,7 +127,8 @@ class TestSearchFile(unittest.TestCase):
                             find_near_matches_in_file(_needle, f, max_l_dist=max_l_dist, _chunk_size=chunk_size),
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
-                                         end=match.end + chunk_size + delta)
+                                         end=match.end + chunk_size + delta,
+                                         matched=haystack_match if PY2 else haystack.decode('utf-8'))
                              for match in expected_matches]
                         )
 
@@ -134,7 +137,8 @@ class TestSearchFile(unittest.TestCase):
                             find_near_matches_in_file(needle.decode('ascii'), f, max_l_dist=max_l_dist, _chunk_size=chunk_size),
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
-                                         end=match.end + chunk_size + delta)
+                                         end=match.end + chunk_size + delta,
+                                         matched=haystack_match if PY2 else haystack.decode('utf-8'))
                              for match in expected_matches]
                         )
 
@@ -144,7 +148,8 @@ class TestSearchFile(unittest.TestCase):
                             find_near_matches_in_file(needle.decode('ascii'), f, max_l_dist=max_l_dist, _chunk_size=chunk_size // 2),
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
-                                         end=match.end + chunk_size + delta)
+                                         end=match.end + chunk_size + delta,
+                                         matched=haystack_match if PY2 else haystack.decode('utf-8'))
                              for match in expected_matches]
                         )
 

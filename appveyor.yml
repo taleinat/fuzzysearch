@@ -35,6 +35,12 @@ environment:
     - PYTHON: 'C:\Python37-x64'
       TOX_ENV: 'py37'
       PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python37'
+    - PYTHON: 'C:\Python38'
+      TOX_ENV: 'py38'
+      PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python38'
+    - PYTHON: 'C:\Python38-x64'
+      TOX_ENV: 'py38'
+      PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python38'
 
 install:
   # We need wheel installed to build wheels

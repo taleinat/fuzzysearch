@@ -91,7 +91,7 @@ class TestFindNearMatchesNoDeletionsNgrams(unittest.TestCase):
     def test_one_sub_one_ins(self):
         sequence = 'abcdefghij'
         pattern = 'bceXghi'
-        expected_match = Match(start=1, end=9, dist=2)
+        expected_match = Match(start=1, end=9, dist=2, matched=sequence[1:9])
         self.assertEqual(fnm_nodels_ngrams(pattern, sequence, 0, 0, 0), [])
         self.assertEqual(fnm_nodels_ngrams(pattern, sequence, 0, 1, 2), [])
         self.assertEqual(fnm_nodels_ngrams(pattern, sequence, 1, 0, 2), [])
@@ -107,15 +107,16 @@ class TestFindNearMatchesNoDeletionsNgrams(unittest.TestCase):
 
         self.assertEqual(
             fnm_nodels_ngrams(pattern, sequence, 0, 2, 2),
-            [Match(start=2, end=9, dist=2)],
+            [Match(start=2, end=9, dist=2, matched=sequence[2:9])],
         )
 
         self.assertEqual(
             fnm_nodels_ngrams(pattern, sequence, 2, 0, 2),
-            [Match(start=2, end=7, dist=2)],
+            [Match(start=2, end=7, dist=2, matched=sequence[2:7])],
         )
 
         self.assertEqual(
             fnm_nodels_ngrams(pattern, sequence, 2, 2, 2),
-            [Match(start=2, end=7, dist=2), Match(start=2, end=9, dist=2)],
+            [Match(start=2, end=7, dist=2, matched=sequence[2:7]),
+             Match(start=2, end=9, dist=2, matched=sequence[2:9])],
         )

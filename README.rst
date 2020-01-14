@@ -39,7 +39,7 @@ fuzzysearch
 .. code:: python
 
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
-    [Match(start=3, end=9, dist=1)]
+    [Match(start=3, end=9, dist=1, matched="PATERN")]
 
 * Approximate sub-string searches
 
@@ -84,7 +84,7 @@ the sequence to search, and the matching parameters:
     >>> from fuzzysearch import find_near_matches
     # search for 'PATTERN' with a maximum Levenshtein Distance of 1
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
-    [Match(start=3, end=9, dist=1)]
+    [Match(start=3, end=9, dist=1, matched="PATERN")]
 
 To search in a file, use ``find_near_matches_in_file()`` similarly:
 
@@ -93,7 +93,7 @@ To search in a file, use ``find_near_matches_in_file()`` similarly:
     >>> from fuzzysearch import find_near_matches_in_file
     >>> with open('data_file', 'rb') as f:
     ...     find_near_matches_in_file(b'PATTERN', f, max_l_dist=1)
-    [Match(start=3, end=9, dist=1)]
+    [Match(start=3, end=9, dist=1, matched="PATERN")]
 
 
 Examples
@@ -112,7 +112,7 @@ BioPython:
     GGGATAGG'''
     >>> subsequence = 'TGCACTGTAGGGATAACAAT' # distance = 1
     >>> find_near_matches(subsequence, sequence, max_l_dist=2)
-    [Match(start=3, end=24, dist=1)]
+    [Match(start=3, end=24, dist=1, matched="TAGCACTGTAGGGATAACAAT")]
 
 BioPython sequences are also supported:
 
@@ -127,7 +127,7 @@ BioPython sequences are also supported:
     GGGATAGG''', IUPAC.unambiguous_dna)
     >>> subsequence = Seq('TGCACTGTAGGGATAACAAT', IUPAC.unambiguous_dna)
     >>> find_near_matches(subsequence, sequence, max_l_dist=2)
-    [Match(start=3, end=24, dist=1)]
+    [Match(start=3, end=24, dist=1, matched="TAGCACTGTAGGGATAACAAT")]
 
 
 Matching Criteria
@@ -149,7 +149,7 @@ one must always supply ``max_l_dist`` and/or all other criteria.
 .. code:: python
 
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
-    [Match(start=3, end=9, dist=1)]
+    [Match(start=3, end=9, dist=1, matched="PATERN")]
 
     # this will not match since max-deletions is set to zero
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1, max_deletions=0)
@@ -157,11 +157,11 @@ one must always supply ``max_l_dist`` and/or all other criteria.
 
     # note that a deletion + insertion may be combined to match a substution
     >>> find_near_matches('PATTERN', '---PAT-ERN---', max_deletions=1, max_insertions=1, max_substitutions=0)
-    [Match(start=3, end=10, dist=1)] # the Levenshtein distance is still 1
+    [Match(start=3, end=10, dist=1, matched="PAT-ERN")] # the Levenshtein distance is still 1
 
     # ... but deletion + insertion may also match other, non-substitution differences
     >>> find_near_matches('PATTERN', '---PATERRN---', max_deletions=1, max_insertions=1, max_substitutions=0)
-    [Match(start=3, end=10, dist=2)]
+    [Match(start=3, end=10, dist=2, matched="PATERRN")]
 
 
 When to Use Other Tools

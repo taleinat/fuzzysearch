@@ -108,24 +108,25 @@ else:
         def test_double_first_item_two_results(self):
             self.assertEqual(
                 self.search(b('def'), b('abcddefg'), 0, 1, 0),
-                [Match(start=3, end=7, dist=1), Match(start=4, end=7, dist=0)],
+                [Match(start=3, end=7, dist=1, matched=b('ddef')),
+                 Match(start=4, end=7, dist=0, matched=b('def'))],
             )
 
         def test_missing_second_item_complex(self):
             self.assertEqual(
                 self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1),
-                [Match(start=1, end=5, dist=1),
-                 Match(start=2, end=5, dist=1),
-                 Match(start=3, end=5, dist=1)],
+                [Match(start=1, end=5, dist=1, matched=b('bcde')),
+                 Match(start=2, end=5, dist=1, matched=b('cde')),
+                 Match(start=3, end=5, dist=1, matched=b('de'))],
             )
 
             self.assertTrue(
-                set([
-                    Match(start=1, end=5, dist=1),
-                    Match(start=2, end=5, dist=1),
-                    Match(start=3, end=5, dist=1),
-                    Match(start=2, end=5, dist=3),
-                ]).issubset(set(
+                {
+                    Match(start=1, end=5, dist=1, matched=b('bcde')),
+                    Match(start=2, end=5, dist=1, matched=b('cde')),
+                    Match(start=3, end=5, dist=1, matched=b('de')),
+                    Match(start=2, end=5, dist=3, matched=b('cde')),
+                }.issubset(set(
                     self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3),
                 ))
             )
@@ -157,8 +158,8 @@ else:
         def test_missing_second_item_complex(self):
             self.assertTrue(
                 set(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1)).issubset([
-                    Match(start=1, end=5, dist=1),
-                    Match(start=2, end=5, dist=1),
-                    Match(start=3, end=5, dist=1),
+                    Match(start=1, end=5, dist=1, matched=b('bcde')),
+                    Match(start=2, end=5, dist=1, matched=b('cde')),
+                    Match(start=3, end=5, dist=1, matched=b('de')),
                 ])
             )

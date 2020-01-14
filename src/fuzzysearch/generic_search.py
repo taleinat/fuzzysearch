@@ -40,7 +40,8 @@ def find_near_matches_generic(subsequence, sequence, search_params):
     # use search_exact()
     if search_params.max_l_dist == 0:
         return [
-            Match(start_index, start_index + len(subsequence), 0)
+            Match(start_index, start_index + len(subsequence), 0,
+                  matched=sequence[start_index:start_index + len(subsequence)])
             for start_index in search_exact(subsequence, sequence)
         ]
 
@@ -72,6 +73,9 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence, search_
     # optimization: prepare some often used things in advance
     subseq_len = len(subsequence)
 
+    def make_match(start, end, dist):
+        return Match(start, end, dist, matched=sequence[start:end])
+
     candidates = []
     for index, char in enumerate(sequence):
         candidates.append(GenericSearchCandidate(index, 0, 0, 0, 0, 0))
@@ -82,7 +86,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence, search_
             if char == subsequence[cand.subseq_index]:
                 # if reached the end of the subsequence, return a match
                 if cand.subseq_index + 1 == subseq_len:
-                    yield Match(cand.start, index + 1, cand.l_dist)
+                    yield make_match(cand.start, index + 1, cand.l_dist)
                 # otherwise, update the candidate's subseq_index and keep it
                 else:
                     new_candidates.append(cand._replace(
@@ -131,15 +135,15 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence, search_
                                 cand.n_ins < max_insertions
                             )
                     ):
-                        yield Match(cand.start, index + 1, cand.l_dist + 1)
+                        yield make_match(cand.start, index + 1, cand.l_dist + 1)
 
                 # try skipping subsequence chars
                 for n_skipped in xrange(1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + 1):
                     # if skipping n_dels sub-sequence chars reaches the end
                     # of the sub-sequence, yield a match
                     if cand.subseq_index + n_skipped == subseq_len:
-                        yield Match(cand.start, index + 1,
-                                    cand.l_dist + n_skipped)
+                        yield make_match(cand.start, index + 1,
+                                         cand.l_dist + n_skipped)
                         break
                     # otherwise, if skipping n_skipped sub-sequence chars
                     # reaches a sub-sequence char identical to this sequence
@@ -148,8 +152,8 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence, search_
                         # if this is the last char of the sub-sequence, yield
                         # a match
                         if cand.subseq_index + n_skipped + 1 == subseq_len:
-                            yield Match(cand.start, index + 1,
-                                        cand.l_dist + n_skipped)
+                            yield make_match(cand.start, index + 1,
+                                             cand.l_dist + n_skipped)
                         # otherwise add a candidate skipping n_skipped
                         # subsequence chars
                         else:
@@ -170,7 +174,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence, search_
         n_skipped = subseq_len - cand.subseq_index
         if cand.n_dels + n_skipped <= max_deletions and \
            cand.l_dist + n_skipped <= max_l_dist:
-            yield Match(cand.start, index + 1, cand.l_dist + n_skipped)
+            yield make_match(cand.start, index + 1, cand.l_dist + n_skipped)
 
 
 try:

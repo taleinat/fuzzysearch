@@ -87,6 +87,8 @@ cdef _c_find_near_matches_generic_linear_programming(
         raise MemoryError()
 
     matches = []
+    def add_match(start, end, dist):
+        matches.append(Match(start, end, dist, matched=sequence[start:end]))
 
     cdef size_t index
     cdef char seq_char
@@ -114,7 +116,7 @@ cdef _c_find_near_matches_generic_linear_programming(
                 if seq_char == subsequence[cand.subseq_index]:
                     # if reached the end of the subsequence, return a match
                     if cand.subseq_index == subseq_len_minus_one:
-                        matches.append(Match(cand.start, index + 1, cand.l_dist))
+                        add_match(cand.start, index + 1, cand.l_dist)
                     # otherwise, update the candidate's subseq_index and keep it
                     else:
                         new_candidates[n_new_candidates] = GenericSearchCandidate(
@@ -169,15 +171,14 @@ cdef _c_find_near_matches_generic_linear_programming(
                                     cand.n_ins < max_insertions
                                 )
                         ):
-                            matches.append(Match(cand.start, index + 1, cand.l_dist + 1))
+                            add_match(cand.start, index + 1, cand.l_dist + 1)
 
                     # try skipping subsequence chars
                     for n_skipped in xrange(<unsigned int> 1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + <unsigned int> 1):
                         # if skipping n_dels sub-sequence chars reaches the end
                         # of the sub-sequence, yield a match
                         if cand.subseq_index + n_skipped == subseq_len:
-                            matches.append(Match(cand.start, index + 1,
-                                                 cand.l_dist + n_skipped))
+                            add_match(cand.start, index + 1, cand.l_dist + n_skipped)
                             break
                         # otherwise, if skipping n_skipped sub-sequence chars
                         # reaches a sub-sequence char identical to this sequence
@@ -186,8 +187,7 @@ cdef _c_find_near_matches_generic_linear_programming(
                             # if this is the last char of the sub-sequence, yield
                             # a match
                             if cand.subseq_index + n_skipped + 1 == subseq_len:
-                                matches.append(Match(cand.start, index + 1,
-                                                     cand.l_dist + n_skipped))
+                                add_match(cand.start, index + 1, cand.l_dist + n_skipped)
                             # otherwise add a candidate skipping n_skipped
                             # subsequence chars
                             else:
@@ -224,7 +224,7 @@ cdef _c_find_near_matches_generic_linear_programming(
             n_skipped = subseq_len - cand.subseq_index
             if cand.n_dels + n_skipped <= max_deletions and \
                cand.l_dist + n_skipped <= max_l_dist:
-                matches.append(Match(cand.start, index, cand.l_dist + n_skipped))
+                add_match(cand.start, index, cand.l_dist + n_skipped)
 
     finally:
         free(candidates)

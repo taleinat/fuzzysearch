@@ -32,15 +32,15 @@ matrix:
     - python: "3.7"
       env:
         - TOXENV=py37-without_coverage
-      # temporary workaround, see https://github.com/travis-ci/travis-ci/issues/9815
-      dist: xenial
-      sudo: yes
     - python: "3.7"
       env:
         - TOXENV=py37-with_coverage
-      # temporary workaround, see https://github.com/travis-ci/travis-ci/issues/9815
-      dist: xenial
-      sudo: yes
+    - python: "3.8"
+      env:
+        - TOXENV=py38-without_coverage
+    - python: "3.8"
+      env:
+        - TOXENV=py38-with_coverage
 
 install:
   - pip install coveralls

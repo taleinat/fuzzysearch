@@ -165,6 +165,9 @@ def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
     if ngram_len == 0:
         raise ValueError('the subsequence length must be greater than max_l_dist')
 
+    def make_match(start, end, dist):
+        return Match(start, end, dist, matched=sequence[start:end])
+
     for ngram_start in xrange(0, subseq_len - ngram_len + 1, ngram_len):
         ngram_end = ngram_start + ngram_len
         subseq_before_reversed = subsequence[:ngram_start][::-1]
@@ -189,7 +192,7 @@ def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
                 continue
             assert dist_left + dist_right <= max_l_dist
 
-            yield Match(
+            yield make_match(
                 start=index - left_expand_size,
                 end=index + ngram_len + right_expand_size,
                 dist=dist_left + dist_right,

@@ -67,6 +67,9 @@ def find_near_matches_no_deletions_ngrams(subsequence, sequence, search_params):
             "The subsequence's length must be greater than max_subs + max_ins!"
         )
 
+    def make_match(start, end, dist):
+        return Match(start, end, dist, matched=sequence[start:end])
+
     matches = []
     matched_indexes = set()
 
@@ -113,7 +116,7 @@ def find_near_matches_no_deletions_ngrams(subsequence, sequence, search_params):
                             ins_before + ins_after <= max_insertions and
                             subs_before + subs_after + ins_before + ins_after <= max_l_dist
                     ):
-                        matches.append(Match(
+                        matches.append(make_match(
                             start=index - ngram_start - ins_before,
                             end=index - ngram_start + subseq_len + ins_after,
                             dist=subs_before + subs_after + ins_before + ins_after,

@@ -28,21 +28,22 @@ class TestFuzzySearch(unittest.TestCase):
     def test_match_identical_sequence(self):
         matches = \
             list(fnm_levenshtein_lp('PATTERN', 'PATTERN', max_l_dist=0))
-        self.assertEqual(matches, [Match(start=0, end=len('PATTERN'), dist=0)])
+        self.assertEqual(matches, [Match(start=0, end=len('PATTERN'), dist=0,
+                                         matched='PATTERN')])
 
     def test_double_first_item(self):
         sequence = 'abcddefg'
         pattern = 'def'
         matches = \
             list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
-        self.assertIn(Match(start=4, end=7, dist=0), matches)
+        self.assertIn(Match(start=4, end=7, dist=0, matched=pattern), matches)
 
     def test_missing_second_item(self):
         sequence = 'abcdefg'
         pattern = 'bde'
         matches = \
             list(fnm_levenshtein_lp(pattern, sequence, max_l_dist=1))
-        self.assertIn(Match(start=1, end=5, dist=1), matches)
+        self.assertIn(Match(start=1, end=5, dist=1, matched='bcde'), matches)
 
     def test_dna_search(self):
         # see: http://stackoverflow.com/questions/19725127/
@@ -57,7 +58,8 @@ class TestFuzzySearch(unittest.TestCase):
         matches = list(fnm_levenshtein_lp(pattern, text, max_l_dist=2))
 
         self.assertTrue(len(matches) > 0)
-        self.assertIn(Match(start=3, end=24, dist=1), matches)
+        self.assertIn(Match(start=3, end=24, dist=1, matched=text[3:24]),
+                      matches)
 
 
 class TestExpandBase(object):
@@ -299,7 +301,8 @@ class TestFindNearMatchesLevenshteinBase(object):
                 for max_l_dist, expected_matches in max_l_dist2expected_matches:
                     self.assertEqual(
                         self.search(substring, text, max_l_dist=max_l_dist),
-                        [Match(*x) for x in expected_matches],
+                        [Match(*x, matched=text[x[0]:x[1]])
+                         for x in expected_matches],
                     )
 
     def test_empty_sequence(self):

@@ -15,9 +15,10 @@ __all__ = [
 
 @attrs(frozen=True, slots=True)
 class Match(object):
-    start = attrib(type=int)
-    end = attrib(type=int)
-    dist = attrib(type=int)
+    start = attrib(type=int, eq=True, hash=True)
+    end = attrib(type=int, eq=True, hash=True)
+    dist = attrib(type=int, eq=True, hash=True)
+    matched = attrib(eq=False, hash=False)
 
     if __debug__:
         def __attrs_post_init__(self):
@@ -28,6 +29,8 @@ class Match(object):
             if not (isinstance(self.dist, int_types) and self.dist >= 0):
                 print(self.dist)
                 raise ValueError('dist must be a non-negative integer')
+            if self.matched is None:
+                raise ValueError('matched must be supplied')
 
 
 @attrs(frozen=True, slots=True)

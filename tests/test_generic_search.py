@@ -88,13 +88,13 @@ class TestGenericSearchBase(object):
     def test_match_identical_sequence(self):
         self.assertEqual(
             self.search(b('PATTERN'), b('PATTERN'), 0, 0, 0, 0),
-            [Match(start=0, end=7, dist=0)],
+            [Match(start=0, end=7, dist=0, matched=b('PATTERN'))],
         )
 
     def test_short_substring(self):
         substring = b('XY')
         text = b('abcdefXYghij')
-        expected_match = Match(start=6, end=8, dist=0)
+        expected_match = Match(start=6, end=8, dist=0, matched=substring)
 
         self.assertEqual(
             self.search(substring, text, 0, 0, 0, 0),
@@ -104,7 +104,7 @@ class TestGenericSearchBase(object):
     def test_substring(self):
         substring = b('PATTERN')
         text = b('aaaaaaaaaaPATTERNaaaaaaaaa')
-        expected_match = Match(start=10, end=17, dist=0)
+        expected_match = Match(start=10, end=17, dist=0, matched=substring)
 
         self.assertEqual(
             self.search(substring, text, 0, 0, 0, 0),
@@ -130,7 +130,7 @@ class TestGenericSearchBase(object):
             tRaXcxavobetBbbfMDjstQLjoJLwiajVRKhFVspIdgrmTMEBbjtpMnSpTkmFcRBZZ
             GUOWnesGgZeKkIQhlxlRPTtjUbbpaPlmxeiBdUKHHApgvEybUwWwXCoXFsauNiINm
             AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()]))
-        expected_match = Match(start=541, end=548, dist=0)
+        expected_match = Match(start=541, end=548, dist=0, matched=substring)
 
         self.assertEqual(
             self.search(substring, text, 0, 0, 0, 0),
@@ -156,7 +156,8 @@ class TestGenericSearchBase(object):
             tRaXcxavobetBbbfMDjstQLjoJLwiajVRKhFVspIdgrmTMEBbjtpMnSpTkmFcRBZZ
             GUOWnesGgZeKkIQhlxlRPTtjUbbpaPlmxeiBdUKHHApgvEybUwWwXCoXFsauNiINm
             AGATFdcaHzgoRpbBFhKdJkLMF'''.splitlines()]))
-        expected_match = Match(start=541, end=548, dist=1)
+        expected_match = Match(start=541, end=548, dist=1,
+                               matched=text[541:548])
 
         self.assertEqual(
             self.search(substring, text, 1, 0, 0, 1),
@@ -171,30 +172,30 @@ class TestGenericSearchBase(object):
     def test_double_first_item(self):
         self.expectedOutcomes(
             self.search(b('def'), b('abcddefg'), 0, 0, 0, 0),
-            [Match(start=4, end=7, dist=0)],
+            [Match(start=4, end=7, dist=0, matched=b('def'))],
         )
 
         self.expectedOutcomes(
             self.search(b('def'), b('abcddefg'), 1, 0, 0, 1),
-            [Match(start=4, end=7, dist=0)],
+            [Match(start=4, end=7, dist=0, matched=b('def'))],
         )
 
         self.expectedOutcomes(
             self.search(b('def'), b('abcddefg'), 0, 0, 1, 1),
-            [Match(start=4, end=7, dist=0),
-             Match(start=5, end=7, dist=1)]
+            [Match(start=4, end=7, dist=0, matched=b('def')),
+             Match(start=5, end=7, dist=1, matched=b('ef'))]
         )
 
         self.expectedOutcomes(
             self.search(b('def'), b('abcddefg'), 0, 1, 0, 1),
-            [Match(start=3, end=7, dist=1),
-             Match(start=4, end=7, dist=0)],
+            [Match(start=3, end=7, dist=1, matched=b('ddef')),
+             Match(start=4, end=7, dist=0, matched=b('def'))],
         )
 
     def test_missing_second_item(self):
         self.assertEqual(
             self.search(b('bde'), b('abcdefg'), 0, 1, 0, 1),
-            [Match(start=1, end=5, dist=1)],
+            [Match(start=1, end=5, dist=1, matched=b('bcde'))],
         )
 
         self.assertEqual(
@@ -204,23 +205,23 @@ class TestGenericSearchBase(object):
 
         self.assertEqual(
             self.search(b('bde'), b('abcdefg'), 1, 0, 0, 1),
-            [Match(start=2, end=5, dist=1)],
+            [Match(start=2, end=5, dist=1, matched=b('cde'))],
         )
 
         self.assertEqual(
             self.search(b('bde'), b('abcdefg'), 0, 0, 1, 1),
-            [Match(start=3, end=5, dist=1)],
+            [Match(start=3, end=5, dist=1, matched=b('de'))],
         )
 
     def test_null_bytes(self):
         self.assertEqual(
             self.search(b('abc'), b('xx\0abcxx'), 0, 0, 0, 0),
-            [Match(start=3, end=6, dist=0)],
+            [Match(start=3, end=6, dist=0, matched=b('abc'))],
         )
 
         self.assertEqual(
             self.search(b('a\0b'), b('xxa\0bcxx'), 0, 0, 0, 0),
-            [Match(start=2, end=5, dist=0)],
+            [Match(start=2, end=5, dist=0, matched=b('a\0b'))],
         )
 
     def test_valid_none_arguments_with_defined_max_l_dist(self):
@@ -288,15 +289,19 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
         for klass in supported_types:
             with self.subTest(klass.__name__):
                 self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 3]), 0, 0, 0, 0),
-                                      [Match(start=0, end=3, dist=0)])
+                                      [Match(start=0, end=3, dist=0,
+                                             matched=klass([1, 2, 3]))])
                 self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 3]), 1, 1, 1, 1),
-                                      [Match(start=0, end=3, dist=0)])
+                                      [Match(start=0, end=3, dist=0,
+                                             matched=klass([1, 2, 3]))])
                 self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 0, 0, 0, 0),
                                       [])
                 self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 1, 1, 1, 1),
-                                      [Match(start=0, end=3, dist=1)])
+                                      [Match(start=0, end=3, dist=1,
+                                             matched=klass([1, 2, 4]))])
                 self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 0, 0, 1, 1),
-                                      [Match(start=0, end=3, dist=1)])
+                                      [Match(start=0, end=3, dist=1,
+                                             matched=klass([1, 2, 4]))])
 
     def test_list_of_words_one_missing(self):
         subsequence = "jumped over the a lazy dog".split()
@@ -305,9 +310,12 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
             ((0, 0, 0, 0), []),
             ((1, 0, 0, 1), []),
             ((0, 1, 0, 1), []),
-            ((0, 0, 1, 1), [Match(start=4, end=9, dist=1)]),
-            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1)]),
-            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1)]),
+            ((0, 0, 1, 1), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
+            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
+            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
         ]:
             self.expectedOutcomes(
                 self.search(subsequence, sequence, *params),
@@ -320,10 +328,13 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
         for params, expected_outcomes in [
             ((0, 0, 0, 0), []),
             ((1, 0, 0, 1), []),
-            ((0, 1, 0, 1), [Match(start=4, end=9, dist=1)]),
+            ((0, 1, 0, 1), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
             ((0, 0, 1, 1), []),
-            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1)]),
-            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1)]),
+            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
+            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
         ]:
             self.expectedOutcomes(
                 self.search(subsequence, sequence, *params),
@@ -335,12 +346,17 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
         sequence = "the big brown fox jumped over the lazy dog".split()
         for params, expected_outcomes in [
             ((0, 0, 0, 0), []),
-            ((1, 0, 0, 1), [Match(start=4, end=9, dist=1)]),
+            ((1, 0, 0, 1), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
             ((0, 1, 0, 1), []),
             ((0, 0, 1, 1), []),
-            ((0, 1, 1, 1), [Match(start=4, end=9, dist=1)]), # substitution = insertion + deletion; dist = 1 !!
-            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1)]),
-            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1)]),
+            # substitution = insertion + deletion; dist = 1 !!
+            ((0, 1, 1, 1), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
+            ((1, 1, 1, 1), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
+            ((2, 2, 2, 2), [Match(start=4, end=9, dist=1,
+                                  matched="jumped over the lazy dog".split())]),
         ]:
             self.expectedOutcomes(
                 self.search(subsequence, sequence, *params),
@@ -388,25 +404,25 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
     def test_double_first_item_two_results(self):
         self.expectedOutcomes(
             self.search(b('def'), b('abcddefg'), 0, 1, 0, 1),
-            [Match(start=3, end=7, dist=1),
-             Match(start=4, end=7, dist=0)],
+            [Match(start=3, end=7, dist=1, matched=b('ddef')),
+             Match(start=4, end=7, dist=0, matched=b('def'))],
         )
 
     def test_missing_second_item_complex(self):
         self.expectedOutcomes(
             self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1),
-            [Match(start=1, end=5, dist=1),
-             Match(start=2, end=5, dist=1),
-             Match(start=3, end=5, dist=1)],
+            [Match(start=1, end=5, dist=1, matched=b('bcde')),
+             Match(start=2, end=5, dist=1, matched=b('cde')),
+             Match(start=3, end=5, dist=1, matched=b('de'))],
         )
 
         self.assertTrue(
-            set([
-                Match(start=1, end=5, dist=1),
-                Match(start=2, end=5, dist=1),
-                Match(start=3, end=5, dist=1),
-                Match(start=2, end=5, dist=3),
-            ]).issubset(set(
+            {
+                Match(start=1, end=5, dist=1, matched=b('bcde')),
+                Match(start=2, end=5, dist=1, matched=b('cde')),
+                Match(start=3, end=5, dist=1, matched=b('de')),
+                Match(start=2, end=5, dist=3, matched=b('bcd')),
+            }.issubset(set(
                 self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3),
             ))
         )
@@ -436,9 +452,9 @@ class TestGenericSearchNgrams(TestGenericSearchBase,
     def test_missing_second_item_complex(self):
         self.assertTrue(
             set(self.search(b('bde'), b('abcdefg'), 1, 1, 1, 1)).issubset([
-                Match(start=1, end=5, dist=1),
-                Match(start=2, end=5, dist=1),
-                Match(start=3, end=5, dist=1),
+                Match(start=1, end=5, dist=1, matched=b('bcde')),
+                Match(start=2, end=5, dist=1, matched=b('cde')),
+                Match(start=3, end=5, dist=1, matched=b('de')),
             ])
         )
 

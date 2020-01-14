@@ -48,7 +48,8 @@ def find_near_matches_substitutions(subsequence, sequence, max_substitutions):
 
     if max_substitutions == 0:
         return [
-            Match(start_index, start_index + len(subsequence), 0)
+            Match(start_index, start_index + len(subsequence), 0,
+                  sequence[start_index:start_index + len(subsequence)])
             for start_index in search_exact(subsequence, sequence)
         ]
 
@@ -84,6 +85,9 @@ def _find_near_matches_substitutions_lp(subsequence, sequence,
     # simple optimization: prepare some often used things in advance
     _SUBSEQ_LEN = len(subsequence)
     _SUBSEQ_LEN_MINUS_ONE = _SUBSEQ_LEN - 1
+
+    def make_match(start, end, dist):
+        return Match(start, end, dist, matched=sequence[start:end])
 
     # prepare quick lookup of where a character appears in the subsequence
     char_indexes_in_subsequence = defaultdict(list)
@@ -126,7 +130,7 @@ def _find_near_matches_substitutions_lp(subsequence, sequence,
 
         # if the candidate had few enough mismatches, yield a match
         if n_substitutions <= max_substitutions:
-            yield Match(
+            yield make_match(
                 start=index - _SUBSEQ_LEN_MINUS_ONE,
                 end=index + 1,
                 dist=n_substitutions,
@@ -169,6 +173,9 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
     subseq_len = len(subsequence)
     seq_len = len(sequence)
 
+    def make_match(start, end, dist):
+        return Match(start, end, dist, matched=sequence[start:end])
+
     ngram_len = subseq_len // (max_substitutions + 1)
     if ngram_len == 0:
         raise ValueError(
@@ -202,7 +209,7 @@ def _find_near_matches_substitutions_ngrams(subsequence, sequence,
                 if n_substitutions > max_substitutions:
                     continue
 
-            yield Match(
+            yield make_match(
                 start=index - ngram_start,
                 end=index - ngram_start + subseq_len,
                 dist=n_substitutions,
@@ -276,6 +283,7 @@ else:
                             subsequence,
                             max_substitutions + 1,
                         ),
+                        matched=sequence[index:index + len(subsequence)],
                     )
                     for index in results
                 ]

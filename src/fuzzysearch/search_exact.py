@@ -77,7 +77,8 @@ class ExactSearch(FuzzySearchBase):
     @classmethod
     def search(cls, subsequence, sequence, search_params):
         for index in search_exact(subsequence, sequence):
-            yield Match(index, index + len(subsequence), 0)
+            yield Match(index, index + len(subsequence), 0,
+                        sequence[index:index + len(subsequence)])
 
     @classmethod
     def extra_items_for_chunked_search(cls, subsequence, search_params):

@@ -29,13 +29,13 @@ class TestSubstitionsOnlyBase(object):
     def test_match_identical_sequence(self):
         self.expectedOutcomes(
             self.search(b('PATTERN'), b('PATTERN'), max_subs=0),
-            [Match(start=0, end=len('PATTERN'), dist=0)],
+            [Match(start=0, end=len('PATTERN'), dist=0, matched=b('PATTERN'))],
         )
 
     def test_substring(self):
         substring = b('PATTERN')
         text = b('aaaaaaaaaaPATTERNaaaaaaaaa')
-        expected_match = Match(start=10, end=17, dist=0)
+        expected_match = Match(start=10, end=17, dist=0, matched=b('PATTERN'))
 
         self.expectedOutcomes(
             self.search(substring, text, max_subs=0),
@@ -53,30 +53,32 @@ class TestSubstitionsOnlyBase(object):
     def test_double_first_item(self):
         self.expectedOutcomes(
             self.search(b('def'), b('abcddefg'), max_subs=1),
-            [Match(start=4, end=7, dist=0)],
+            [Match(start=4, end=7, dist=0, matched=b('def'))],
         )
 
         self.expectedOutcomes(
             self.search(b('def'), b('abcddefg'), max_subs=2),
-            [Match(start=3, end=6, dist=2),
-             Match(start=4, end=7, dist=0)],
+            [Match(start=3, end=6, dist=2, matched=b('dde')),
+             Match(start=4, end=7, dist=0, matched=b('def'))],
         )
 
     def test_two_identical(self):
         self.expectedOutcomes(
             self.search(b('abc'), b('abcabc'), max_subs=1),
-            [Match(start=0, end=3, dist=0), Match(start=3, end=6, dist=0)],
+            [Match(start=0, end=3, dist=0, matched=b('abc')),
+             Match(start=3, end=6, dist=0, matched=b('abc'))],
         )
 
         self.expectedOutcomes(
             self.search(b('abc'), b('abcXabc'), max_subs=1),
-            [Match(start=0, end=3, dist=0), Match(start=4, end=7, dist=0)],
+            [Match(start=0, end=3, dist=0, matched=b('abc')),
+             Match(start=4, end=7, dist=0, matched=b('abc'))],
         )
 
     def test_one_changed_in_middle(self):
         substring = b('abcdefg')
         pattern = b('abcXefg')
-        expected_match = Match(start=0, end=7, dist=1)
+        expected_match = Match(start=0, end=7, dist=1, matched=pattern)
 
         self.expectedOutcomes(
             self.search(substring, pattern, max_subs=0),
@@ -106,7 +108,7 @@ class TestSubstitionsOnlyBase(object):
     def test_one_changed_in_middle2(self):
         substring = b('PATTERN')
         text = b('aaaaaaaaaaPATtERNaaaaaaaaa')
-        expected_match = Match(start=10, end=17, dist=1)
+        expected_match = Match(start=10, end=17, dist=1, matched=b('PATtERN'))
 
         self.expectedOutcomes(
             self.search(substring, text, max_subs=0),
@@ -144,7 +146,7 @@ class TestSubstitionsOnlyBase(object):
         for max_subs in [4, 5]:
             self.expectedOutcomes(
                 self.search(substring, text, max_subs=max_subs),
-                [Match(start=0, end=4, dist=4)],
+                [Match(start=0, end=4, dist=4, matched=b('ZZZZ'))],
             )
 
     def test_dna_search(self):
@@ -159,7 +161,7 @@ class TestSubstitionsOnlyBase(object):
 
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=2),
-            [Match(start=4, end=24, dist=1)],
+            [Match(start=4, end=24, dist=1, matched=text[4:24])],
         )
 
     def test_protein_search1(self):
@@ -175,22 +177,22 @@ class TestSubstitionsOnlyBase(object):
 
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=0),
-            [Match(start=42, end=52, dist=0),
-             Match(start=99, end=109, dist=0)],
+            [Match(start=42, end=52, dist=0, matched=text[42:52]),
+             Match(start=99, end=109, dist=0, matched=text[99:109])],
         )
 
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=1),
-            [Match(start=19, end=29, dist=1),
-             Match(start=42, end=52, dist=0),
-             Match(start=99, end=109, dist=0)],
+            [Match(start=19, end=29, dist=1, matched=text[19:29]),
+             Match(start=42, end=52, dist=0, matched=text[42:52]),
+             Match(start=99, end=109, dist=0, matched=text[99:109])],
         )
 
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=2),
-            [Match(start=19, end=29, dist=1),
-             Match(start=42, end=52, dist=0),
-             Match(start=99, end=109, dist=0)],
+            [Match(start=19, end=29, dist=1, matched=text[19:29]),
+             Match(start=42, end=52, dist=0, matched=text[42:52]),
+             Match(start=99, end=109, dist=0, matched=text[99:109])],
         )
 
     def test_protein_search2(self):
@@ -206,21 +208,21 @@ class TestSubstitionsOnlyBase(object):
 
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=0),
-            [Match(start=99, end=109, dist=0)],
+            [Match(start=99, end=109, dist=0, matched=text[99:109])],
         )
 
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=1),
-            [Match(start=19, end=29, dist=1),
-             Match(start=42, end=52, dist=1),
-             Match(start=99, end=109, dist=0)],
+            [Match(start=19, end=29, dist=1, matched=text[19:29]),
+             Match(start=42, end=52, dist=1, matched=text[42:52]),
+             Match(start=99, end=109, dist=0, matched=text[99:109])],
         )
 
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=2),
-            [Match(start=19, end=29, dist=1),
-             Match(start=42, end=52, dist=1),
-             Match(start=99, end=109, dist=0)],
+            [Match(start=19, end=29, dist=1, matched=text[19:29]),
+             Match(start=42, end=52, dist=1, matched=text[42:52]),
+             Match(start=99, end=109, dist=0, matched=text[99:109])],
         )
 
     def test_missing_at_beginning(self):
@@ -234,19 +236,21 @@ class TestSubstitionsOnlyBase(object):
         text = u('\u03A0\u03A3\u0393\u0394')
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=0),
-            [Match(1, 3, 0)]
+            [Match(1, 3, 0, matched=text[1:3])]
         )
 
     def test_max_substitutions_gte_subseq_len(self):
         for max_subs in [1, 2, 5]:
             self.expectedOutcomes(
                 self.search(b('b'), b('abc'), max_subs),
-                [Match(0, 1, 1), Match(1, 2, 0), Match(2, 3, 1)]
+                [Match(0, 1, 1, b('a')),
+                 Match(1, 2, 0, b('b')),
+                 Match(2, 3, 1, b('c'))]
             )
         for extra_subs in [0, 1, 7]:
             self.expectedOutcomes(
                 self.search(b('PATTERN'), b('PATTERN'), len('PATTERN') + extra_subs),
-                [Match(0, len('PATTERN'), 0)]
+                [Match(0, len('PATTERN'), 0, b('PATTERN'))]
             )
 
 
@@ -375,6 +379,7 @@ else:
                         subsequence,
                         max_subs + 1,
                     ),
+                    matched=sequence[index:index+len(subsequence)]
                 )
                 for index in results
             ]
@@ -402,6 +407,7 @@ else:
                         subsequence,
                         max_subs + 1,
                     ),
+                    matched=sequence[index:index+len(subsequence)]
                 )
                 for index in results
             ]

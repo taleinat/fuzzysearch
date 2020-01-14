@@ -23,7 +23,8 @@ def find_near_matches_levenshtein(subsequence, sequence, max_l_dist):
 
     if max_l_dist == 0:
         return [
-            Match(start_index, start_index + len(subsequence), 0)
+            Match(start_index, start_index + len(subsequence), 0,
+                  sequence[start_index:start_index + len(subsequence)])
             for start_index in search_exact(subsequence, sequence)
         ]
 
@@ -56,9 +57,12 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
 
     subseq_len = len(subsequence)
 
+    def make_match(start, end, dist):
+        return Match(start, end, dist, matched=sequence[start:end])
+
     if max_l_dist >= subseq_len:
         for index in xrange(len(sequence) + 1):
-            yield Match(index, index, subseq_len)
+            yield make_match(index, index, subseq_len)
         return
 
     # optimization: prepare some often used things in advance
@@ -72,7 +76,7 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
         idx_in_subseq = char2first_subseq_index.get(char, None)
         if idx_in_subseq is not None:
             if idx_in_subseq + 1 == subseq_len:
-                yield Match(index, index + 1, idx_in_subseq)
+                yield make_match(index, index + 1, idx_in_subseq)
             else:
                 new_candidates.append(Candidate(index, idx_in_subseq + 1, idx_in_subseq))
 
@@ -81,7 +85,7 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
             if subsequence[cand.subseq_index] == char:
                 # if reached the end of the subsequence, return a match
                 if cand.subseq_index + 1 == subseq_len:
-                    yield Match(cand.start, index + 1, cand.dist)
+                    yield make_match(cand.start, index + 1, cand.dist)
                 # otherwise, update the candidate's subseq_index and keep it
                 else:
                     new_candidates.append(cand._replace(
@@ -112,7 +116,8 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
                     # if skipping n_skipped sub-sequence chars reaches the end
                     # of the sub-sequence, yield a match
                     if cand.subseq_index + n_skipped == subseq_len:
-                        yield Match(cand.start, index + 1, cand.dist + n_skipped)
+                        yield make_match(cand.start, index + 1,
+                                         cand.dist + n_skipped)
                         break
                     # otherwise, if skipping n_skipped sub-sequence chars
                     # reaches a sub-sequence char identical to this sequence
@@ -122,8 +127,8 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
                         # if this is the last char of the sub-sequence, yield
                         # a match
                         if cand.subseq_index + n_skipped + 1 == subseq_len:
-                            yield Match(cand.start, index + 1,
-                                        cand.dist + n_skipped)
+                            yield make_match(cand.start, index + 1,
+                                             cand.dist + n_skipped)
                         # otherwise add a candidate skipping n_skipped
                         # subsequence chars
                         else:
@@ -141,7 +146,7 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
     for cand in candidates:
         dist = cand.dist + subseq_len - cand.subseq_index
         if dist <= max_l_dist:
-            yield Match(cand.start, len(sequence), dist)
+            yield make_match(cand.start, len(sequence), dist)
 
 
 class LevenshteinSearch(FuzzySearchBase):

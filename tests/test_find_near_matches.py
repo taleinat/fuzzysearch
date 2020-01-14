@@ -73,16 +73,16 @@ class TestFindNearMatches(unittest.TestCase):
 
     def test_all_zero(self):
         self.patch_concrete_search_classes()
-        self.mock_search_exact.return_value = [Match(42, 43, 0)]
+        self.mock_search_exact.return_value = [Match(42, 43, 0, 'x')]
         self.assertEqual(
             find_near_matches('a', 'a', 0, 0, 0, 0),
-            [Match(42, 43, 0)],
+            [Match(42, 43, 0, 'x')],
         )
         self.assertEqual(self.mock_search_exact.call_count, 1)
 
     def test_zero_max_l_dist(self):
         self.patch_concrete_search_classes()
-        self.mock_search_exact.return_value = [Match(42, 43, 0)]
+        self.mock_search_exact.return_value = [Match(42, 43, 0, 'x')]
 
         call_count = 0
         for (max_subs, max_ins, max_dels) in [
@@ -98,28 +98,29 @@ class TestFindNearMatches(unittest.TestCase):
                     max_subs, max_ins, max_dels)):
                 self.assertEqual(
                     find_near_matches('a', 'a', max_subs, max_ins, max_dels, 0),
-                    [Match(42, 43, 0)],
+                    [Match(42, 43, 0, 'x')],
                 )
                 call_count += 1
                 self.assertEqual(self.mock_search_exact.call_count, call_count)
 
     def test_all_zero_except_max_l_dist(self):
         self.patch_concrete_search_classes()
-        self.mock_search_exact.return_value = [Match(42, 43, 0)]
+        self.mock_search_exact.return_value = [Match(42, 43, 0, 'x')]
 
         self.assertEqual(
             find_near_matches('a', 'a', 0, 0, 0, 1),
-            [Match(42, 43, 0)],
+            [Match(42, 43, 0, 'x')],
         )
         self.assertEqual(self.mock_search_exact.call_count, 1)
 
     def test_all_none_except_max_l_dist(self):
         self.patch_concrete_search_classes()
-        self.mock_find_near_matches_levenshtein.return_value = [Match(42, 43, 0)]
+        self.mock_find_near_matches_levenshtein.return_value = \
+            [Match(42, 43, 0, 'x')]
 
         self.assertEqual(
             find_near_matches('a', 'a', max_l_dist=1),
-            [Match(42, 43, 0)],
+            [Match(42, 43, 0, 'x')],
         )
         self.assertEqual(self.mock_find_near_matches_levenshtein.call_count, 1)
 
@@ -151,11 +152,12 @@ class TestFindNearMatches(unittest.TestCase):
 
     def test_only_substitutions(self):
         self.patch_concrete_search_classes()
-        self.mock_find_near_matches_substitutions.return_value = [Match(42, 43, 0)]
+        self.mock_find_near_matches_substitutions.return_value = \
+            [Match(42, 43, 0, 'x')]
 
         self.assertEqual(
             find_near_matches('a', 'a', 1, 0, 0),
-            [Match(42, 43, 0)],
+            [Match(42, 43, 0, 'x')],
         )
         self.assertEqual(
             self.mock_find_near_matches_substitutions.call_count,
@@ -164,7 +166,7 @@ class TestFindNearMatches(unittest.TestCase):
 
         self.assertEqual(
             find_near_matches('a', 'a', 1, 0, 0, 1),
-            [Match(42, 43, 0)],
+            [Match(42, 43, 0, 'x')],
         )
         self.assertEqual(
             self.mock_find_near_matches_substitutions.call_count,
@@ -173,11 +175,12 @@ class TestFindNearMatches(unittest.TestCase):
 
     def test_generic(self):
         self.patch_concrete_search_classes()
-        self.mock_find_near_matches_generic.return_value = [Match(42, 43, 0)]
+        self.mock_find_near_matches_generic.return_value = \
+            [Match(42, 43, 0, 'x')]
 
         self.assertEqual(
             find_near_matches('a', 'a', 1, 1, 1),
-            [Match(42, 43, 0)],
+            [Match(42, 43, 0, 'x')],
         )
         self.assertEqual(
             self.mock_find_near_matches_generic.call_count,
@@ -186,7 +189,7 @@ class TestFindNearMatches(unittest.TestCase):
 
         self.assertEqual(
             find_near_matches('a', 'a', 1, 1, 1, 2),
-            [Match(42, 43, 0)],
+            [Match(42, 43, 0, 'x')],
         )
         self.assertEqual(
             self.mock_find_near_matches_generic.call_count,

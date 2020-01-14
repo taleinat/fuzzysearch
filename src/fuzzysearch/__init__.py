@@ -9,7 +9,7 @@ a suitable fuzzy search implementation based on the given parameters.
 
 Example:
 >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
-[Match(start=3, end=9, dist=1)]
+[Match(start=3, end=9, dist=1, matched='PATERN')]
 """
 __author__ = 'Tal Einat'
 __email__ = 'taleinat@gmail.com'
