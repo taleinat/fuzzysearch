@@ -3,6 +3,13 @@
 History
 -------
 
+0.7.0 (2020-01-14)
+++++++++++++++++++
+
+* Added ``matched`` attribue to ``Match`` objects containing the matched part
+  of the sequence.
+* Added support for CPython 3.8. Now supporting CPython 2.7 and 3.4-3.8.
+
 0.6.2 (2019-04-22)
 ++++++++++++++++++
 
