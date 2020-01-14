@@ -26,10 +26,6 @@ fuzzysearch
     :target: https://pypi.python.org/pypi/fuzzysearch
     :alt: Supported Python versions
 
-.. image:: https://img.shields.io/pypi/implementation/fuzzysearch.svg?style=flat
-    :target: https://pypi.python.org/pypi/fuzzysearch
-    :alt: Supported Python implementations
-
 .. image:: https://img.shields.io/pypi/l/fuzzysearch.svg?style=flat
     :target: https://pypi.python.org/pypi/fuzzysearch/
     :alt: License
