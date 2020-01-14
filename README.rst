@@ -14,10 +14,6 @@ fuzzysearch
     :target: https://coveralls.io/r/taleinat/fuzzysearch?branch=master
     :alt: Test Coverage
 
-.. image:: https://img.shields.io/pypi/dm/fuzzysearch.svg?style=flat
-    :target: https://pypi.python.org/pypi/fuzzysearch
-    :alt: Downloads
-
 .. image:: https://img.shields.io/pypi/wheel/fuzzysearch.svg?style=flat
     :target: https://pypi.python.org/pypi/fuzzysearch
     :alt: Wheels
