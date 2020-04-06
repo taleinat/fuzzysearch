@@ -1,3 +1,4 @@
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #if PY_MAJOR_VERSION >= 3
@@ -22,7 +23,7 @@
 
 
 #ifdef IS_PY3K
-#define PyInt_FromLong(x) PyLong_FromLong(x)
+#define PyInt_FromSsize_t(x) PyLong_FromSsize_t(x)
 #endif
 #define DECLARE_VARS       \
     PyObject *results;     \
@@ -32,7 +33,7 @@
     if (unlikely(!results))  \
         return NULL;
 #define OUTPUT_VALUE(x) do {                                           \
-    next_result = PyInt_FromLong((x));                                 \
+    next_result = PyInt_FromSsize_t((x));                              \
     if (unlikely(next_result == NULL)) {                               \
         Py_DECREF(results);                                            \
         return NULL;                                                   \

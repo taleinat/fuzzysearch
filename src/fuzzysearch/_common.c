@@ -1,3 +1,4 @@
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include "src/fuzzysearch/memmem.h"
 
@@ -34,8 +35,8 @@ static PyObject *
 search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
     /* input params */
     const char *subseq, *seq;
-    int subseq_len, seq_len;
-    long int start_index=0, end_index=-1;
+    Py_ssize_t subseq_len, seq_len;
+    Py_ssize_t start_index=0, end_index=-1;
 
     static char *kwlist[] = {"subsequence", "sequence", "start_index", "end_index", NULL};
 
@@ -125,9 +126,11 @@ count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
 {
     /* input params */
     const char *seq1, *seq2;
-    int seq1_len, seq2_len, max_differences;
+    Py_ssize_t seq1_len, seq2_len;
+    int max_differences;
 
-    int i, n_differences;
+    Py_ssize_t i;
+    int n_differences;
 
     if (!PyArg_ParseTuple(
         args,

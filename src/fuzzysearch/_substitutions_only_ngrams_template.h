@@ -24,8 +24,9 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     /* input params */
     const char *subsequence;
     const char *sequence;
-    int subseq_len_input, seq_len_input, max_substitutions_input;
-    unsigned int subseq_len, seq_len, max_substitutions;
+    Py_ssize_t subseq_len, seq_len;
+    int max_substitutions_input;
+    unsigned int max_substitutions;
 
     unsigned int ngram_len, ngram_start, subseq_len_after_ngram;
     const char *match_ptr, *seq_ptr, *subseq_ptr, *subseq_end;
@@ -47,8 +48,8 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     if (unlikely(!PyArg_ParseTuple(
         args,
         ARGSPEC,
-        &subsequence, &subseq_len_input,
-        &sequence, &seq_len_input,
+        &subsequence, &subseq_len,
+        &sequence, &seq_len,
         &max_substitutions_input
     ))) {
         return NULL;
@@ -60,13 +61,13 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     }
     max_substitutions = (unsigned int) max_substitutions_input;
 
-    if (unlikely(subseq_len_input < 0 || seq_len_input < 0)) {
+    if (unlikely(subseq_len < 0 || seq_len < 0)) {
         PyErr_SetString(PyExc_Exception, "an unknown error occurred");
         return NULL;
     }
-    subseq_len = (unsigned int) subseq_len_input;
-    seq_len = (unsigned int) seq_len_input;
 
+    /* this is required because simple_memmem_with_needle_sum() returns the
+       haystack if the needle is empty */
     if (unlikely(subseq_len == 0)) {
         PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
         return NULL;
@@ -78,7 +79,7 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         RETURN_AT_END;
     }
 
-    ngram_len = subseq_len / (max_substitutions + 1);
+    ngram_len = ((unsigned long) subseq_len) / ((unsigned long) max_substitutions + 1);
     if (unlikely(ngram_len <= 0)) {
         /* ngram_len <= 0                                 *
          * IFF                                            *
@@ -87,7 +88,7 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
          * max_substitutions >= subseq_len                *
          *                                                *
          * So the sub-sequence may be found at any index. */
-        for (ngram_start = 0; ngram_start <= seq_len - subseq_len; ngram_start++) {
+        for (ngram_start = 0; ngram_start + subseq_len <= seq_len; ngram_start++) {
             OUTPUT_VALUE(ngram_start);
         }
         RETURN_AT_END;
@@ -95,7 +96,7 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
 
     subseq_end = subsequence + subseq_len;
 
-    for (ngram_start = 0; ngram_start <= subseq_len - ngram_len; ngram_start += ngram_len) {
+    for (ngram_start = 0; ngram_start + ngram_len <= subseq_len; ngram_start += ngram_len) {
         subseq_len_after_ngram = subseq_len - (ngram_start + ngram_len);
 
         subseq_sum = calc_sum(subsequence + ngram_start, ngram_len);
