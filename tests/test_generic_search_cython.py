@@ -125,7 +125,7 @@ else:
                     Match(start=1, end=5, dist=1, matched=b('bcde')),
                     Match(start=2, end=5, dist=1, matched=b('cde')),
                     Match(start=3, end=5, dist=1, matched=b('de')),
-                    Match(start=2, end=5, dist=3, matched=b('cde')),
+                    Match(start=2, end=5, dist=2, matched=b('bcd')),
                 }.issubset(set(
                     self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3),
                 ))

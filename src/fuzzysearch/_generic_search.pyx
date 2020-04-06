@@ -178,7 +178,7 @@ cdef _c_find_near_matches_generic_linear_programming(
                         # if skipping n_dels sub-sequence chars reaches the end
                         # of the sub-sequence, yield a match
                         if cand.subseq_index + n_skipped == subseq_len:
-                            add_match(cand.start, index + 1, cand.l_dist + n_skipped)
+                            add_match(cand.start, index, cand.l_dist + n_skipped)
                             break
                         # otherwise, if skipping n_skipped sub-sequence chars
                         # reaches a sub-sequence char identical to this sequence
@@ -187,7 +187,7 @@ cdef _c_find_near_matches_generic_linear_programming(
                             # if this is the last char of the sub-sequence, yield
                             # a match
                             if cand.subseq_index + n_skipped + 1 == subseq_len:
-                                add_match(cand.start, index + 1, cand.l_dist + n_skipped)
+                                add_match(cand.start, index, cand.l_dist + n_skipped)
                             # otherwise add a candidate skipping n_skipped
                             # subsequence chars
                             else:

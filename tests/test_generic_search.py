@@ -257,6 +257,16 @@ class TestGenericSearchBase(object):
             []
         )
 
+    def test_only_deletions(self):
+        self.expectedOutcomes(
+            self.search(b('TESTabc'), b('TEST123'), 0, 0, 5, None),
+            [
+                Match(start=0, end=4, dist=3, matched=b('TEST')),
+                Match(start=1, end=4, dist=4, matched=b('EST')),
+                Match(start=2, end=4, dist=5, matched=b('ST')),
+            ],
+        )
+
     def test_invalid_none_arguments(self):
         # check that an exception is raised when max_l_dist is None as well as
         # at least one other limitation
@@ -306,8 +316,8 @@ class TestGenericSearch(TestGenericSearchBase, unittest.TestCase):
                                       [Match(start=0, end=3, dist=1,
                                              matched=klass([1, 2, 4]))])
                 self.expectedOutcomes(self.search(klass([1, 2, 3]), klass([1, 2, 4]), 0, 0, 1, 1),
-                                      [Match(start=0, end=3, dist=1,
-                                             matched=klass([1, 2, 4]))])
+                                      [Match(start=0, end=2, dist=1,
+                                             matched=klass([1, 2]))])
 
     def test_list_of_words_one_missing(self):
         subsequence = "jumped over the a lazy dog".split()
@@ -427,7 +437,7 @@ class TestGenericSearchLp(TestGenericSearchBase, unittest.TestCase):
                 Match(start=1, end=5, dist=1, matched=b('bcde')),
                 Match(start=2, end=5, dist=1, matched=b('cde')),
                 Match(start=3, end=5, dist=1, matched=b('de')),
-                Match(start=2, end=5, dist=3, matched=b('bcd')),
+                Match(start=2, end=5, dist=2, matched=b('bcd')),
             }.issubset(set(
                 self.search(b('bde'), b('abcdefg'), 1, 1, 1, 3),
             ))

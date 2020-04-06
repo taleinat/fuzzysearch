@@ -804,7 +804,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src\\fuzzysearch\\_generic_search.pyx",
+  "src/fuzzysearch/_generic_search.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -1337,7 +1337,7 @@ static const char __pyx_k_Given_subsequence_is_empty[] = "Given subsequence is e
 static const char __pyx_k_fuzzysearch__generic_search[] = "fuzzysearch._generic_search";
 static const char __pyx_k_sequence_is_of_invalid_type_s[] = "sequence is of invalid type %s";
 static const char __pyx_k_c_find_near_matches_generic_lin[] = "_c_find_near_matches_generic_linear_programming.<locals>.add_match";
-static const char __pyx_k_src_fuzzysearch__generic_search[] = "src\\fuzzysearch\\_generic_search.pyx";
+static const char __pyx_k_src_fuzzysearch__generic_search[] = "src/fuzzysearch/_generic_search.pyx";
 static const char __pyx_k_c_find_near_matches_generic_line[] = "c_find_near_matches_generic_linear_programming";
 static const char __pyx_k_c_find_near_matches_generic_ngra[] = "c_find_near_matches_generic_ngrams";
 static const char __pyx_k_subsequence_is_of_invalid_type_s[] = "subsequence is of invalid type %s";
@@ -2923,7 +2923,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  *                         # if skipping n_dels sub-sequence chars reaches the end
  *                         # of the sub-sequence, yield a match
  *                         if cand.subseq_index + n_skipped == subseq_len:             # <<<<<<<<<<<<<<
- *                             add_match(cand.start, index + 1, cand.l_dist + n_skipped)
+ *                             add_match(cand.start, index, cand.l_dist + n_skipped)
  *                             break
  */
             __pyx_t_4 = (((__pyx_v_cand.subseq_index + __pyx_v_n_skipped) == __pyx_v_subseq_len) != 0);
@@ -2932,13 +2932,13 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
               /* "fuzzysearch/_generic_search.pyx":181
  *                         # of the sub-sequence, yield a match
  *                         if cand.subseq_index + n_skipped == subseq_len:
- *                             add_match(cand.start, index + 1, cand.l_dist + n_skipped)             # <<<<<<<<<<<<<<
+ *                             add_match(cand.start, index, cand.l_dist + n_skipped)             # <<<<<<<<<<<<<<
  *                             break
  *                         # otherwise, if skipping n_skipped sub-sequence chars
  */
               __pyx_t_11 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 181, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_11);
-              __pyx_t_12 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 181, __pyx_L6_error)
+              __pyx_t_12 = __Pyx_PyInt_FromSize_t(__pyx_v_index); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 181, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_12);
               __pyx_t_13 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 181, __pyx_L6_error)
               __Pyx_GOTREF(__pyx_t_13);
@@ -2951,7 +2951,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
 
               /* "fuzzysearch/_generic_search.pyx":182
  *                         if cand.subseq_index + n_skipped == subseq_len:
- *                             add_match(cand.start, index + 1, cand.l_dist + n_skipped)
+ *                             add_match(cand.start, index, cand.l_dist + n_skipped)
  *                             break             # <<<<<<<<<<<<<<
  *                         # otherwise, if skipping n_skipped sub-sequence chars
  *                         # reaches a sub-sequence char identical to this sequence
@@ -2962,7 +2962,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  *                         # if skipping n_dels sub-sequence chars reaches the end
  *                         # of the sub-sequence, yield a match
  *                         if cand.subseq_index + n_skipped == subseq_len:             # <<<<<<<<<<<<<<
- *                             add_match(cand.start, index + 1, cand.l_dist + n_skipped)
+ *                             add_match(cand.start, index, cand.l_dist + n_skipped)
  *                             break
  */
             }
@@ -2981,7 +2981,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  *                             # if this is the last char of the sub-sequence, yield
  *                             # a match
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:             # <<<<<<<<<<<<<<
- *                                 add_match(cand.start, index + 1, cand.l_dist + n_skipped)
+ *                                 add_match(cand.start, index, cand.l_dist + n_skipped)
  *                             # otherwise add a candidate skipping n_skipped
  */
               __pyx_t_4 = ((((__pyx_v_cand.subseq_index + __pyx_v_n_skipped) + 1) == __pyx_v_subseq_len) != 0);
@@ -2990,13 +2990,13 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
                 /* "fuzzysearch/_generic_search.pyx":190
  *                             # a match
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:
- *                                 add_match(cand.start, index + 1, cand.l_dist + n_skipped)             # <<<<<<<<<<<<<<
+ *                                 add_match(cand.start, index, cand.l_dist + n_skipped)             # <<<<<<<<<<<<<<
  *                             # otherwise add a candidate skipping n_skipped
  *                             # subsequence chars
  */
                 __pyx_t_14 = __Pyx_PyInt_FromSize_t(__pyx_v_cand.start); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 190, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_14);
-                __pyx_t_13 = __Pyx_PyInt_FromSize_t((__pyx_v_index + 1)); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 190, __pyx_L6_error)
+                __pyx_t_13 = __Pyx_PyInt_FromSize_t(__pyx_v_index); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 190, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_13);
                 __pyx_t_12 = __Pyx_PyInt_From_unsigned_int((__pyx_v_cand.l_dist + __pyx_v_n_skipped)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 190, __pyx_L6_error)
                 __Pyx_GOTREF(__pyx_t_12);
@@ -3011,7 +3011,7 @@ static PyObject *__pyx_f_11fuzzysearch_15_generic_search__c_find_near_matches_ge
  *                             # if this is the last char of the sub-sequence, yield
  *                             # a match
  *                             if cand.subseq_index + n_skipped + 1 == subseq_len:             # <<<<<<<<<<<<<<
- *                                 add_match(cand.start, index + 1, cand.l_dist + n_skipped)
+ *                                 add_match(cand.start, index, cand.l_dist + n_skipped)
  *                             # otherwise add a candidate skipping n_skipped
  */
                 goto __pyx_L29;
