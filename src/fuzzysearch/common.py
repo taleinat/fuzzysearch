@@ -43,11 +43,21 @@ class LevenshteinSearchParams(object):
 
     def __attrs_post_init__(self):
         self._check_params_valid()
-        object.__setattr__(self, 'max_l_dist', self._normalize_max_l_dist())
+        max_subs, max_ins, max_dels, max_l_dist = \
+            self._normalize_params(*self.unpacked)
+        object.__setattr__(self, 'max_substitutions', max_subs)
+        object.__setattr__(self, 'max_insertions', max_ins)
+        object.__setattr__(self, 'max_deletions', max_dels)
+        object.__setattr__(self, 'max_l_dist', max_l_dist)
 
     @property
     def unpacked(self):
-        return self.max_substitutions, self.max_insertions, self.max_deletions, self.max_l_dist
+        return (
+            self.max_substitutions,
+            self.max_insertions,
+            self.max_deletions,
+            self.max_l_dist,
+        )
 
     def _check_params_valid(self):
         if not all(x is None or (isinstance(x, int) and x >= 0)
@@ -75,20 +85,36 @@ class LevenshteinSearchParams(object):
                 elif self.max_deletions is None:
                     raise ValueError('# deletions must be limited!')
 
-    def _normalize_max_l_dist(self):
+    @classmethod
+    def _normalize_params(cls,
+                          max_substitutions, max_insertions,
+                          max_deletions, max_l_dist):
         maxes_sum = sum(
             x if x is not None else 1 << 29
             for x in [
-                self.max_substitutions,
-                self.max_insertions,
-                self.max_deletions,
+                max_substitutions,
+                max_insertions,
+                max_deletions,
             ]
         )
-        return (
-            self.max_l_dist
-            if self.max_l_dist is not None and self.max_l_dist <= maxes_sum
-            else maxes_sum
-        )
+
+        if max_l_dist is None:
+            # replace max_l_dist with the sum of the other limits
+            return (
+                max_substitutions,
+                max_insertions,
+                max_deletions,
+                maxes_sum,
+            )
+        else:
+            def _normalize(param):
+                return min(param, max_l_dist) if param is not None else max_l_dist
+            return (
+                _normalize(max_substitutions),
+                _normalize(max_insertions),
+                _normalize(max_deletions),
+                min(max_l_dist, maxes_sum),
+            )
 
 
 def count_differences_with_maximum(sequence1, sequence2, max_differences):

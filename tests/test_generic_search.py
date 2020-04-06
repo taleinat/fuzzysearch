@@ -251,6 +251,12 @@ class TestGenericSearchBase(object):
             [],
         )
 
+    def test_no_deletion(self):
+        self.assertEqual(
+            self.search(b('PATTERN'), b('---PATERN---'), None, None, 0, 1),
+            []
+        )
+
     def test_invalid_none_arguments(self):
         # check that an exception is raised when max_l_dist is None as well as
         # at least one other limitation
