@@ -3,6 +3,12 @@
 History
 -------
 
+0.7.1 (2020-04-05)
+++++++++++++++++++
+* Dropped support for Python 3.4.
+* Removed deprecation warning with Python 3.8.
+* Fixed a couple of nasty bugs.
+
 0.7.0 (2020-01-14)
 ++++++++++++++++++
 
