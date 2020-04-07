@@ -30,14 +30,15 @@ fuzzysearch
     :target: https://pypi.python.org/pypi/fuzzysearch/
     :alt: License
 
-**Easy Python fuzzy search that just works, fast!**
+Fuzzy search: Find parts of long text or data, allowing for some
+changes/typos.
+
+**Easy, fast, and just works!**
 
 .. code:: python
 
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
     [Match(start=3, end=9, dist=1, matched="PATERN")]
-
-* Approximate sub-string searches
 
 * Two simple functions to use: one for in-memory data and one for files
 
@@ -46,11 +47,16 @@ fuzzysearch
 * Levenshtein Distance metric with configurable parameters
 
   * Separately configure the max. allowed distance, substitutions, deletions
-    and insertions
+    and/or insertions
 
 * Advanced algorithms with optional C and Cython optimizations
 
 * Properly handles Unicode; special optimizations for binary data
+
+* Simple installation:
+   * ``pip install fuzzysearch`` just works
+   * pure-Python fallbacks for compiled modules
+   * only one dependency (``attrs``)
 
 * Extensively tested
 
@@ -62,7 +68,7 @@ For more info, see the `documentation <http://fuzzysearch.rtfd.org>`_.
 Installation
 ------------
 
-`fuzzysearch` supports Python versions 2.7 and 3.5+.
+``fuzzysearch`` supports Python versions 2.7 and 3.5+.
 
 .. code::
 
