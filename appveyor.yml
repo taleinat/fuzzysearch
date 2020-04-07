@@ -43,13 +43,13 @@ environment:
       PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python38'
 
 install:
-  # We need wheel installed to build wheels
   - 'set PATH=%PYTHON_APPDATA_DIR%\Scripts;%PYTHON%\Scripts;%PYTHON%;%PATH%'
-  - 'pip install --user -U pip'
-  - 'pip install --user wheel'
-  - 'pip install --user coveralls'
+  - 'python -m pip install --user -U pip setuptools'
   - 'pip install --user virtualenv'
   - 'pip install --user "tox<3"'
+  - 'pip install --user coveralls'
+  # We need wheel installed to build wheels
+  - 'pip install --user wheel'
 
 build: off
 
