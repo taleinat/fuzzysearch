@@ -136,6 +136,7 @@ def run_setup(with_binary=True):
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: Implementation :: CPython',
+            'Programming Language :: Python :: Implementation :: PyPy',
             'Topic :: Software Development :: Libraries :: Python Modules',
         ],
         cmdclass={'build_ext': ve_build_ext},

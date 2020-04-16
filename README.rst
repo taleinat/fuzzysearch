@@ -68,7 +68,8 @@ For more info, see the `documentation <http://fuzzysearch.rtfd.org>`_.
 Installation
 ------------
 
-``fuzzysearch`` supports Python versions 2.7 and 3.5+.
+``fuzzysearch`` supports Python versions 2.7 and 3.5+, as well as PyPy 2.7 and
+3.6.
 
 .. code::
 
