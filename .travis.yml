@@ -41,24 +41,30 @@ matrix:
     - python: "pypy"
       env:
         - TOXENV=pypy-with_coverage
-    - python: "pypy3"
-      env:
+    - env:
         - TOXENV=pypy3-without_coverage
-    - python: "pypy3"
-      env:
+    - env:
         - TOXENV=pypy3-with_coverage
 
 install:
-  - pip install coveralls
-  - pip install virtualenv
-  - pip install "tox<3"
+  - case "$TOXENV" in
+      pypy3-*)
+        curl -sSLO --retry 5 https://bitbucket.org/pypy/pypy/downloads/pypy3.6-v7.3.1-linux64.tar.bz2;
+        tar -xf pypy3.6-v7.3.1-linux64.tar.bz2;
+        mv pypy3.6-v7.3.1-linux64 pypy3;
+        ln -s pypy3/bin/pypy3 pypy3/bin/python;
+        curl -sSLO --retry 5 https://bootstrap.pypa.io/get-pip.py;
+        pypy3/bin/pypy3 get-pip.py;
+        ;;
+    esac
+  - PATH=$(pwd -P)/pypy3/bin:$PATH python -m pip install coveralls virtualenv "tox<3"
 
 script:
-  - tox -v
+  - PATH=$(pwd -P)/pypy3/bin:$PATH tox -v
 
 after_success:
   case "$TOXENV" in
     *with_coverage*)
-      coveralls
+      PATH=$(pwd -P)/pypy3/bin:$PATH coveralls
       ;;
   esac
