@@ -54,7 +54,7 @@ install:
   - pip install "tox<3"
 
 script:
-  - tox -vv
+  - tox -v
 
 after_success:
   case "$TOXENV" in
