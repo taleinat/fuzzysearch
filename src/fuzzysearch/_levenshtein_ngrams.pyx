@@ -61,7 +61,7 @@ def c_expand_short(subsequence, sequence, max_l_dist):
                     min_intermediate_score = c
 
             # bail early when it is impossible to find a better expansion
-            if min_intermediate_score >= min_score:
+            if min_intermediate_score > min_score:
                 break
 
             # keep the minimum score found for matches of the entire sub-sequence

@@ -243,6 +243,10 @@ class TestFindNearMatchesLevenshteinBase(object):
         'one missing at end': ('defg', 'abcdef', [
             (1, [(3, 6, 1)]),
         ]),
+        'highly repetetive': ('a' * 9, 'a' * 7 + 'xx', [
+            (1, []),
+            (2, [(0, 9, 2)]),
+        ]),
         'DNA search': (
             'TGCACTGTAGGGATAACAAT',
             longstr('''

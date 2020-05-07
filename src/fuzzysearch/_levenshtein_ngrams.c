@@ -803,7 +803,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "src\\fuzzysearch\\_levenshtein_ngrams.pyx",
+  "src/fuzzysearch/_levenshtein_ngrams.pyx",
 };
 
 /*--- Type declarations ---*/
@@ -1180,7 +1180,7 @@ static const char __pyx_k_needle_idx_range_start[] = "needle_idx_range_start";
 static const char __pyx_k_new_needle_idx_range_end[] = "new_needle_idx_range_end";
 static const char __pyx_k_new_needle_idx_range_start[] = "new_needle_idx_range_start";
 static const char __pyx_k_fuzzysearch__levenshtein_ngrams[] = "fuzzysearch._levenshtein_ngrams";
-static const char __pyx_k_src_fuzzysearch__levenshtein_ngr[] = "src\\fuzzysearch\\_levenshtein_ngrams.pyx";
+static const char __pyx_k_src_fuzzysearch__levenshtein_ngr[] = "src/fuzzysearch/_levenshtein_ngrams.pyx";
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_a;
 static PyObject *__pyx_n_s_all;
@@ -1725,16 +1725,16 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
       /* "fuzzysearch/_levenshtein_ngrams.pyx":64
  * 
  *             # bail early when it is impossible to find a better expansion
- *             if min_intermediate_score >= min_score:             # <<<<<<<<<<<<<<
+ *             if min_intermediate_score > min_score:             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
-      __pyx_t_2 = ((__pyx_v_min_intermediate_score >= __pyx_v_min_score) != 0);
+      __pyx_t_2 = ((__pyx_v_min_intermediate_score > __pyx_v_min_score) != 0);
       if (__pyx_t_2) {
 
         /* "fuzzysearch/_levenshtein_ngrams.pyx":65
  *             # bail early when it is impossible to find a better expansion
- *             if min_intermediate_score >= min_score:
+ *             if min_intermediate_score > min_score:
  *                 break             # <<<<<<<<<<<<<<
  * 
  *             # keep the minimum score found for matches of the entire sub-sequence
@@ -1744,7 +1744,7 @@ static PyObject *__pyx_pf_11fuzzysearch_19_levenshtein_ngrams_c_expand_short(CYT
         /* "fuzzysearch/_levenshtein_ngrams.pyx":64
  * 
  *             # bail early when it is impossible to find a better expansion
- *             if min_intermediate_score >= min_score:             # <<<<<<<<<<<<<<
+ *             if min_intermediate_score > min_score:             # <<<<<<<<<<<<<<
  *                 break
  * 
  */
