@@ -3,6 +3,11 @@
 History
 -------
 
+0.7.2 (2020-05-07)
+++++++++++++++++++
+* Added PyPy support.
+* Several minor bug fixes.
+
 0.7.1 (2020-04-05)
 ++++++++++++++++++
 * Dropped support for Python 3.4.
