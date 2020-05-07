@@ -55,10 +55,10 @@ docs:
 	open docs/_build/html/index.html
 
 src/fuzzysearch/_generic_search.c: src/fuzzysearch/_generic_search.pyx
-	cython src/fuzzysearch/_generic_search.pyx
+	cython -2 src/fuzzysearch/_generic_search.pyx
 
 src/fuzzysearch/_levenshtein_ngrams.c: src/fuzzysearch/_levenshtein_ngrams.pyx
-	cython src/fuzzysearch/_levenshtein_ngrams.pyx
+	cython -2 src/fuzzysearch/_levenshtein_ngrams.pyx
 
 cython: src/fuzzysearch/_generic_search.c src/fuzzysearch/_levenshtein_ngrams.c
 
