@@ -1,10 +1,11 @@
 from collections import namedtuple
+from functools import wraps
 
 import attr
 
 from fuzzysearch.common import FuzzySearchBase, Match, \
     consolidate_overlapping_matches
-from fuzzysearch.compat import text_type, xrange
+from fuzzysearch.compat import xrange
 from fuzzysearch.search_exact import search_exact
 
 
@@ -184,20 +185,15 @@ except ImportError:
     find_near_matches_generic_linear_programming = \
         _find_near_matches_generic_linear_programming
 else:
+    @wraps(_find_near_matches_generic_linear_programming)
     def find_near_matches_generic_linear_programming(subsequence, sequence, search_params):
-        if not (
-            isinstance(subsequence, text_type) or
-            isinstance(sequence, text_type)
-        ):
-            try:
-                for match in c_fnm_generic_lp(subsequence, sequence, search_params):
-                    yield match
-            except TypeError:
-                pass
-
-        for match in _find_near_matches_generic_linear_programming(
-                subsequence, sequence, search_params):
-            yield match
+        try:
+            for match in c_fnm_generic_lp(subsequence, sequence, search_params):
+                yield match
+        except (TypeError, UnicodeEncodeError):
+            for match in _find_near_matches_generic_linear_programming(
+                    subsequence, sequence, search_params):
+                yield match
 
 
 def find_near_matches_generic_ngrams(subsequence, sequence, search_params):

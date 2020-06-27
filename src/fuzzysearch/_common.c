@@ -1,82 +1,76 @@
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
+#include "src/fuzzysearch/_c_ext_base.h"
 #include "src/fuzzysearch/memmem.h"
 
-#if PY_MAJOR_VERSION >= 3
-#define IS_PY3K
-#endif
-
-#ifdef __GNUC__
-  /* Test for GCC > 2.95 */
-  #if __GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95))
-    #define likely(x)   __builtin_expect(!!(x), 1)
-    #define unlikely(x) __builtin_expect(!!(x), 0)
-  #else /* __GNUC__ > 2 ... */
-    #define likely(x)   (x)
-    #define unlikely(x) (x)
-  #endif /* __GNUC__ > 2 ... */
-#else /* __GNUC__ */
-  #define likely(x)   (x)
-  #define unlikely(x) (x)
-#endif /* __GNUC__ */
-
-
-#ifdef IS_PY3K
-    #define ARG_TYPES_DEF "y#y#|ll:search_exact_byteslike"
-#else
-    #if PY_HEX_VERSION >= 0x02070000
-        #define ARG_TYPES_DEF "t#t#|ll:search_exact_byteslike"
-    #else
-        #define ARG_TYPES_DEF "s#s#|ll:search_exact_byteslike"
-    #endif
-#endif
 
 static PyObject *
 search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
     /* input params */
-    const char *subseq, *seq;
-    Py_ssize_t subseq_len, seq_len;
+    Py_buffer subseq_pybuf, seq_pybuf;
     Py_ssize_t start_index=0, end_index=-1;
 
     static char *kwlist[] = {"subsequence", "sequence", "start_index", "end_index", NULL};
 
+    const char *subseq, *seq;
+    Py_ssize_t subseq_len, seq_len;
     PyObject *results;
     PyObject *next_result;
     size_t next_match_index;
     int subseq_sum;
     char *next_match_ptr;
 
+    const char* argspec =
+#ifdef IS_PY3K
+        "y*y*|ll:search_exact_byteslike";
+#else
+        "s*s*|ll:search_exact_byteslike";
+#endif
+
     if (unlikely(!PyArg_ParseTupleAndKeywords(
-        args, kwdict, ARG_TYPES_DEF, kwlist,
-        &subseq, &subseq_len,
-        &seq, &seq_len,
+        args, kwdict,
+        argspec,
+        kwlist,
+        &subseq_pybuf,
+        &seq_pybuf,
         &start_index,
         &end_index
     ))) {
         return NULL;
     }
 
+    if (unlikely(!(
+        is_simple_buffer(subseq_pybuf) &&
+        is_simple_buffer(seq_pybuf)
+    ))) {
+        PyErr_SetString(PyExc_TypeError, "only contiguous sequences of single-byte values are supported");
+        goto error;
+    }
+
+    subseq = (const char*)(subseq_pybuf.buf);
+    seq = (const char*)(seq_pybuf.buf);
+    subseq_len = subseq_pybuf.len;
+    seq_len = seq_pybuf.len;
+
     /* this is required because simple_memmem_with_needle_sum() returns the
        haystack if the needle is empty */
     if (unlikely(subseq_len == 0)) {
         PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
-        return NULL;
+        goto error;
     }
 
     if (unlikely(start_index < 0)) {
         PyErr_SetString(PyExc_ValueError, "start_index must be non-negative");
-        return NULL;
+        goto error;
     }
 
     if (end_index == -1) end_index = seq_len;
     if (unlikely(end_index < 0)) {
         PyErr_SetString(PyExc_ValueError, "end_index must be non-negative");
-        return NULL;
+        goto error;
     }
 
     results = PyList_New(0);
     if (unlikely(!results)) {
-        return NULL;
+        goto error;
     }
 
     seq_len = (end_index < seq_len ? end_index : seq_len);
@@ -84,13 +78,14 @@ search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
     seq_len -= (start_index <= seq_len ? start_index : seq_len);
 
     if (unlikely(seq_len < subseq_len)) {
-        return results;
+        next_match_ptr = NULL;
+    } else {
+        subseq_sum = calc_sum(subseq, subseq_len);
+        next_match_ptr = simple_memmem_with_needle_sum(seq, seq_len,
+                                                       subseq, subseq_len,
+                                                       subseq_sum);
     }
 
-    subseq_sum = calc_sum(subseq, subseq_len);
-    next_match_ptr = simple_memmem_with_needle_sum(seq, seq_len,
-                                                   subseq, subseq_len,
-                                                   subseq_sum);
     while (next_match_ptr != NULL) {
         next_match_index = (const char *)next_match_ptr - seq;
 #ifdef IS_PY3K
@@ -99,10 +94,12 @@ search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
         next_result = PyInt_FromLong(next_match_index + start_index);
 #endif
         if (unlikely(next_result == NULL)) {
+            Py_DECREF(results);
             goto error;
         }
         if (unlikely(PyList_Append(results, next_result) == -1)) {
             Py_DECREF(next_result);
+            Py_DECREF(results);
             goto error;
         }
         Py_DECREF(next_result);
@@ -113,10 +110,13 @@ search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
             subseq_sum);
     }
 
+    PyBuffer_Release(&subseq_pybuf);
+    PyBuffer_Release(&seq_pybuf);
     return results;
 
 error:
-    Py_DECREF(results);
+    PyBuffer_Release(&subseq_pybuf);
+    PyBuffer_Release(&seq_pybuf);
     return NULL;
 }
 
@@ -125,35 +125,48 @@ static PyObject *
 count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
 {
     /* input params */
-    const char *seq1, *seq2;
-    Py_ssize_t seq1_len, seq2_len;
+    Py_buffer seq1_pybuf, seq2_pybuf;
     int max_differences;
 
+    const char *seq1, *seq2;
+    Py_ssize_t seq1_len, seq2_len;
     Py_ssize_t i;
     int n_differences;
 
+    const char* argspec =
+#ifdef IS_PY3K
+        "y*y*i";
+#else
+        "s*s*i";
+#endif
+
     if (!PyArg_ParseTuple(
         args,
-#ifdef IS_PY3K
-        "y#y#i",
-#else
-    #if PY_HEX_VERSION >= 0x02070000
-        "t#t#i",
-    #else
-        "s#s#i",
-    #endif
-#endif
-        &seq1, &seq1_len,
-        &seq2, &seq2_len,
+        argspec,
+        &seq1_pybuf,
+        &seq2_pybuf,
         &max_differences
     )) {
         return NULL;
     }
 
+    if (unlikely(!(
+        is_simple_buffer(seq1_pybuf) &&
+        is_simple_buffer(seq2_pybuf)
+    ))) {
+        PyErr_SetString(PyExc_TypeError, "only contiguous sequences of single-byte values are supported");
+        goto error;
+    }
+
+    seq1 = (const char*)(seq1_pybuf.buf);
+    seq2 = (const char*)(seq2_pybuf.buf);
+    seq1_len = seq1_pybuf.len;
+    seq2_len = seq2_pybuf.len;
+
     if (seq1_len != seq2_len) {
         PyErr_SetString(PyExc_ValueError,
                         "The lengths of the given sequences must be equal.");
-        return NULL;
+        goto error;
     }
 
     n_differences = max_differences;
@@ -163,7 +176,14 @@ count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
         ++seq2;
     }
 
+    PyBuffer_Release(&seq1_pybuf);
+    PyBuffer_Release(&seq2_pybuf);
     return PyLong_FromLong((long) (max_differences - n_differences));
+
+error:
+    PyBuffer_Release(&seq1_pybuf);
+    PyBuffer_Release(&seq2_pybuf);
+    return NULL;
 }
 
 static PyMethodDef _common_methods[] = {

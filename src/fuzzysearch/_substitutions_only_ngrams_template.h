@@ -1,76 +1,74 @@
+#include "src/fuzzysearch/_c_ext_base.h"
 #include "src/fuzzysearch/memmem.h"
 
 
-#ifdef __GNUC__
-  /* Test for GCC > 2.95 */
-  #if __GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95))
-    #define likely(x)   __builtin_expect(!!(x), 1)
-    #define unlikely(x) __builtin_expect(!!(x), 0)
-  #else /* __GNUC__ > 2 ... */
-    #define likely(x)   (x)
-    #define unlikely(x) (x)
-  #endif /* __GNUC__ > 2 ... */
-#else /* __GNUC__ */
-  #define likely(x)   (x)
-  #define unlikely(x) (x)
-#endif /* __GNUC__ */
+#define RELEASE_BUFFERS \
+    PyBuffer_Release(&subseq_pybuf); \
+    PyBuffer_Release(&seq_pybuf)
 
-
-#define DO_FREES
 
 static PyObject *
 FUNCTION_NAME(PyObject *self, PyObject *args)
 {
     /* input params */
+    Py_buffer subseq_pybuf, seq_pybuf;
+    int max_substitutions;
+
     const char *subsequence;
     const char *sequence;
     Py_ssize_t subseq_len, seq_len;
-    int max_substitutions_input;
-    unsigned int max_substitutions;
-
-    unsigned int ngram_len, ngram_start, subseq_len_after_ngram;
+    Py_ssize_t ngram_len, ngram_start, subseq_len_after_ngram;
     const char *match_ptr, *seq_ptr, *subseq_ptr, *subseq_end;
     int subseq_sum;
-    unsigned int n_differences;
+    int n_differences;
 
     DECLARE_VARS;
 
+    const char* argspec =
 #ifdef IS_PY3K
-    #define ARGSPEC "y#y#i"
+        "y*y*i";
 #else
-    #if PY_HEX_VERSION >= 0x02070000
-        #define ARGSPEC "t#t#i"
-    #else
-        #define ARGSPEC "s#s#i"
-    #endif
+        "s*s*i";
 #endif
 
     if (unlikely(!PyArg_ParseTuple(
         args,
-        ARGSPEC,
-        &subsequence, &subseq_len,
-        &sequence, &seq_len,
-        &max_substitutions_input
+        argspec,
+        &subseq_pybuf,
+        &seq_pybuf,
+        &max_substitutions
     ))) {
         return NULL;
     }
 
-    if (unlikely(max_substitutions_input < 0)) {
+    if (unlikely(max_substitutions < 0)) {
         PyErr_SetString(PyExc_ValueError, "max_l_dist must be non-negative");
-        return NULL;
+        goto error;
     }
-    max_substitutions = (unsigned int) max_substitutions_input;
+
+    if (unlikely(!(
+        is_simple_buffer(subseq_pybuf) &&
+        is_simple_buffer(seq_pybuf)
+    ))) {
+        PyErr_SetString(PyExc_TypeError, "only contiguous sequences of single-byte values are supported");
+        goto error;
+    }
+
+    subsequence = (const char*)(subseq_pybuf.buf);
+    sequence = (const char*)(seq_pybuf.buf);
+    subseq_len = subseq_pybuf.len;
+    seq_len = seq_pybuf.len;
 
     if (unlikely(subseq_len < 0 || seq_len < 0)) {
         PyErr_SetString(PyExc_Exception, "an unknown error occurred");
-        return NULL;
+        goto error;
     }
 
     /* this is required because simple_memmem_with_needle_sum() returns the
        haystack if the needle is empty */
     if (unlikely(subseq_len == 0)) {
         PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
-        return NULL;
+        goto error;
     }
 
     PREPARE;
@@ -79,7 +77,7 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         RETURN_AT_END;
     }
 
-    ngram_len = ((unsigned long) subseq_len) / ((unsigned long) max_substitutions + 1);
+    ngram_len = subseq_len / (max_substitutions + 1);
     if (unlikely(ngram_len <= 0)) {
         /* ngram_len <= 0                                 *
          * IFF                                            *
@@ -138,6 +136,10 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
     }
 
     RETURN_AT_END;
+
+error:
+    RELEASE_BUFFERS;
+    return NULL;
 }
 
-#undef DO_FREES
+#undef RELEASE_BUFFERS

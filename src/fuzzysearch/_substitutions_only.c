@@ -1,15 +1,10 @@
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
-#if PY_MAJOR_VERSION >= 3
-#define IS_PY3K
-#endif
+#include "src/fuzzysearch/_c_ext_base.h"
 
 
-#define DECLARE_VARS
+#define DECLARE_VARS int found = 0
 #define PREPARE
-#define OUTPUT_VALUE(x) DO_FREES; Py_RETURN_TRUE
-#define RETURN_AT_END Py_RETURN_FALSE
+#define OUTPUT_VALUE(x) found = 1; break
+#define RETURN_AT_END if (found) { Py_RETURN_TRUE; } else { Py_RETURN_FALSE; }
 #define FUNCTION_NAME substitutions_only_has_near_matches_lp_byteslike
 #include "src/fuzzysearch/_substitutions_only_lp_template.h"
 #undef FUNCTION_NAME
@@ -31,17 +26,17 @@
 #define PREPARE              \
     results = PyList_New(0); \
     if (unlikely(!results))  \
-        return NULL;
+        goto error;
 #define OUTPUT_VALUE(x) do {                                           \
     next_result = PyInt_FromSsize_t((x));                              \
     if (unlikely(next_result == NULL)) {                               \
         Py_DECREF(results);                                            \
-        return NULL;                                                   \
+        goto error;                                                    \
     }                                                                  \
     if (unlikely(PyList_Append(results, next_result) == -1)) {         \
         Py_DECREF(next_result);                                        \
         Py_DECREF(results);                                            \
-        return NULL;                                                   \
+        goto error;                                                    \
     }                                                                  \
     Py_DECREF(next_result);                                            \
 } while(0)
