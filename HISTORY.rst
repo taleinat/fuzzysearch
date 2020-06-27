@@ -3,6 +3,12 @@
 History
 -------
 
+0.7.3 (2020-06-27)
+++++++++++++++++++
+
+* Fixed segmentation faults due to wrong handling of inputs in bytes-like-only
+  functions in C extensions.
+
 0.7.2 (2020-05-07)
 ++++++++++++++++++
 * Added PyPy support.
