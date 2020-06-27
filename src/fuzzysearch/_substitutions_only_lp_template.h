@@ -1,50 +1,34 @@
-#ifdef __GNUC__
-  /* Test for GCC > 2.95 */
-  #if __GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95))
-    #define likely(x)   __builtin_expect(!!(x), 1)
-    #define unlikely(x) __builtin_expect(!!(x), 0)
-  #else /* __GNUC__ > 2 ... */
-    #define likely(x)   (x)
-    #define unlikely(x) (x)
-  #endif /* __GNUC__ > 2 ... */
-#else /* __GNUC__ */
-  #define likely(x)   (x)
-  #define unlikely(x) (x)
-#endif /* __GNUC__ */
+#define DO_FREES \
+    free(sub_counts); \
+    PyBuffer_Release(&subseq_pybuf); \
+    PyBuffer_Release(&seq_pybuf)
 
-
-#define DO_FREES free(sub_counts)
 
 static PyObject *
 FUNCTION_NAME(PyObject *self, PyObject *args)
 {
     /* input params */
+    Py_buffer subseq_pybuf, seq_pybuf;
+    int max_substitutions_input;
+
     const char *subsequence;
     const char *sequence;
     Py_ssize_t subseq_len, seq_len;
-    int max_substitutions_input;
     unsigned int max_substitutions;
-
-    unsigned int *sub_counts;
+    unsigned int *sub_counts = NULL;
     Py_ssize_t seq_idx, subseq_idx, count_idx;
 
     DECLARE_VARS;
 
-#ifdef IS_PY3K
-    #define ARGSPEC "y#y#i"
-#else
-    #if PY_HEX_VERSION >= 0x02070000
-        #define ARGSPEC "t#t#i"
-    #else
-        #define ARGSPEC "s#s#i"
-    #endif
-#endif
-
     if (unlikely(!PyArg_ParseTuple(
         args,
-        ARGSPEC,
-        &subsequence, &subseq_len,
-        &sequence, &seq_len,
+#ifdef IS_PY3K
+        "y*y*i",
+#else
+        "s*s*i",
+#endif
+        &subseq_pybuf,
+        &seq_pybuf,
         &max_substitutions_input
     ))) {
         return NULL;
@@ -52,18 +36,32 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
 
     if (unlikely(max_substitutions_input < 0)) {
         PyErr_SetString(PyExc_ValueError, "max_l_dist must be non-negative");
-        return NULL;
+        goto error;
     }
+    /// TODO: check for overflow
     max_substitutions = (unsigned int) max_substitutions_input;
+
+    if (unlikely(!(
+        is_simple_buffer(subseq_pybuf) &&
+        is_simple_buffer(seq_pybuf)
+    ))) {
+        PyErr_SetString(PyExc_TypeError, "only contiguous sequences of single-byte values are supported");
+        goto error;
+    }
+
+    subsequence = (const char*)(subseq_pybuf.buf);
+    sequence = (const char*)(seq_pybuf.buf);
+    subseq_len = subseq_pybuf.len;
+    seq_len = seq_pybuf.len;
 
     if (unlikely(subseq_len < 0 || seq_len < 0)) {
         PyErr_SetString(PyExc_Exception, "an unknown error occurred");
-        return NULL;
+        goto error;
     }
 
     if (unlikely(subseq_len == 0)) {
         PyErr_SetString(PyExc_ValueError, "subsequence must not be empty");
-        return NULL;
+        goto error;
     }
 
     PREPARE;
@@ -72,16 +70,17 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         RETURN_AT_END;
     }
 
-    sub_counts = (unsigned int *) malloc (sizeof(unsigned int) * subseq_len);
-    if (sub_counts == NULL) {
-        return PyErr_NoMemory();
-    }
-
     if (unlikely(max_substitutions >= subseq_len)) {
         for (seq_idx = 0; seq_idx <= seq_len - subseq_len; ++seq_idx) {
             OUTPUT_VALUE(seq_idx);
         }
         RETURN_AT_END;
+    }
+
+    sub_counts = (unsigned int *) malloc (sizeof(unsigned int) * subseq_len);
+    if (sub_counts == NULL) {
+        DO_FREES;
+        return PyErr_NoMemory();
     }
 
     for (seq_idx = 0; seq_idx < subseq_len - 1; ++seq_idx) {
@@ -108,8 +107,11 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
         sub_counts[count_idx] = 0;
     }
 
-    DO_FREES;
     RETURN_AT_END;
+
+error:
+    DO_FREES;
+    return NULL;
 }
 
 #undef DO_FREES

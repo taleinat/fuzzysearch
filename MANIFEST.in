@@ -4,6 +4,7 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 include src/fuzzysearch/memmem.h
+include src/fuzzysearch/_c_ext_base.h
 include src/fuzzysearch/_substitutions_only_lp_template.h
 include src/fuzzysearch/_substitutions_only_ngrams_template.h
 include src/fuzzysearch/wordlen_memmem.h
