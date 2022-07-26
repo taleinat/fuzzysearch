@@ -34,6 +34,18 @@ environment:
     - PYTHON: 'C:\Python38-x64'
       TOX_ENV: 'py38'
       PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python38'
+    - PYTHON: 'C:\Python39'
+      TOX_ENV: 'py39'
+      PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python39'
+    - PYTHON: 'C:\Python39-x64'
+      TOX_ENV: 'py39'
+      PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python39'
+    - PYTHON: 'C:\Python310'
+      TOX_ENV: 'py310'
+      PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python310'
+    - PYTHON: 'C:\Python310-x64'
+      TOX_ENV: 'py310'
+      PYTHON_APPDATA_DIR: 'C:\Users\appveyor\AppData\Roaming\Python\Python310'
     # TODO: Also test with PyPy
 
 install:
@@ -45,7 +57,8 @@ install:
   # We need wheel installed to build wheels
   - 'pip install --user wheel'
 
-build: off
+build_script:
+  - 'call'  # Do nothing.
 
 test_script:
   - 'build.cmd tox -e %TOX_ENV%-without_coverage-appveyor -v'

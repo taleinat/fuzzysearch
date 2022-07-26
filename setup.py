@@ -6,9 +6,16 @@ import os
 import sys
 
 from setuptools import setup, Extension
-from distutils.command.build_ext import build_ext
-from distutils.errors import CCompilerError, DistutilsExecError, \
-     DistutilsPlatformError
+if sys.version_info < (3, 8):
+    from distutils.command.build_ext import build_ext
+    from distutils.errors import (
+        CCompilerError,
+        DistutilsExecError as ExecError,
+        DistutilsPlatformError as PlatformError,
+    )
+else:
+    from setuptools.command.build_ext import build_ext
+    from setuptools.errors import CCompilerError, ExecError, PlatformError
 
 # --noexts: don't try building the C extensions
 if '--noexts' in sys.argv[1:]:
@@ -33,7 +40,7 @@ history = readfile('HISTORY.rst').replace('.. :changelog:', '')
 is_jython = 'java' in sys.platform
 is_pypy = hasattr(sys, 'pypy_version_info')
 
-ext_errors = (CCompilerError, DistutilsExecError, DistutilsPlatformError)
+ext_errors = (CCompilerError, ExecError, PlatformError)
 if sys.platform == 'win32' and sys.version_info > (2, 6):
     # 2.6's distutils.msvc9compiler can raise an IOError when failing to
     # find the compiler
@@ -51,7 +58,7 @@ class ve_build_ext(build_ext):
     def run(self):
         try:
             build_ext.run(self)
-        except DistutilsPlatformError:
+        except PlatformError:
             raise BuildFailed()
 
     def build_extension(self, ext):
@@ -102,8 +109,8 @@ def run_setup(with_binary=True):
     ext_modules = [
         _substitutions_only_module,
         _common_module,
-        _generic_search_module,
-        _levenshtein_ngrams_module,
+        # _generic_search_module,
+        # _levenshtein_ngrams_module,
         # pymemmem_module,
     ]
     if not with_binary:
@@ -135,6 +142,8 @@ def run_setup(with_binary=True):
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
             'Programming Language :: Python :: Implementation :: CPython',
             'Programming Language :: Python :: Implementation :: PyPy',
             'Topic :: Software Development :: Libraries :: Python Modules',

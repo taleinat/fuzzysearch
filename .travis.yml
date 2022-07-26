@@ -35,6 +35,18 @@ matrix:
     - python: "3.8"
       env:
         - TOXENV=py38-with_coverage
+    - python: "3.9"
+      env:
+        - TOXENV=py39-without_coverage
+    - python: "3.9"
+      env:
+        - TOXENV=py39-with_coverage
+    - python: "3.10"
+      env:
+        - TOXENV=py310-without_coverage
+    - python: "3.10"
+      env:
+        - TOXENV=py310-with_coverage
     - python: "pypy"
       env:
         - TOXENV=pypy-without_coverage
