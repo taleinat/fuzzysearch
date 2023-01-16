@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "fuzzysearch"
+version = "0.7.3"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = ">= 3.7, < 3.11"
+attrs = ">= 19.3"
+
+[tool.poetry.dev-dependencies]
+tox = "^3.24.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
