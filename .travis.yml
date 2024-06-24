@@ -69,7 +69,7 @@ install:
         pypy3/bin/pypy3 get-pip.py;
         ;;
     esac
-  - PATH=$(pwd -P)/pypy3/bin:$PATH python -m pip install coveralls virtualenv "tox<3"
+  - PATH=$(pwd -P)/pypy3/bin:$PATH python -m pip install coveralls virtualenv "tox ~= 4.9"
 
 script:
   - PATH=$(pwd -P)/pypy3/bin:$PATH tox -v

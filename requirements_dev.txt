@@ -2,4 +2,4 @@ bump2version
 cython
 sphinx
 virtualenv
-tox<3
+tox ~= 4.9
