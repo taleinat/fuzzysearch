@@ -7,10 +7,6 @@ fuzzysearch
     :target: https://pypi.python.org/pypi/fuzzysearch
     :alt: Latest Version
 
-.. image:: https://img.shields.io/travis/taleinat/fuzzysearch.svg?branch=master
-    :target: https://travis-ci.org/taleinat/fuzzysearch/branches
-    :alt: Build & Tests Status
-
 .. image:: https://img.shields.io/coveralls/taleinat/fuzzysearch.svg?branch=master
     :target: https://coveralls.io/r/taleinat/fuzzysearch?branch=master
     :alt: Test Coverage
