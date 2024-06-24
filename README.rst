@@ -31,6 +31,10 @@ fuzzysearch
     :target: https://pypi.python.org/pypi/fuzzysearch/
     :alt: License
 
+.. image:: https://assets.piptrends.com/get-last-month-downloads-badge/fuzzysearch.svg
+    :alt: fuzzysearch Downloads Last Month by pip Trends
+    :target: https://piptrends.com/package/fuzzysearch
+
 Fuzzy search: Find parts of long text or data, allowing for some
 changes/typos.
 
