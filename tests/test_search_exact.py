@@ -1,6 +1,7 @@
-from fuzzysearch.compat import text_type
+import unittest
+
 from fuzzysearch.search_exact import search_exact
-from tests.compat import b, u, unittest
+from tests.compat import b
 
 
 class TestSearchExactBase(object):
@@ -103,7 +104,7 @@ class TestSearchExact(TestSearchExactBase, unittest.TestCase):
 
     @classmethod
     def get_supported_sequence_types(cls):
-        types_to_test = [b, u, list, tuple]
+        types_to_test = [b, str, list, tuple]
 
         try:
             from Bio.Seq import Seq
@@ -119,7 +120,7 @@ class TestSearchExact(TestSearchExactBase, unittest.TestCase):
         return types_to_test
 
     def test_unicode_subsequence(self):
-        self.assertEqual(self.search(u('\u03A3\u0393'), u('\u03A0\u03A3\u0393\u0394')), [1])
+        self.assertEqual(self.search('\u03A3\u0393', '\u03A0\u03A3\u0393\u0394'), [1])
 
 
 try:
@@ -129,12 +130,12 @@ except ImportError:
 else:
     class TestSearchExactByteslike(TestSearchExactBase, unittest.TestCase):
         def search(self, subsequence, sequence, start_index=0, end_index=None):
-            if isinstance(subsequence, text_type):
+            if isinstance(subsequence, str):
                 try:
                     subsequence = subsequence.encode('ascii')
                 except UnicodeEncodeError:
                     raise self.skipTest("skipping test with non-ascii-encodable string for byteslike function")
-            if isinstance(sequence, text_type):
+            if isinstance(sequence, str):
                 try:
                     sequence = sequence.encode('ascii')
                 except UnicodeEncodeError:

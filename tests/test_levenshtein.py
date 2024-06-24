@@ -1,8 +1,7 @@
 import re
+import unittest
 
-from tests.compat import unittest
-
-from fuzzysearch.common import Match, get_best_match_in_group, group_matches, consolidate_overlapping_matches
+from fuzzysearch.common import Match, consolidate_overlapping_matches
 from fuzzysearch.levenshtein import find_near_matches_levenshtein, \
     find_near_matches_levenshtein_linear_programming as fnm_levenshtein_lp
 from fuzzysearch.levenshtein_ngram import \

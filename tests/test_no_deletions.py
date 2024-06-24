@@ -1,4 +1,4 @@
-from tests.compat import unittest, mock
+import unittest
 
 from fuzzysearch.common import Match, LevenshteinSearchParams
 from fuzzysearch.no_deletions import _expand, \

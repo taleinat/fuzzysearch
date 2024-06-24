@@ -1,4 +1,6 @@
-from tests.compat import b, unittest
+import unittest
+
+from tests.compat import b
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
 from fuzzysearch.common import Match, get_best_match_in_group, group_matches, LevenshteinSearchParams, consolidate_overlapping_matches
 from tests.test_substitutions_only import TestSubstitionsOnlyBase, \

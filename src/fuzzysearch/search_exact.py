@@ -1,7 +1,6 @@
 from functools import wraps
 
 from fuzzysearch.common import FuzzySearchBase, Match
-from fuzzysearch.compat import text_type, xrange
 
 
 __all__ = [
@@ -11,7 +10,7 @@ __all__ = [
 
 
 CLASSES_WITH_INDEX = (list, tuple)
-CLASSES_WITH_FIND = (bytes, bytearray, text_type)
+CLASSES_WITH_FIND = (bytes, bytearray, str)
 
 try:
     from Bio.Seq import Seq
@@ -41,7 +40,7 @@ def search_exact(subsequence, sequence, start_index=0, end_index=None):
                     start_index = first_index + 1
                 except ValueError:
                     return -1
-                for subseq_index in xrange(1, len(subsequence)):
+                for subseq_index in range(1, len(subsequence)):
                     if sequence[first_index + subseq_index] != subsequence[subseq_index]:
                         break
                 else:

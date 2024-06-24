@@ -1,3 +1,5 @@
+import unittest
+
 from fuzzysearch.common import group_matches, Match, get_best_match_in_group, \
     count_differences_with_maximum, consolidate_overlapping_matches
 from fuzzysearch.substitutions_only import \
@@ -8,7 +10,7 @@ from fuzzysearch.substitutions_only import \
     find_near_matches_substitutions_ngrams as fnm_subs_ngrams, \
     has_near_match_substitutions_ngrams as hnm_subs_ngrams
 
-from tests.compat import b, u, unittest
+from tests.compat import b
 from tests.utils import skip_if_arguments_arent_byteslike
 
 
@@ -232,8 +234,8 @@ class TestSubstitionsOnlyBase(object):
         )
 
     def test_unicode_substring(self):
-        pattern = u('\u03A3\u0393')
-        text = u('\u03A0\u03A3\u0393\u0394')
+        pattern = '\u03A3\u0393'
+        text = '\u03A0\u03A3\u0393\u0394'
         self.expectedOutcomes(
             self.search(pattern, text, max_subs=0),
             [Match(1, 3, 0, matched=text[1:3])]

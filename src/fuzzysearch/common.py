@@ -1,7 +1,5 @@
 from functools import wraps
 
-from fuzzysearch.compat import int_types
-
 from attr import attrs, attrib
 
 
@@ -22,11 +20,11 @@ class Match(object):
 
     if __debug__:
         def __attrs_post_init__(self):
-            if not (isinstance(self.start, int_types) and self.start >= 0):
+            if not (isinstance(self.start, int) and self.start >= 0):
                 raise ValueError('start must be a non-negative integer')
-            if not (isinstance(self.end, int_types) and self.end >= self.start):
+            if not (isinstance(self.end, int) and self.end >= self.start):
                 raise ValueError('end must be an integer no smaller than start')
-            if not (isinstance(self.dist, int_types) and self.dist >= 0):
+            if not (isinstance(self.dist, int) and self.dist >= 0):
                 print(self.dist)
                 raise ValueError('dist must be a non-negative integer')
             if self.matched is None:

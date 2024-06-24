@@ -1,4 +1,6 @@
-from tests.compat import unittest, mock
+import unittest
+import unittest.mock
+
 from tests.test_search_exact import TestSearchExactBase
 from tests.test_substitutions_only import TestSubstitionsOnlyBase
 from tests.test_levenshtein import TestFindNearMatchesLevenshteinBase
@@ -35,7 +37,7 @@ class TestFindNearMatches(unittest.TestCase):
         self.mock_find_near_matches_generic = \
             MockSearchClassFailsUnlessDefined()
 
-        patcher = mock.patch.multiple(
+        patcher = unittest.mock.patch.multiple(
             'fuzzysearch',
             ExactSearch=self.mock_search_exact,
             LevenshteinSearch=
@@ -130,23 +132,23 @@ class TestFindNearMatches(unittest.TestCase):
         # find_near_matches_levenshtein
         self.patch_concrete_search_classes()
         self.mock_find_near_matches_levenshtein.return_value = \
-            [mock.sentinel.SENTINEL]
+            [unittest.mock.sentinel.SENTINEL]
 
         self.assertEqual(
             find_near_matches('a', 'a', 1, 1, 1, 1),
-            [mock.sentinel.SENTINEL],
+            [unittest.mock.sentinel.SENTINEL],
         )
         self.assertEqual(self.mock_find_near_matches_levenshtein.call_count, 1)
 
         self.assertEqual(
             find_near_matches('a', 'a', 2, 2, 2, 2),
-            [mock.sentinel.SENTINEL],
+            [unittest.mock.sentinel.SENTINEL],
         )
         self.assertEqual(self.mock_find_near_matches_levenshtein.call_count, 2)
 
         self.assertEqual(
             find_near_matches('a', 'a', 5, 3, 7, 2),
-            [mock.sentinel.SENTINEL],
+            [unittest.mock.sentinel.SENTINEL],
         )
         self.assertEqual(self.mock_find_near_matches_levenshtein.call_count, 3)
 

@@ -1,21 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import with_statement
-
 import os
 import sys
 
 from setuptools import setup, Extension
-if sys.version_info < (3, 8):
-    from distutils.command.build_ext import build_ext
-    from distutils.errors import (
-        CCompilerError,
-        DistutilsExecError as ExecError,
-        DistutilsPlatformError as PlatformError,
-    )
-else:
-    from setuptools.command.build_ext import build_ext
-    from setuptools.errors import CCompilerError, ExecError, PlatformError
+from setuptools.command.build_ext import build_ext
+from setuptools.errors import CCompilerError, ExecError, PlatformError
 
 # --noexts: don't try building the C extensions
 if '--noexts' in sys.argv[1:]:
@@ -34,7 +24,7 @@ readme = readfile('README.rst')
 history = readfile('HISTORY.rst').replace('.. :changelog:', '')
 
 
-# Fail safe compilation based on markupsafe's, which in turn was shamelessly
+# Fail-safe compilation based on markupsafe's, which in turn was shamelessly
 # stolen from the simplejson setup.py file.  Original author: Bob Ippolito
 
 is_jython = 'java' in sys.platform
@@ -135,12 +125,7 @@ def run_setup(with_binary=True):
             'Intended Audience :: Developers',
             'License :: OSI Approved :: MIT License',
             'Natural Language :: English',
-            'Programming Language :: Python :: 2',
-            'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.5',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
             'Programming Language :: Python :: 3.10',

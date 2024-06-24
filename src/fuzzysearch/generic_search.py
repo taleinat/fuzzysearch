@@ -5,7 +5,6 @@ import attr
 
 from fuzzysearch.common import FuzzySearchBase, Match, \
     consolidate_overlapping_matches
-from fuzzysearch.compat import xrange
 from fuzzysearch.search_exact import search_exact
 
 
@@ -139,7 +138,7 @@ def _find_near_matches_generic_linear_programming(subsequence, sequence, search_
                         yield make_match(cand.start, index + 1, cand.l_dist + 1)
 
                 # try skipping subsequence chars
-                for n_skipped in xrange(1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + 1):
+                for n_skipped in range(1, min(max_deletions - cand.n_dels, max_l_dist - cand.l_dist) + 1):
                     # if skipping n_dels sub-sequence chars reaches the end
                     # of the sub-sequence, yield a match
                     if cand.subseq_index + n_skipped == subseq_len:
@@ -220,7 +219,7 @@ def find_near_matches_generic_ngrams(subsequence, sequence, search_params):
     if ngram_len == 0:
         raise ValueError('the subsequence length must be greater than max_l_dist')
 
-    for ngram_start in xrange(0, subseq_len - ngram_len + 1, ngram_len):
+    for ngram_start in range(0, subseq_len - ngram_len + 1, ngram_len):
         ngram_end = ngram_start + ngram_len
         start_index = max(0, ngram_start - max_l_dist)
         end_index = min(seq_len, seq_len - subseq_len + ngram_end + max_l_dist)

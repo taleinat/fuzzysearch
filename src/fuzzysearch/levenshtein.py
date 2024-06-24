@@ -2,7 +2,6 @@ from collections import namedtuple
 
 from fuzzysearch.common import FuzzySearchBase, Match, \
     consolidate_overlapping_matches
-from fuzzysearch.compat import xrange
 from fuzzysearch.levenshtein_ngram import find_near_matches_levenshtein_ngrams
 from fuzzysearch.search_exact import search_exact
 
@@ -61,7 +60,7 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
         return Match(start, end, dist, matched=sequence[start:end])
 
     if max_l_dist >= subseq_len:
-        for index in xrange(len(sequence) + 1):
+        for index in range(len(sequence) + 1):
             yield make_match(index, index, subseq_len)
         return
 
@@ -112,7 +111,7 @@ def find_near_matches_levenshtein_linear_programming(subsequence, sequence,
                     ))
 
                 # try skipping subsequence chars
-                for n_skipped in xrange(1, max_l_dist - cand.dist + 1):
+                for n_skipped in range(1, max_l_dist - cand.dist + 1):
                     # if skipping n_skipped sub-sequence chars reaches the end
                     # of the sub-sequence, yield a match
                     if cand.subseq_index + n_skipped == subseq_len:

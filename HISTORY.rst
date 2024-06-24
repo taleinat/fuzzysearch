@@ -6,7 +6,8 @@ History
 ?.?.? (????-??-??)
 ++++++++++++++++++
 
-* Added support for Python 3.9, 3.10 and 3.11.
+* Dropped support for Python 2.7, 3.5, 3.6 and 3.7.
+* Added support for Python 3.9 and 3.10.
 
 0.7.3 (2020-06-27)
 ++++++++++++++++++

@@ -1,4 +1,6 @@
-from tests.compat import b, unittest
+import unittest
+
+from tests.compat import b
 
 
 class TestMemmemBase(object):

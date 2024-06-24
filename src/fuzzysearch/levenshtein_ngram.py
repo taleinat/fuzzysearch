@@ -1,5 +1,4 @@
 from fuzzysearch.common import Match
-from fuzzysearch.compat import xrange
 from fuzzysearch.search_exact import search_exact
 
 
@@ -168,7 +167,7 @@ def find_near_matches_levenshtein_ngrams(subsequence, sequence, max_l_dist):
     def make_match(start, end, dist):
         return Match(start, end, dist, matched=sequence[start:end])
 
-    for ngram_start in xrange(0, subseq_len - ngram_len + 1, ngram_len):
+    for ngram_start in range(0, subseq_len - ngram_len + 1, ngram_len):
         ngram_end = ngram_start + ngram_len
         subseq_before_reversed = subsequence[:ngram_start][::-1]
         subseq_after = subsequence[ngram_end:]

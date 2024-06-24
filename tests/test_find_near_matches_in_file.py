@@ -3,14 +3,15 @@ from itertools import product
 import os
 import re
 import tempfile
+import unittest
+import unittest.mock
 
 import attr
 
 from fuzzysearch import find_near_matches_in_file
 from fuzzysearch.common import Match
-from fuzzysearch.compat import text_type, PY2
 
-from tests.compat import b, u, mock, unittest
+from tests.compat import b
 import tests.test_find_near_matches
 
 
@@ -32,17 +33,14 @@ class TestSearchFile(unittest.TestCase):
                              [Match(3, 9, 1, b('PATERN'))])
 
         def test_file_unicode(f):
-            self.assertEqual(find_near_matches_in_file(u(needle), f, max_l_dist=1),
-                             [Match(3, 9, 1, u('PATERN'))])
+            self.assertEqual(find_near_matches_in_file(needle, f, max_l_dist=1),
+                             [Match(3, 9, 1, 'PATERN')])
 
         with open(filename, 'rb') as f:
             test_file_bytes(f)
 
         with open(filename, 'r') as f:
-            if PY2:
-                test_file_bytes(f)
-            else:
-                test_file_unicode(f)
+            test_file_unicode(f)
 
         with codecs.open(filename, 'rb') as f:
             test_file_bytes(f)
@@ -57,8 +55,8 @@ class TestSearchFile(unittest.TestCase):
             test_file_unicode(f)
 
     def test_unicode_encodings(self):
-        needle = u('PATTERN')
-        haystack = u('---PATERN---')
+        needle = 'PATTERN'
+        haystack = '---PATERN---'
 
         for encoding in ['ascii', 'latin-1', 'latin1', 'utf-8', 'utf-16']:
             with self.subTest(encoding=encoding):
@@ -69,7 +67,7 @@ class TestSearchFile(unittest.TestCase):
                 with io.open(filename, 'r', encoding=encoding) as f:
                     self.assertEqual(
                         find_near_matches_in_file(needle, f, max_l_dist=1),
-                        [Match(3, 9, 1, u('PATERN'))],
+                        [Match(3, 9, 1, 'PATERN')],
                     )
 
     def test_subsequence_split_between_chunks(self):
@@ -122,13 +120,13 @@ class TestSearchFile(unittest.TestCase):
                         )
 
                     with open(filename, 'r') as f:
-                        _needle = needle if PY2 else needle.decode('utf-8')
+                        _needle = needle.decode('utf-8')
                         self.assertEqual(
                             find_near_matches_in_file(_needle, f, max_l_dist=max_l_dist, _chunk_size=chunk_size),
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
                                          end=match.end + chunk_size + delta,
-                                         matched=haystack_match if PY2 else haystack.decode('utf-8'))
+                                         matched=haystack.decode('utf-8'))
                              for match in expected_matches]
                         )
 
@@ -138,7 +136,7 @@ class TestSearchFile(unittest.TestCase):
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
                                          end=match.end + chunk_size + delta,
-                                         matched=haystack_match if PY2 else haystack.decode('utf-8'))
+                                         matched=haystack.decode('utf-8'))
                              for match in expected_matches]
                         )
 
@@ -149,7 +147,7 @@ class TestSearchFile(unittest.TestCase):
                             [attr.evolve(match,
                                          start=match.start + chunk_size + delta,
                                          end=match.end + chunk_size + delta,
-                                         matched=haystack_match if PY2 else haystack.decode('utf-8'))
+                                         matched=haystack.decode('utf-8'))
                              for match in expected_matches]
                         )
 
@@ -186,7 +184,7 @@ for class_name in filter(
                     self.skipTest('skipping BioPython Seq tests with find_near_matches_in_file')
 
             tempfilepath = tempfile.mktemp()
-            if isinstance(sequence, text_type):
+            if isinstance(sequence, str):
                 f = io.open(tempfilepath, 'w+', encoding='utf-8')
             else:
                 f = open(tempfilepath, 'w+b')
@@ -198,7 +196,7 @@ for class_name in filter(
                 f.close()
                 os.remove(tempfilepath)
 
-        patcher = mock.patch(
+        patcher = unittest.mock.patch(
             'tests.test_find_near_matches.find_near_matches',
             find_near_matches_dropin)
         self.addCleanup(patcher.stop)
