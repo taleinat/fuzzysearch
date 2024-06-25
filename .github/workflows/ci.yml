@@ -1,0 +1,158 @@
+name: build
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'py38 (Ubuntu)'
+            python: '3.8'
+            toxpython: 'python3.8'
+            python_arch: 'x64'
+            tox_env: 'py38-with_coverage'
+            os: 'ubuntu-latest'
+          - name: 'py38 (Windows)'
+            python: '3.8'
+            toxpython: 'python3.8'
+            python_arch: 'x64'
+            tox_env: 'py38-with_coverage'
+            os: 'windows-latest'
+          - name: 'py38 (macOS)'
+            python: '3.8'
+            toxpython: 'python3.8'
+            python_arch: 'arm64'
+            tox_env: 'py38-with_coverage'
+            os: 'macos-latest'
+          - name: 'py39 (Ubuntu)'
+            python: '3.9'
+            toxpython: 'python3.9'
+            python_arch: 'x64'
+            tox_env: 'py39-with_coverage'
+            os: 'ubuntu-latest'
+          - name: 'py39 (Windows)'
+            python: '3.9'
+            toxpython: 'python3.9'
+            python_arch: 'x64'
+            tox_env: 'py39-with_coverage'
+            os: 'windows-latest'
+          - name: 'py39 (macOS)'
+            python: '3.9'
+            toxpython: 'python3.9'
+            python_arch: 'arm64'
+            tox_env: 'py39-with_coverage'
+            os: 'macos-latest'
+          - name: 'py310 (Ubuntu)'
+            python: '3.10'
+            toxpython: 'python3.10'
+            python_arch: 'x64'
+            tox_env: 'py310-with_coverage'
+            os: 'ubuntu-latest'
+          - name: 'py310 (Windows)'
+            python: '3.10'
+            toxpython: 'python3.10'
+            python_arch: 'x64'
+            tox_env: 'py310-with_coverage'
+            os: 'windows-latest'
+          - name: 'py310 (macOS)'
+            python: '3.10'
+            toxpython: 'python3.10'
+            python_arch: 'arm64'
+            tox_env: 'py310-with_coverage'
+            os: 'macos-latest'
+          - name: 'py311 (Ubuntu)'
+            python: '3.11'
+            toxpython: 'python3.11'
+            python_arch: 'x64'
+            tox_env: 'py311-with_coverage'
+            os: 'ubuntu-latest'
+          - name: 'py311 (Windows)'
+            python: '3.11'
+            toxpython: 'python3.11'
+            python_arch: 'x64'
+            tox_env: 'py311-with_coverage'
+            os: 'windows-latest'
+          - name: 'py311 (macOS)'
+            python: '3.11'
+            toxpython: 'python3.11'
+            python_arch: 'arm64'
+            tox_env: 'py311-with_coverage'
+            os: 'macos-latest'
+          - name: 'py312 (Ubuntu)'
+            python: '3.12'
+            toxpython: 'python3.12'
+            python_arch: 'x64'
+            tox_env: 'py312-with_coverage'
+            os: 'ubuntu-latest'
+          - name: 'py312 (Windows)'
+            python: '3.12'
+            toxpython: 'python3.12'
+            python_arch: 'x64'
+            tox_env: 'py312-with_coverage'
+            os: 'windows-latest'
+          - name: 'py312 (macOS)'
+            python: '3.12'
+            toxpython: 'python3.12'
+            python_arch: 'arm64'
+            tox_env: 'py312-with_coverage'
+            os: 'macos-latest'
+          - name: 'pypy39 (Ubuntu)'
+            python: 'pypy-3.9'
+            toxpython: 'pypy3.9'
+            python_arch: 'x64'
+            tox_env: 'pypy39-with_coverage'
+            os: 'ubuntu-latest'
+          - name: 'pypy39 (Windows)'
+            python: 'pypy-3.9'
+            toxpython: 'pypy3.9'
+            python_arch: 'x64'
+            tox_env: 'pypy39-with_coverage'
+            os: 'windows-latest'
+          - name: 'pypy39 (macOS)'
+            python: 'pypy-3.9'
+            toxpython: 'pypy3.9'
+            python_arch: 'arm64'
+            tox_env: 'pypy39-with_coverage'
+            os: 'macos-latest'
+          - name: 'pypy310 (Ubuntu)'
+            python: 'pypy-3.10'
+            toxpython: 'pypy3.10'
+            python_arch: 'x64'
+            tox_env: 'pypy310-with_coverage'
+            os: 'ubuntu-latest'
+          - name: 'pypy310 (Windows)'
+            python: 'pypy-3.10'
+            toxpython: 'pypy3.10'
+            python_arch: 'x64'
+            tox_env: 'pypy310-with_coverage'
+            os: 'windows-latest'
+          - name: 'pypy310 (macOS)'
+            python: 'pypy-3.10'
+            toxpython: 'pypy3.10'
+            python_arch: 'arm64'
+            tox_env: 'pypy310-with_coverage'
+            os: 'macos-latest'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python }}
+        architecture: ${{ matrix.python_arch }}
+    - name: install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install --progress-bar=off 'coverage ~= 7.5' 'tox ~= 4.9' 'virtualenv ~= 20.26'
+        virtualenv --version
+        pip --version
+        tox --version
+        pip list --format=freeze
+    - name: test
+      env:
+        TOXPYTHON: '${{ matrix.toxpython }}'
+      run: >
+        tox -e ${{ matrix.tox_env }} -v
