@@ -64,6 +64,7 @@ else:
     def search_exact(subsequence, sequence, start_index=0, end_index=None):
         if end_index is None:
             end_index = len(sequence)
+        print(f"end_index={end_index}")
 
         try:
             return search_exact_byteslike(subsequence, sequence,
