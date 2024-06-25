@@ -30,7 +30,7 @@ fuzzysearch
 Fuzzy search: Find parts of long text or data, allowing for some
 changes/typos.
 
-**Easy, fast, and just works!**
+Highly optimized, simple to use, does one thing well.
 
 .. code:: python
 
@@ -62,6 +62,27 @@ changes/typos.
 For more info, see the `documentation <http://fuzzysearch.rtfd.org>`_.
 
 
+How is this different than FuzzyWuzzy or RapidFuzz?
+---------------------------------------------------
+
+The main difference is that fuzzysearch searches for fuzzy matches through
+long texts or data. FuzzyWuzzy and RapidFuzz, on the other hand, are intended
+for fuzzy comparison of pairs of strings, identifying how closely they match
+according to some metric such as the Levenshtein distance.
+
+These are very different use-cases, and the solutions are very different as
+well.
+
+
+How is this different than ElasticSearch and Lucene?
+----------------------------------------------------
+
+The main difference is that fuzzysearch does no indexing or other
+preparations; it directly searches through the given text or data for a given
+sub-string. Therefore, it is much simpler to use compared to systems based on
+text indexing.
+
+
 Installation
 ------------
 
@@ -87,7 +108,7 @@ the sequence to search, and the matching parameters:
     >>> find_near_matches('PATTERN', '---PATERN---', max_l_dist=1)
     [Match(start=3, end=9, dist=1, matched="PATERN")]
 
-To search in a file, use ``find_near_matches_in_file()`` similarly:
+To search in a file, use ``find_near_matches_in_file()``:
 
 .. code:: python
 
@@ -101,8 +122,7 @@ Examples
 --------
 
 *fuzzysearch* is great for ad-hoc searches of genetic data, such as DNA or
-protein sequences, before reaching for "heavier", domain-specific tools like
-BioPython:
+protein sequences, before reaching for more complex tools:
 
 .. code:: python
 
@@ -163,13 +183,3 @@ one must always supply ``max_l_dist`` and/or all other criteria.
     # ... but deletion + insertion may also match other, non-substitution differences
     >>> find_near_matches('PATTERN', '---PATERRN---', max_deletions=1, max_insertions=1, max_substitutions=0)
     [Match(start=3, end=10, dist=2, matched="PATERRN")]
-
-
-When to Use Other Tools
------------------------
-
-* Use case: Search through a list of strings for almost-exactly matching
-  strings. For example, searching through a list of names for possible slight
-  variations of a certain name.
-
-  Suggestion: Consider using `fuzzywuzzy <https://github.com/seatgeek/fuzzywuzzy>`_.
