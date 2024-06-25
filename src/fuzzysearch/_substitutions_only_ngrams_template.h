@@ -24,12 +24,7 @@ FUNCTION_NAME(PyObject *self, PyObject *args)
 
     DECLARE_VARS;
 
-    const char* argspec =
-#ifdef IS_PY3K
-        "y*y*i";
-#else
-        "s*s*i";
-#endif
+    const char* argspec = "y*y*i";
 
     if (unlikely(!PyArg_ParseTuple(
         args,

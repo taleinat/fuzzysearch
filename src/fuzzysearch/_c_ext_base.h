@@ -4,10 +4,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#if PY_MAJOR_VERSION >= 3
-#define IS_PY3K
-#endif
-
 #ifndef unlikely
     #ifdef __GNUC__
       /* Test for GCC > 2.95 */

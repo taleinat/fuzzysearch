@@ -2,11 +2,6 @@
 #include "src/fuzzysearch/memmem.h"
 #include "src/fuzzysearch/wordlen_memmem.h"
 
-#if PY_MAJOR_VERSION >= 3
-#define IS_PY3K
-#define PyInt_FromLong PyLong_FromLong
-#endif
-
 
 #ifdef __GNUC__
   /* Test for GCC > 2.95 */
@@ -23,16 +18,6 @@
 #endif /* __GNUC__ */
 
 
-#ifdef IS_PY3K
-    #define ARG_TYPES_DEF "y#y#"
-#else
-    #if PY_HEX_VERSION >= 0x02070000
-        #define ARG_TYPES_DEF "t#t#"
-    #else
-        #define ARG_TYPES_DEF "s#s#"
-    #endif
-#endif
-
 static PyObject *
 py_simple_memmem(PyObject *self, PyObject *args) {
     /* input params */
@@ -44,7 +29,7 @@ py_simple_memmem(PyObject *self, PyObject *args) {
 
     if (unlikely(!PyArg_ParseTuple(
         args,
-        ARG_TYPES_DEF,
+        "y#y#",
         &needle, &needle_len,
         &haystack, &haystack_len
     ))) {
@@ -57,7 +42,7 @@ py_simple_memmem(PyObject *self, PyObject *args) {
         Py_RETURN_NONE;
     }
     else {
-        py_result = PyInt_FromLong(result - haystack);
+        py_result = PyLong_FromLong(result - haystack);
         if (unlikely(py_result == NULL)) {
             return NULL;
         }
@@ -76,7 +61,7 @@ py_wordlen_memmem(PyObject *self, PyObject *args) {
 
     if (unlikely(!PyArg_ParseTuple(
         args,
-        ARG_TYPES_DEF,
+        "y#y#",
         &needle, &needle_len,
         &haystack, &haystack_len
     ))) {
@@ -89,7 +74,7 @@ py_wordlen_memmem(PyObject *self, PyObject *args) {
         Py_RETURN_NONE;
     }
     else {
-        py_result = PyInt_FromLong(result - haystack);
+        py_result = PyLong_FromLong(result - haystack);
         if (unlikely(py_result == NULL)) {
             return NULL;
         }
@@ -109,8 +94,6 @@ static PyMethodDef _pymemmem_methods[] = {
 };
 
 
-#ifdef IS_PY3K
-
 static struct PyModuleDef _pymemmem_module = {
    PyModuleDef_HEAD_INIT,
    "_pymemmem",   /* name of module */
@@ -125,13 +108,3 @@ PyInit__pymemmem(void)
 {
     return PyModule_Create(&_pymemmem_module);
 }
-
-#else
-
-PyMODINIT_FUNC
-init_pymemmem(void)
-{
-    (void) Py_InitModule("_pymemmem", _pymemmem_methods);
-}
-
-#endif
