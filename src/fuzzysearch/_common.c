@@ -18,7 +18,7 @@ search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
     int subseq_sum;
     char *next_match_ptr;
 
-    const char* argspec = "y*y*|ll:search_exact_byteslike";
+    const char* argspec = "y*y*|nn:search_exact_byteslike";
 
     if (unlikely(!PyArg_ParseTupleAndKeywords(
         args, kwdict,
