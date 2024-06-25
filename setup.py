@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import re
 import sys
+from pathlib import Path
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
@@ -22,6 +24,15 @@ def readfile(file_path):
 
 readme = readfile('README.rst')
 history = readfile('HISTORY.rst').replace('.. :changelog:', '')
+
+
+def get_version():
+    file_path = Path(__file__).parent / 'src' / 'fuzzysearch' / '__init__.py'
+    src = file_path.read_text()
+    pattern = r'^__version__\s*=\s*([\'"])(.{1,}?)\1\s*$'
+    return re.search(pattern, src, re.M).group(2)
+
+version = get_version()
 
 
 # Fail-safe compilation based on markupsafe's, which in turn was shamelessly
@@ -108,7 +119,7 @@ def run_setup(with_binary=True):
 
     setup(
         name='fuzzysearch',
-        version='0.7.3',
+        version=version,
         description='fuzzysearch is useful for finding approximate subsequence matches',
         long_description=readme + '\n\n' + history,
         author='Tal Einat',

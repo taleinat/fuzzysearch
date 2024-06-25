@@ -1,0 +1,130 @@
+# The "Build" workflow produces wheels (and the sdist) for all python
+# versions/platforms. Where possible (i.e. the build is not a cross-compile),
+# the test suite is also run for the wheel (this test covers fewer
+# configurations than the "Test" workflow and tox.ini).
+#
+# See:
+# * https://cibuildwheel.pypa.io/en/stable/setup/#github-actions
+# * https://github.com/tornadoweb/tornado/blob/9c06f98025c1bca98114d197361f27f5530067f6/.github/workflows/build.yml
+name: Build
+
+on:
+  push:
+    branches:
+      # Run on release branches. This gives us a chance to detect rot in this
+      # configuration before pushing a tag (which we'd rather not have to undo).
+      - "branch[0-9]*"
+    tags:
+      # The main purpose of this workflow is to build wheels for release tags.
+      # It runs automatically on tags matching this pattern and pushes to pypi.
+      - "v*"
+  workflow_dispatch: {}
+    # Allow this workflow to be run manually (pushing to testpypi instead of pypi)
+
+jobs:
+  build_sdist:
+    name: Build sdist
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          cache: 'pip'
+          cache-dependency-path: .github/workflows/build.yml
+      - name: Install deps
+        run: "pip install 'setuptools~=72.1'"
+
+      - name: Check metadata
+        run: "python setup.py check"
+      - name: Build sdist
+        run: "python setup.py sdist && ls -l ./dist"
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-sdist
+          path: ./dist/fuzzysearch-*.tar.gz
+
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-13 is an intel runner, macos-14 is apple silicon
+        os: [ ubuntu-latest, windows-latest, macos-13, macos-14 ]
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.19
+        env:
+          CIBW_BUILD: '{cp38,cp39,cp310,cp311,cp312,pypy39,pypy310}-*'
+          CIBW_TEST_COMMAND: 'python -m unittest discover -t "{project}" tests'
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+#  release_pypi_test:
+#    name: Upload release to PyPI (test)
+#    needs: [build_wheels, build_sdist]
+#    runs-on: ubuntu-22.04
+#    if: github.repository == 'taleinat/fuzzysearch' && github.event_name == 'workflow_dispatch'
+#    environment:
+#      name: testpypi
+#      url: https://test.pypi.org/p/fuzzysearch
+#    permissions:
+#      # This permission is required for pypi's "trusted publisher" feature
+#      id-token: write
+#    steps:
+#      - name: Download artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          pattern: artifacts-*
+#          path: dist
+#          merge-multiple: true
+#
+#      - name: Publish package distributions to Test PyPI
+#        uses: pypa/gh-action-pypi-publish@release/v1
+#        with:
+#          repository-url: https://test.pypi.org/legacy/
+#          skip-existing: true
+
+  release_pypi:
+    name: Upload release to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-22.04
+    if: github.repository == 'taleinat/fuzzysearch' && github.event_name == 'push' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+    environment:
+      name: pypi
+      url: https://pypi.org/p/fuzzysearch
+    permissions:
+      # This permission is required for pypi's "trusted publisher" feature
+      id-token: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-*
+          path: dist
+          merge-multiple: true
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
