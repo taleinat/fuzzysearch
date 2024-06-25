@@ -1,6 +1,6 @@
 #include "src/fuzzysearch/_c_ext_base.h"
 #include "src/fuzzysearch/memmem.h"
-
+#include <stdio.h>
 
 static PyObject *
 search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
@@ -64,7 +64,8 @@ search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
 
     if (end_index == -1) end_index = seq_len;
     if (unlikely(end_index < 0)) {
-        PyErr_SetString(PyExc_ValueError, "end_index must be non-negative");
+        PyErr_Format(PyExc_ValueError, "end_index %lld be non-negative", (long long) end_index);
+        /*PyErr_SetString(PyExc_ValueError, "end_index must be non-negative");*/
         goto error;
     }
 
