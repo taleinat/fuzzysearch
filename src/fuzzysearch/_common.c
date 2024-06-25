@@ -18,12 +18,7 @@ search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
     int subseq_sum;
     char *next_match_ptr;
 
-    const char* argspec =
-#ifdef IS_PY3K
-        "y*y*|ll:search_exact_byteslike";
-#else
-        "s*s*|ll:search_exact_byteslike";
-#endif
+    const char* argspec = "y*y*|ll:search_exact_byteslike";
 
     if (unlikely(!PyArg_ParseTupleAndKeywords(
         args, kwdict,
@@ -88,11 +83,7 @@ search_exact_byteslike(PyObject *self, PyObject *args, PyObject *kwdict) {
 
     while (next_match_ptr != NULL) {
         next_match_index = (const char *)next_match_ptr - seq;
-#ifdef IS_PY3K
         next_result = PyLong_FromLong(next_match_index + start_index);
-#else
-        next_result = PyInt_FromLong(next_match_index + start_index);
-#endif
         if (unlikely(next_result == NULL)) {
             Py_DECREF(results);
             goto error;
@@ -133,12 +124,7 @@ count_differences_with_maximum_byteslike(PyObject *self, PyObject *args)
     Py_ssize_t i;
     int n_differences;
 
-    const char* argspec =
-#ifdef IS_PY3K
-        "y*y*i";
-#else
-        "s*s*i";
-#endif
+    const char* argspec = "y*y*i";
 
     if (!PyArg_ParseTuple(
         args,
@@ -197,8 +183,6 @@ static PyMethodDef _common_methods[] = {
 };
 
 
-#ifdef IS_PY3K
-
 static struct PyModuleDef _common_module = {
    PyModuleDef_HEAD_INIT,
    "_common",   /* name of module */
@@ -213,13 +197,3 @@ PyInit__common(void)
 {
     return PyModule_Create(&_common_module);
 }
-
-#else
-
-PyMODINIT_FUNC
-init_common(void)
-{
-    (void) Py_InitModule("_common", _common_methods);
-}
-
-#endif

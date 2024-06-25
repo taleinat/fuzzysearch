@@ -17,9 +17,6 @@
 #undef DECLARE_VARS
 
 
-#ifdef IS_PY3K
-#define PyInt_FromSsize_t(x) PyLong_FromSsize_t(x)
-#endif
 #define DECLARE_VARS       \
     PyObject *results;     \
     PyObject *next_result
@@ -28,7 +25,7 @@
     if (unlikely(!results))  \
         goto error;
 #define OUTPUT_VALUE(x) do {                                           \
-    next_result = PyInt_FromSsize_t((x));                              \
+    next_result = PyLong_FromSsize_t((x));                             \
     if (unlikely(next_result == NULL)) {                               \
         Py_DECREF(results);                                            \
         goto error;                                                    \
@@ -74,8 +71,6 @@ static PyMethodDef substitutions_only_methods[] = {
 };
 
 
-#ifdef IS_PY3K
-
 static struct PyModuleDef substitutions_only_module = {
    PyModuleDef_HEAD_INIT,
    "_substitutions_only",   /* name of module */
@@ -90,13 +85,3 @@ PyInit__substitutions_only(void)
 {
     return PyModule_Create(&substitutions_only_module);
 }
-
-#else
-
-PyMODINIT_FUNC
-init_substitutions_only(void)
-{
-    (void) Py_InitModule("_substitutions_only", substitutions_only_methods);
-}
-
-#endif
