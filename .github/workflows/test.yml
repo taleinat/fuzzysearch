@@ -136,32 +136,32 @@ jobs:
             tox_env: 'pypy310-with_coverage'
             os: 'macos-latest'
     steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python }}
-        architecture: ${{ matrix.python_arch }}
-        cache: 'pip'
-        cache-dependency-path: .github/workflows/ci.yml
-    - name: Install tox dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install --progress-bar=off 'tox ~= 4.9'
-        virtualenv --version
-        pip --version
-        tox --version
-        pip list --format=freeze
-    - name: Cache tox env
-      uses: actions/cache@v4
-      with:
-        path: .tox/${{ matrix.tox_env }}
-        key: ${{ matrix.python }}-${{ matrix.python_arch }}-${{ hashFiles('setup.py', 'tox.ini') }}
-    - name: Test
-      env:
-        TOXPYTHON: '${{ matrix.toxpython }}'
-      run: >
-        tox -e ${{ matrix.tox_env }} -v
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          architecture: ${{ matrix.python_arch }}
+          cache: 'pip'
+          cache-dependency-path: .github/workflows/test.yml
+      - name: Install tox dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --progress-bar=off 'tox ~= 4.9'
+          virtualenv --version
+          pip --version
+          tox --version
+          pip list --format=freeze
+      - name: Cache tox env
+        uses: actions/cache@v4
+        with:
+          path: .tox/${{ matrix.tox_env }}
+          key: ${{ matrix.python }}-${{ matrix.python_arch }}-${{ hashFiles('setup.py', 'tox.ini') }}
+      - name: Test
+        env:
+          TOXPYTHON: '${{ matrix.toxpython }}'
+        run: >
+          tox -e '${{ matrix.tox_env }}' -v

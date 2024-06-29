@@ -1,0 +1,83 @@
+# The "build" workflow produces wheels (and the sdist) for all python
+# versions/platforms. Where possible (i.e. the build is not a cross-compile),
+# the test suite is also run for the wheel (this test covers fewer
+# configurations than the "test" workflow and tox.ini).
+name: Build
+
+on:
+  push:
+    branches:
+      # Run on release branches. This gives us a chance to detect rot in this
+      # configuration before pushing a tag (which we'd rather not have to undo).
+      - "branch[0-9]*"
+    tags:
+      # The main purpose of this workflow is to build wheels for release tags.
+      # It runs automatically on tags matching this pattern and pushes to pypi.
+      - "v*"
+  workflow_dispatch:
+    # Allow this workflow to be run manually (pushing to testpypi instead of pypi)
+
+env:
+  python-version: '3.12'
+
+jobs:
+  build_sdist:
+    name: Build sdist
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.python-version }}
+
+      - name: Check metadata
+        run: "python setup.py check"
+      - name: Build sdist
+        run: "python setup.py sdist && ls -l ./dist"
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-sdist
+          path: ./dist/tornado-*.tar.gz
+
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-13 is an intel runner, macos-14 is apple silicon
+        os: [ ubuntu-latest, windows-latest, macos-13, macos-14 ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        name: Install Python
+        with:
+          python-version: ${{ env.python-version }}
+          cache: 'pip'
+          cache-dependency-path: .github/workflows/build.yml
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.19
+        env:
+          CIBW_BUILD: '{cp38,cp39,cp310,cp311,cp312,pypy39,pypy310}-*'
+          CIBW_TEST_COMMAND: 'python -m unittest discover tests && ls -l ./wheelhouse'
+        with:
+          package-dir: ./src/fuzzysearch
+
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
