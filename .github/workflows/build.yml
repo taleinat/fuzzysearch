@@ -6,7 +6,6 @@
 # See:
 # * https://cibuildwheel.pypa.io/en/stable/setup/#github-actions
 # * https://github.com/tornadoweb/tornado/blob/9c06f98025c1bca98114d197361f27f5530067f6/.github/workflows/build.yml
-
 name: Build
 
 on:
