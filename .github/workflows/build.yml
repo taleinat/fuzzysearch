@@ -1,7 +1,12 @@
-# The "build" workflow produces wheels (and the sdist) for all python
+# The "Build" workflow produces wheels (and the sdist) for all python
 # versions/platforms. Where possible (i.e. the build is not a cross-compile),
 # the test suite is also run for the wheel (this test covers fewer
-# configurations than the "test" workflow and tox.ini).
+# configurations than the "Test" workflow and tox.ini).
+#
+# See:
+# * https://cibuildwheel.pypa.io/en/stable/setup/#github-actions
+# * https://github.com/tornadoweb/tornado/blob/9c06f98025c1bca98114d197361f27f5530067f6/.github/workflows/build.yml
+
 name: Build
 
 on:
@@ -17,9 +22,6 @@ on:
   workflow_dispatch:
     # Allow this workflow to be run manually (pushing to testpypi instead of pypi)
 
-env:
-  python-version: '3.12'
-
 jobs:
   build_sdist:
     name: Build sdist
@@ -32,7 +34,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.python-version }}
+          python-version: 3.12
 
       - name: Check metadata
         run: "python setup.py check"
