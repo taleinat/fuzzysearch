@@ -81,3 +81,50 @@ jobs:
         with:
           name: artifacts-${{ matrix.os }}
           path: ./wheelhouse/*.whl
+
+  release_pypi_test:
+    name: Upload release to PyPI (test)
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-22.04
+    if: github.repository == 'taleinat/fuzzysearch' && github.event_name == 'workflow_dispatch'
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/fuzzysearch
+    permissions:
+      # This permission is required for pypi's "trusted publisher" feature
+      id-token: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-*
+          path: dist
+          merge-multiple: true
+
+      - name: Publish package distributions to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+
+  release_pypi:
+    name: Upload release to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-22.04
+    if: github.repository == 'taleinat/fuzzysearch' && github.event_name == 'push' && github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
+    environment:
+      name: pypi
+      url: https://pypi.org/p/fuzzysearch
+    permissions:
+      # This permission is required for pypi's "trusted publisher" feature
+      id-token: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-*
+          path: dist
+          merge-multiple: true
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
