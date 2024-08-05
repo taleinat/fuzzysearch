@@ -74,8 +74,6 @@ jobs:
         env:
           CIBW_BUILD: '{cp38,cp39,cp310,cp311,cp312,pypy39,pypy310}-*'
           CIBW_TEST_COMMAND: 'python -m unittest discover -t "/{project}" tests'
-        with:
-          package-dir: ./src/fuzzysearch
 
       - name: Upload wheel
         uses: actions/upload-artifact@v4
