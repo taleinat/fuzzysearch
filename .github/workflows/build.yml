@@ -18,7 +18,7 @@ on:
       # The main purpose of this workflow is to build wheels for release tags.
       # It runs automatically on tags matching this pattern and pushes to pypi.
       - "v*"
-  workflow_dispatch:
+  workflow_dispatch: {}
     # Allow this workflow to be run manually (pushing to testpypi instead of pypi)
 
 jobs:
