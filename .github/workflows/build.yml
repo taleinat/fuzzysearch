@@ -1,4 +1,7 @@
-# The "Build" workflow produces wheels (and the sdist) for all python
+# When triggered manually on a version tag, this will release a new version
+# to PyPI.
+#
+# This workflow produces wheels (and the sdist) for all supported python
 # versions/platforms. Where possible (i.e. the build is not a cross-compile),
 # the test suite is also run for the wheel (this test covers fewer
 # configurations than the "Test" workflow and tox.ini).
@@ -6,7 +9,7 @@
 # See:
 # * https://cibuildwheel.pypa.io/en/stable/setup/#github-actions
 # * https://github.com/tornadoweb/tornado/blob/9c06f98025c1bca98114d197361f27f5530067f6/.github/workflows/build.yml
-name: Build
+name: Build and Release
 
 on:
   push:
