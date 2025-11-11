@@ -223,6 +223,8 @@ def find_near_matches_generic_ngrams(subsequence, sequence, search_params):
         ngram_end = ngram_start + ngram_len
         start_index = max(0, ngram_start - max_l_dist)
         end_index = min(seq_len, seq_len - subseq_len + ngram_end + max_l_dist)
+        if end_index <= start_index:
+            continue
         for index in search_exact(subsequence[ngram_start:ngram_end], sequence, start_index, end_index):
             # try to expand left and/or right according to n_ngram
             for match in find_near_matches_generic_linear_programming(

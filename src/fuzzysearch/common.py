@@ -1,4 +1,5 @@
 from functools import wraps
+from typing import TypeVar
 
 from attr import attrs, attrib
 
@@ -206,3 +207,10 @@ class FuzzySearchBase(object):
     @classmethod
     def extra_items_for_chunked_search(cls, subsequence, search_params):
         raise NotImplementedError
+
+
+T = TypeVar('T')
+
+
+def clamp(value: T, min_value: T, max_value: T) -> T:
+    return max(min_value, min(value, max_value))

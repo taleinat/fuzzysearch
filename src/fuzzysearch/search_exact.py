@@ -1,7 +1,6 @@
 from functools import wraps
 
-from fuzzysearch.common import FuzzySearchBase, Match
-
+from fuzzysearch.common import FuzzySearchBase, Match, clamp
 
 __all__ = [
     'search_exact',
@@ -26,6 +25,9 @@ def search_exact(subsequence, sequence, start_index=0, end_index=None):
 
     if end_index is None:
         end_index = len(sequence)
+
+    start_index = clamp(start_index, min_value=0, max_value=len(sequence))
+    end_index = clamp(end_index, min_value=start_index, max_value=len(sequence))
 
     if isinstance(sequence, CLASSES_WITH_FIND):
         def find_in_index_range(start_index):
@@ -64,6 +66,9 @@ else:
     def search_exact(subsequence, sequence, start_index=0, end_index=None):
         if end_index is None:
             end_index = len(sequence)
+
+        start_index = clamp(start_index, min_value=0, max_value=len(sequence))
+        end_index = clamp(end_index, min_value=start_index, max_value=len(sequence))
 
         try:
             return search_exact_byteslike(subsequence, sequence,

@@ -82,6 +82,7 @@ class TestGenericSearchBase(object):
 
     def test_empty_sequence(self):
         self.assertEqual(self.search(b('PATTERN'), b(''), 0, 0, 0, 0), [])
+        self.assertEqual(self.search(b('PATTERN'), b(''), 0, 1, 1, 1), [])
 
     def test_empty_subsequence_exeption(self):
         with self.assertRaises(ValueError):
