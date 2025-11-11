@@ -3,6 +3,12 @@
 History
 -------
 
+0.8.1 (2025-11-11)
+++++++++++++++++++
+
+* Fixed sometimes raising ValueError with empty sequences.
+* Added support for Python 3.13 and 3.14.
+
 0.8.0 (2025-05-24)
 ++++++++++++++++++
 
